@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.BusinessDao">
+
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from business_info
+        <where>
+            <if test="business_no!=null and business_no!=''">
+                AND business_no LIKE CONCAT('%',#{business_no},'%')
+            </if>
+            <if test="business_name!=null and business_name!=''">
+                AND business_name LIKE CONCAT('%',#{business_name},'%')
+            </if>
+
+            <if test="business_type!=null and business_type!=''">
+                AND business_type=#{business_type}
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from business_info
+        <where>
+            <if test="business_no!=null and business_no!=''">
+                AND business_no LIKE CONCAT('%',#{business_no},'%')
+            </if>
+            <if test="business_name!=null and business_name!=''">
+                AND business_name LIKE CONCAT('%',#{business_name},'%')
+            </if>
+
+            <if test="business_type!=null and business_type!=''">
+                AND business_type=#{business_type}
+            </if>
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+
+    <select id="getBusinessByBusinessNo" resultType="com.prweb.entity.Business">
+        select * from business_info
+
+        <where>
+            <if test="business_no!=null and business_no!=''">
+                AND business_no=#{business_no}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getAllBusiness" resultType="com.prweb.entity.Business">
+        select * from business_info
+
+        <where>
+
+                AND valid='1'
+
+        </where>
+
+    </select>
+
+
+
+
+    <insert id="addBusiness" parameterType="com.prweb.entity.Business">
+        INSERT INTO business_info(
+        business_no,business_name,business_type,valid,create_time
+
+        ) VALUES (
+
+          #{business_no}, #{business_name}, #{business_type},#{valid}, #{create_time}
+
+        )
+    </insert>
+
+    <update id="updateBusiness" parameterType="com.prweb.entity.Business">
+        UPDATE business_info set
+          business_no=#{business_no}, business_name=#{business_name}, business_type=#{business_type},valid=#{valid},create_time=#{create_time}
+         where id=#{id}
+    </update>
+
+
+    <delete id="delBusiness">
+        delete from business_info WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

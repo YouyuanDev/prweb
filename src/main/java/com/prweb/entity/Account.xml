@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.AccountDao">
+
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from account a
+        <where>
+            <if test="username!=null and username!=''">
+                AND username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="account_status!=null and account_status!=''">
+                AND account_status =#{account_status}
+            </if>
+            <if test="account_type!=null and account_type!=''">
+                AND account_type =#{account_type}
+            </if>
+
+        </where>
+    </select>
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from account a
+        <where>
+            <if test="username!=null and username!=''">
+                AND username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="account_status!=null and account_status!=''">
+                AND account_status =#{account_status}
+            </if>
+            <if test="account_type!=null and account_type!=''">
+                AND account_type =#{account_type}
+            </if>
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+
+    <select id="getAccountByUserName" resultType="com.prweb.entity.Account">
+        select * from  account a
+        <where>
+            <if test="username!=null and username!=''">
+                AND username=#{username}
+            </if>
+        </where>
+    </select>
+
+    <select id="VerifyUserNamePassword" resultType="com.prweb.entity.Account">
+        select * from  account
+        <where>
+                AND username=#{username}
+                AND password=#{password}
+        </where>
+    </select>
+
+
+
+
+    <insert id="addAccount" parameterType="com.prweb.entity.Account">
+        INSERT INTO account(
+       username,
+      password,
+      register_time,
+      cell_phone,
+      role_no_list,
+      account_type,
+      person_user_no,
+      company_user_no,
+      system_user_no,
+      account_status,
+        last_login_time,
+      icon_url
+        ) VALUES (
+      #{username},
+      #{password},
+      #{register_time},
+      #{cell_phone},
+      #{role_no_list},
+      #{account_type},
+      #{person_user_no},
+      #{company_user_no},
+      #{system_user_no},
+      #{account_status},
+      #{last_login_time},
+      #{icon_url}
+        )
+    </insert>
+
+    <update id="updateAccount" parameterType="com.prweb.entity.Account">
+        UPDATE account set
+      username=#{username},
+      password= #{password},
+      register_time=#{register_time},
+      cell_phone=#{cell_phone},
+      role_no_list=#{role_no_list},
+      account_type=#{account_type},
+      person_user_no=#{person_user_no},
+      company_user_no=#{company_user_no},
+      system_user_no= #{system_user_no},
+      account_status=#{account_status},
+      last_login_time=#{last_login_time},
+      icon_url=#{icon_url}
+
+        where id=#{id}
+    </update>
+
+
+    <delete id="delAccount">
+        delete from account WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

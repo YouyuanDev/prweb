@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.OrderDao">
+
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from order_info
+        <where>
+            <if test="order_no!=null and order_no!=''">
+                AND order_no LIKE CONCAT('%',#{order_no},'%')
+            </if>
+            <if test="order_status!=null and order_status!=''">
+                AND order_status =#{order_status}
+            </if>
+            <if test="begin_time!=null">
+                <![CDATA[ AND DATE_FORMAT(order_time,'%Y-%m-%d %H:%T:%s')>=DATE_FORMAT(#{begin_time},'%Y-%m-%d 00:00:00')]]>
+            </if>
+            <if test="end_time!=null">
+                <![CDATA[ AND DATE_FORMAT(order_time,'%Y-%m-%d %H:%T:%s')<DATE_FORMAT(DATE_ADD(#{end_time},INTERVAL 1 DAY),'%Y-%m-%d 00:00:00')]]>
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from order_info
+        <where>
+            <if test="order_no!=null and order_no!=''">
+                AND order_no LIKE CONCAT('%',#{order_no},'%')
+            </if>
+            <if test="order_status!=null and order_status!=''">
+                AND order_status =#{order_status}
+            </if>
+            <if test="begin_time!=null">
+                <![CDATA[ AND DATE_FORMAT(order_time,'%Y-%m-%d %H:%T:%s')>=DATE_FORMAT(#{begin_time},'%Y-%m-%d 00:00:00')]]>
+            </if>
+            <if test="end_time!=null">
+                <![CDATA[ AND DATE_FORMAT(order_time,'%Y-%m-%d %H:%T:%s')<DATE_FORMAT(DATE_ADD(#{end_time},INTERVAL 1 DAY),'%Y-%m-%d 00:00:00')]]>
+            </if>
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+
+    <select id="getOrderByOrderNo" resultType="com.prweb.entity.Order">
+        select * from  order_info
+
+        <where>
+            <if test="order_no!=null and order_no!=''">
+                AND order_no LIKE CONCAT('%',#{order_no},'%')
+            </if>
+        </where>
+
+    </select>
+
+
+    <insert id="addOrder" parameterType="com.prweb.entity.Order">
+        INSERT INTO order_info(
+      order_no,
+     business_no,
+     order_time,
+      finsh_time,
+     person_user_no,
+     company_user_info,
+     person_user_location,
+     service_items,
+     service_fee,
+     order_status
+        ) VALUES (
+
+     #{order_no},
+     #{business_no},
+     #{order_time},
+      #{finsh_time},
+     #{person_user_no},
+     #{company_user_info},
+     #{person_user_location},
+     #{service_items},
+     #{service_fee},
+     #{order_status}
+
+        )
+    </insert>
+
+    <update id="updateOrder" parameterType="com.prweb.entity.Order">
+        UPDATE order_info set
+        order_no=#{order_no},
+      business_no=#{business_no},
+     order_time=#{order_time},
+     finsh_time= #{finsh_time},
+     person_user_no=#{person_user_no},
+     company_user_info=#{company_user_info},
+     person_user_location=#{person_user_location},
+     service_items=#{service_items},
+     service_fee=#{service_fee},
+     order_status=#{order_status}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delOrder">
+        delete from order_info WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

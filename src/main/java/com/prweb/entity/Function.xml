@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.FunctionDao">
+
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from function f
+        <where>
+            <if test="function_no!=null and function_no!=''">
+                AND f.function_no LIKE CONCAT('%',#{function_no},'%')
+            </if>
+            <if test="function_name!=null and function_name!=''">
+                AND f.function_name LIKE CONCAT('%',#{function_name},'%')
+            </if>
+            AND valid='1'
+        </where>
+    </select>
+
+    <select id="getAllByNoName" resultType="map">
+        select *, concat(module_name,function_name) as module_function_name from  function f
+        <where>
+            <if test="function_no!=null and function_no!=''">
+                AND f.function_no LIKE CONCAT('%',#{function_no},'%')
+            </if>
+            <if test="function_name!=null and function_name!=''">
+                OR f.function_name LIKE CONCAT('%',#{function_name},'%')
+            </if>
+            AND valid='1'
+        </where>
+    </select>
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from  function f
+
+        <where>
+            <if test="function_no!=null and function_no!=''">
+                AND f.function_no LIKE CONCAT('%',#{function_no},'%')
+            </if>
+            <if test="function_name!=null and function_name!=''">
+                AND f.function_name LIKE CONCAT('%',#{function_name},'%')
+            </if>
+            AND valid='1'
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+
+    <select id="getFunctionByFunctionNo" resultType="com.prweb.entity.Function">
+        select * from  function f
+
+        <where>
+            <if test="function_no!=null and function_no!=''">
+                AND f.function_no =#{function_no}
+            </if>
+            AND valid='1'
+        </where>
+
+    </select>
+
+
+    <insert id="addFunction" parameterType="com.prweb.entity.Function">
+        INSERT INTO function(function_no,function_name,operation_type,uri,module_name) VALUES (#{function_no},#{function_name},#{operation_type},#{uri},#{module_name})
+    </insert>
+
+    <update id="updateFunction" parameterType="com.prweb.entity.Function">
+        UPDATE function set function_no=#{function_no},function_name=#{function_name},operation_type=#{operation_type}, uri=#{uri}, module_name=#{module_name} where id=#{id}
+    </update>
+
+
+    <delete id="delFunction">
+        delete from function WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

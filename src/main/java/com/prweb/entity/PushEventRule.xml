@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.PushEventRuleDao">
+
+
+    <resultMap id="all" type="com.prweb.entity.PushEventRule">
+        <id property="id" column="id"></id>
+        <result property="push_event" column="push_event"></result>
+        <result property="push_event_name" column="push_event_name"></result>
+        <result property="push_roles" column="push_roles"></result>
+    </resultMap>
+
+
+    <select id="getAllPushEventRule" resultType="com.prweb.entity.PushEventRule">
+        SELECT  *  from push_event_rule
+        ORDER BY id ASC
+    </select>
+
+    <select id="getPushEventRolesByEvent" resultType="com.prweb.entity.PushEventRule">
+        SELECT  *  from push_event_rule
+        <where>
+            <if test="push_event!=null and push_event!=''">
+                AND push_event=#{push_event}
+            </if>
+        </where>
+        ORDER BY id ASC
+    </select>
+
+    <select id="getPushEventRolesByRoles" resultType="com.prweb.entity.PushEventRule">
+        SELECT  *  from push_event_rule
+        <where>
+            <if test="push_roles!=null and push_roles!=''">
+                AND push_roles=#{push_roles}
+            </if>
+        </where>
+        ORDER BY id ASC
+    </select>
+
+
+    <update id="updatePushEventRule" parameterType="com.prweb.entity.PushEventRule">
+        UPDATE push_event_rule set push_roles=#{push_roles} where id=#{id}
+    </update>
+
+
+
+</mapper>
