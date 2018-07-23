@@ -31,12 +31,18 @@ public class PersonUserController {
         String lon= request.getParameter("lon");
         String lat= request.getParameter("lat");
 
+
+        System.out.println("center lon="+lon);
+        System.out.println("center lat="+lat);
+        
         if(lon==null||lon.equals("")){
             lon="121.480242";//人民广场的坐标
         }
         if(lat==null||lat.equals("")){
             lat="31.238269";
         }
+
+
 
         List<HashMap<String,Object>> list=companyUserDao.getNearByCompanyUser(lon,lat);
         String map= JSONObject.toJSONString(list);
