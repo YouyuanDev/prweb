@@ -27,7 +27,18 @@ public class PersonUserController {
     @RequestMapping("/getNearByCompanyUser")
     @ResponseBody
     public String getNearByCompanyUser(HttpServletRequest request){
-        List<HashMap<String,Object>> list=companyUserDao.getNearByCompanyUser("121.480242","31.238269");
+
+        String lon= request.getParameter("lon");
+        String lat= request.getParameter("lat");
+
+        if(lon==null||lon.equals("")){
+            lon="121.480242";//人民广场的坐标
+        }
+        if(lat==null||lat.equals("")){
+            lat="31.238269";
+        }
+
+        List<HashMap<String,Object>> list=companyUserDao.getNearByCompanyUser(lon,lat);
         String map= JSONObject.toJSONString(list);
         return map;
     }
