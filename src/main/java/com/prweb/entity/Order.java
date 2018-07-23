@@ -15,6 +15,7 @@ public class Order {
     private String person_user_no;
     private String company_user_info;
     private String person_user_location;
+    private String company_user_location;
     private String service_items;
     private float service_fee;
     private String order_status;
@@ -24,7 +25,7 @@ public class Order {
     }
 
 
-    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_info, String person_user_location, String service_items, float service_fee, String order_status) {
+    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_info, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status) {
         this.id = id;
         this.order_no = order_no;
         this.business_no = business_no;
@@ -33,6 +34,7 @@ public class Order {
         this.person_user_no = person_user_no;
         this.company_user_info = company_user_info;
         this.person_user_location = person_user_location;
+        this.company_user_location = company_user_location;
         this.service_items = service_items;
         this.service_fee = service_fee;
         this.order_status = order_status;
@@ -100,6 +102,14 @@ public class Order {
 
     public void setPerson_user_location(String person_user_location) {
         this.person_user_location = person_user_location;
+    }
+
+    public String getCompany_user_location() {
+        return company_user_location;
+    }
+
+    public void setCompany_user_location(String company_user_location) {
+        this.company_user_location = company_user_location;
     }
 
     public String getService_items() {

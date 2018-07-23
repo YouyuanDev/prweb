@@ -69,6 +69,7 @@
      person_user_no,
      company_user_info,
      person_user_location,
+     company_user_location,
      service_items,
      service_fee,
      order_status
@@ -97,6 +98,7 @@
      person_user_no=#{person_user_no},
      company_user_info=#{company_user_info},
      person_user_location=#{person_user_location},
+     company_user_location=#{company_user_location},
      service_items=#{service_items},
      service_fee=#{service_fee},
      order_status=#{order_status}
