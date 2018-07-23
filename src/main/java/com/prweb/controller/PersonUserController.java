@@ -24,7 +24,7 @@ public class PersonUserController {
 
 
     //用于
-    @RequestMapping("/getNearByCompanyUser")
+    @RequestMapping(value = "getNearByCompanyUser",produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String getNearByCompanyUser(HttpServletRequest request){
 
