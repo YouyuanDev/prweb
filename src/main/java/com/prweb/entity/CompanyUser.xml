@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.CompanyUserDao">
+
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from company_user_info
+        <where>
+            <if test="company_user_no!=null and company_user_no!=''">
+                AND company_user_no LIKE CONCAT('%',#{company_user_no},'%')
+            </if>
+            <if test="company_name!=null and company_name!=''">
+                AND company_name LIKE CONCAT('%',#{company_name},'%')
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from company_user_info
+        <where>
+            <if test="company_user_no!=null and company_user_no!=''">
+                AND company_user_no LIKE CONCAT('%',#{company_user_no},'%')
+            </if>
+            <if test="company_name!=null and company_name!=''">
+                AND company_name LIKE CONCAT('%',#{company_name},'%')
+            </if>
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+
+    <select id="getCompanyUserByCompanyUserNo" resultType="com.prweb.entity.CompanyUser">
+        select * from company_user_info
+
+        <where>
+            <if test="company_user_no!=null and company_user_no!=''">
+                AND company_user_no=#{company_user_no}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getAllCompanyUser" resultType="com.prweb.entity.CompanyUser">
+        select * from company_user_info
+
+    </select>
+
+
+
+
+    <select id="getNearByCompanyUser" resultType="map">
+        select *,6370996.81 * ACOS(COS(#{center_coordinate_lat} * PI() / 180) * COS(company_location_lat * PI() / 180) * COS(#{center_coordinate_lon} * PI() / 180 - company_location_lon * PI() / 180)
+
+        + SIN(#{center_coordinate_lat} * PI() / 180) * SIN(company_location_lat * PI() / 180)) distance from company_user_info
+
+      order by distance asc
+
+      limit 50
+    </select>
+
+
+
+
+    <insert id="addCompanyUser" parameterType="com.prweb.entity.CompanyUser">
+        INSERT INTO company_user_info(
+        company_user_no,
+        company_name,
+        company_tax_code,
+        company_found_date,
+        is_verified,
+        contact_person,
+        cell_phone,
+        address,
+        lane_line,
+        company_location_lon,
+        company_location_lat
+        ) VALUES (
+        #{company_user_no},
+        #{company_name},
+        #{company_tax_code},
+        #{company_found_date},
+        #{is_verified},
+        #{contact_person},
+        #{cell_phone},
+        #{address},
+        #{lane_line},
+        #{company_location_lon},
+        #{company_location_lat}
+
+        )
+    </insert>
+
+    <update id="updateCompanyUser" parameterType="com.prweb.entity.CompanyUser">
+        UPDATE company_user_info set
+        company_user_no=#{company_user_no},
+        company_name=#{company_name},
+        company_tax_code=#{company_tax_code},
+        company_found_date=#{company_found_date},
+        is_verified=#{is_verified},
+        contact_person=#{contact_person},
+        cell_phone=#{cell_phone},
+        address=#{address},
+        lane_line=#{lane_line},
+        company_location_lon=#{company_location_lon},
+        company_location_lat=#{company_location_lat}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delCompanyUser">
+        delete from company_user_info WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>
