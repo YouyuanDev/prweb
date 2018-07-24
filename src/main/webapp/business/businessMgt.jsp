@@ -55,7 +55,7 @@
                     if(r){
                         $.post(
                             "/Business/delBusiness.action",
-                            {"hlparam":idArrs},function (data) {
+                            {hlparam:idArrs},function (data) {
                                 if(data.success){
                                     $("#BusinessDatagrids").datagrid("reload");
                                 }
