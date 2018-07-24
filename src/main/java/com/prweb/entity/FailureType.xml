@@ -14,5 +14,53 @@
 
     </select>
 
+    <insert id="addFailureType" parameterType="com.prweb.entity.FailureType">
+        INSERT INTO failure_type (
+        failure_type_code,
+        failure_type_name,
+        failure_type_name_en
+        ) VALUES (
+        #{failure_type_code},
+        #{failure_type_name},
+        #{failure_type_name_en}
 
+        )
+    </insert>
+
+    <update id="updateFailureType" parameterType="com.prweb.entity.FailureType">
+        UPDATE failure_type set
+        failure_type_code=#{failure_type_code},
+        failure_type_name=#{failure_type_name},
+        failure_type_name_en=#{failure_type_name_en}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delFailureType">
+        delete from failure_type WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from  failure_type
+        <where>
+            <if test="failure_type_name!=null and failure_type_name!=''">
+                AND failure_type_name LIKE CONCAT('%',#{failure_type_name},'%')
+            </if>
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from  failure_type
+        <where>
+            <if test="failure_type_name!=null and failure_type_name!=''">
+                AND failure_type_name LIKE CONCAT('%',#{failure_type_name},'%')
+            </if>
+        </where>
+    </select>
 </mapper>

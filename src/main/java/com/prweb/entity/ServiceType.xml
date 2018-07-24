@@ -15,4 +15,54 @@
     </select>
 
 
+    <insert id="addServiceType" parameterType="com.prweb.entity.ServiceType">
+        INSERT INTO service_type (
+        service_type_code,
+        service_type_name,
+        service_type_name_en
+        ) VALUES (
+        #{service_type_code},
+        #{service_type_name},
+        #{service_type_name_en}
+
+        )
+    </insert>
+
+    <update id="updateServiceType" parameterType="com.prweb.entity.ServiceType">
+        UPDATE service_type set
+        service_type_code=#{service_type_code},
+        service_type_name=#{service_type_name},
+        service_type_name_en=#{service_type_name_en}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delServiceType">
+        delete from service_type WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from  service_type
+        <where>
+            <if test="service_type_name!=null and service_type_name!=''">
+                AND service_type_name LIKE CONCAT('%',#{service_type_name},'%')
+            </if>
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from  service_type
+        <where>
+            <if test="service_type_name!=null and service_type_name!=''">
+                AND service_type_name LIKE CONCAT('%',#{service_type_name},'%')
+            </if>
+        </where>
+    </select>
+
 </mapper>

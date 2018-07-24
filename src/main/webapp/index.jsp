@@ -28,13 +28,13 @@
         var url;
         $(function(){
             var uriArr=[
-                "businessMgt",
+                "businessMgt","ServiceTypeMgt","FailureTypeMgt",
                 "orderMgt",
                 "accountMgt","role","function"
             ];
-            var businessArr=uriArr.slice(0,1);
-            var orderArr=uriArr.slice(1,2);
-            var accountArr=uriArr.slice(2,5);
+            var businessArr=uriArr.slice(0,3);
+            var orderArr=uriArr.slice(3,4);
+            var accountArr=uriArr.slice(4,7);
             var hsMapList="<%=session.getAttribute("userfunctionMap")%>";
             var funArr;
             if(hsMapList!=null&&hsMapList!=""&&hsMapList.length>0){
@@ -106,6 +106,22 @@
                             $('#hlTab').tabs('add',{
                                 title:node.text,
                                 content:"<iframe scrolling='auto' frameborder='0'  src='business/businessMgt.jsp' style='width:100%;height:100%;'></iframe>",
+                                closable:true
+                            });
+                            hlLanguage();
+                        }
+                        else if("服务类型管理"==nodeTxt||"Service Type Management"==nodeTxt){
+                            $('#hlTab').tabs('add',{
+                                title:node.text,
+                                content:"<iframe scrolling='auto' frameborder='0'  src='basic/ServiceTypeMgt.jsp' style='width:100%;height:100%;'></iframe>",
+                                closable:true
+                            });
+                            hlLanguage();
+                        }
+                        else if("故障类型管理"==nodeTxt||"Failure Type Management"==nodeTxt){
+                            $('#hlTab').tabs('add',{
+                                title:node.text,
+                                content:"<iframe scrolling='auto' frameborder='0'  src='basic/FailureTypeMgt.jsp' style='width:100%;height:100%;'></iframe>",
                                 closable:true
                             });
                             hlLanguage();
