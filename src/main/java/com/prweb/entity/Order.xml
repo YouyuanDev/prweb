@@ -48,9 +48,8 @@
     </select>
 
 
-    <select id="getOrderByOrderNo" resultType="com.prweb.entity.Order">
-        select * from  order_info
-
+    <select id="getOrderByOrderNo" resultType="map">
+        select * from  order_info o inner join order_status s on o.order_status=s.status_code
         <where>
             <if test="order_no!=null and order_no!=''">
                 AND order_no LIKE CONCAT('%',#{order_no},'%')

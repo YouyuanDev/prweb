@@ -132,14 +132,6 @@ public class OrderController {
                 resTotal=orderDao.updateOrder(order);
             }
             if(resTotal>0){
-                String order_status=order.getOrder_status();
-                if(order_status!=null){
-                    List<OrderStatus> oslist= orderStatusDao.getOrderStatusByCode(order_status);
-                    if(oslist.size()>0){
-                        json.put("OrderStatus",oslist.get(0));
-                    }
-                }
-
                 json.put("success",true);
                 json.put("OrderNo",order.getOrder_no());
                 json.put("message","保存成功");
@@ -245,7 +237,6 @@ public class OrderController {
 
 
     }
-
-
+    
 
 }
