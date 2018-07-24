@@ -111,9 +111,10 @@ public class OrderController {
                 uuuid=uuuid.replace("-","");
                 order.setOrder_no("OR"+uuuid);
                 //设置order状态
-                order.setOrder_status("pending");
+                if(order.getOrder_status()==null)
+                    order.setOrder_status("pending");
 
-                if(username!=null){
+                if(order.getPerson_user_no()==null&&username!=null){
                     List<Account> accountlist=accountDao.getAccountByUserName(username);
                     if(accountlist.size()>0){
                         order.setPerson_user_no(accountlist.get(0).getPerson_user_no());
