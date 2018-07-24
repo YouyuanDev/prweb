@@ -288,6 +288,18 @@
                     <td></td>
 
                 </tr>
+
+
+
+                <tr>
+                    <td width="16%"  class="i18n1" name="servicetypecode"></td>
+                    <td><input class="easyui-textbox" type="text" name="service_type_code" value=""/></td>
+                    <td></td>
+                    <td width="16%"  class="i18n1" name="failuretypecode"></td>
+                    <td><input class="easyui-textbox" type="text" name="failure_type_code_list" value=""/></td>
+                    <td></td>
+                </tr>
+
                 <tr>
                     <td width="16%"  class="i18n1" name="orderstatus"></td>
                     <td>
@@ -304,15 +316,6 @@
                     <td></td>
                 </tr>
 
-
-                <tr>
-                    <td width="16%"  class="i18n1" name="servicetypecode"></td>
-                    <td><input class="easyui-textbox" type="text" name="service_type_code" value=""/></td>
-                    <td></td>
-                    <td width="16%"  class="i18n1" name="failuretypecode"></td>
-                    <td><input class="easyui-textbox" type="text" name="failure_type_code_list" value=""/></td>
-                    <td></td>
-                </tr>
                 <tr>
                     <td class="i18n1" name="remark" width="20%">备注</td>
                     <td colspan="3"><input class="easyui-textbox" type="text" value="" name="remark" data-options="multiline:true" style="height:60px;width:100%;"/></td>
