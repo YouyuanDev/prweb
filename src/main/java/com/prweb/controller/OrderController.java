@@ -8,8 +8,10 @@ import com.prweb.dao.AccountDao;
 import com.prweb.dao.OrderDao;
 import com.prweb.dao.OrderStatusDao;
 import com.prweb.entity.Account;
+import com.prweb.entity.Business;
 import com.prweb.entity.Order;
 import com.prweb.entity.OrderStatus;
+import com.prweb.util.ComboxItem;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -80,8 +82,8 @@ public class OrderController {
     }
     @RequestMapping(value = "getOrderByOrderNo",produces = "text/plain;charset=utf-8")
     @ResponseBody
-    public String getOrderByOrderNo(@RequestParam(value = "business_no",required = false)String business_no, HttpServletRequest request){
-        List<Order> list=orderDao.getOrderByOrderNo(business_no);
+    public String getOrderByOrderNo(@RequestParam(value = "order_no",required = false)String order_no, HttpServletRequest request){
+        List<Order> list=orderDao.getOrderByOrderNo(order_no);
         String mmp= JSONArray.toJSONString(list);
         System.out.println(mmp);
         return mmp;
@@ -184,6 +186,23 @@ public class OrderController {
         json.put("message",sbmessage.toString());
         ResponseUtil.write(response,json);
         return null;
+    }
+
+    //用于
+    @RequestMapping("/getAllOrderStatus")
+    @ResponseBody
+    public String getAllOrderStatus(HttpServletRequest request){
+        List<OrderStatus>list=orderStatusDao.getAllOrderStatus();
+        List<ComboxItem> colist=new ArrayList<ComboxItem>();
+        for(int i=0;i<list.size();i++){
+            ComboxItem citem= new ComboxItem();
+            OrderStatus os=((OrderStatus)list.get(i));
+            citem.id=os.getStatus_code();
+            citem.text= os.getStatus_code()+"("+os.getStatus_name()+")";
+            colist.add(citem);
+        }
+        String map= JSONObject.toJSONString(colist);
+        return map;
     }
 
 }

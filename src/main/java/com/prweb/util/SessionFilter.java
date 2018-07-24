@@ -33,6 +33,7 @@ public class SessionFilter extends OncePerRequestFilter{
             "delUploadPicture",
             "getAllServiceType",
             "getAllFailureType",
+            "getAllOrderStatus",
             "saveOrder"
     }; // 不过滤的uri
 

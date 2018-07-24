@@ -118,10 +118,10 @@
                 url:url,
                 onSubmit:function () {
                     setParams($("input[name='service_fee']"));
-                    if($("input[name='order_no']").val()==""){
-                        yyAlertFour("请输入订单编号");
-                        return false;
-                    }
+                    // if($("input[name='order_no']").val()==""){
+                    //     yyAlertFour("请输入订单编号");
+                    //     return false;
+                    // }
                     else if($("input[name='business_no']").val()==""){
                         yyAlertFour("请输入业务编号");
                         return false;
@@ -233,7 +233,7 @@
                 <tr>
                     <td width="16%"  class="i18n1" name="orderno"></td>
                     <td >
-                        <input class="easyui-textbox" type="text" value="" name="order_no" />
+                        <input class="easyui-textbox" type="text" value="" name="order_no" readonly="true" />
                     </td>
                     <td ></td>
                     <td width="16%"  class="i18n1" name="businessno"></td>
@@ -280,7 +280,17 @@
                     <td><input class="easyui-textbox" type="text" name="person_user_location" value=""/></td>
                     <td></td>
                     <td width="16%"  class="i18n1" name="orderstatus"></td>
-                    <td><input class="easyui-textbox" type="text" name="order_status" value=""/></td>
+                    <td>
+                        <input lass="easyui-combobox" type="text" name="order_status"  data-options=
+                                "url:'/Order/getAllOrderStatus.action',
+					        method:'get',
+					        valueField:'id',
+					        width: 185,
+					        editable:false,
+					        textField:'text',
+					        panelHeight:'auto'"/>
+
+                    </td>
                     <td></td>
                 </tr>
                 <tr>
