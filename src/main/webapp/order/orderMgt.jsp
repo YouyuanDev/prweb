@@ -107,10 +107,10 @@
         }
         function searchOrder() {
             $('#OrderDatagrids').datagrid('load',{
-                'order_no': $('#order_no').val(),
-                'order_status': $('#order_status').val(),
-                'begin_time': $('#begin_time').val(),
-                'end_time': $('#end_time').val()
+                'order_no': $('#orderno').val(),
+                'order_status': $('#orderstatus').val(),
+                'begin_time': $('#begintime').val(),
+                'end_time': $('#endtime').val()
             });
         }
         function OrderFormSubmit() {
@@ -118,11 +118,8 @@
                 url:url,
                 onSubmit:function () {
                     setParams($("input[name='service_fee']"));
-                    // if($("input[name='order_no']").val()==""){
-                    //     yyAlertFour("请输入订单编号");
-                    //     return false;
-                    // }
-                    else if($("input[name='business_no']").val()==""){
+
+                    if($("input[name='business_no']").val()==""){
                         yyAlertFour("请输入业务编号");
                         return false;
                     }else if($("input[name='order_time']").val()==""){
@@ -206,13 +203,13 @@
 <!--工具栏-->
 <div id="yyOrderTb" style="padding:10px;">
     <span class="i18n1" name="orderno"></span>:
-    <input id="order_no"  style="line-height:22px;border:1px solid #ccc">
+    <input id="orderno"  style="line-height:22px;border:1px solid #ccc">
     <span class="i18n1" name="orderstatus"></span>:
-    <input id="order_status"  style="line-height:22px;border:1px solid #ccc">
+    <input id="orderstatus"  style="line-height:22px;border:1px solid #ccc">
     <span class="i18n1" name="begintime">开始时间</span>:
-    <input id="begin_time"  type="text" class="easyui-datebox" data-options="formatter:myformatter,parser:myparser">
+    <input id="begintime"  type="text" class="easyui-datebox" data-options="formatter:myformatter,parser:myparser">
     <span class="i18n1" name="endtime">结束时间</span>:
-    <input id="end_time"  type="text" class="easyui-datebox" data-options="formatter:myformatter,parser:myparser">
+    <input id="endtime"  type="text" class="easyui-datebox" data-options="formatter:myformatter,parser:myparser">
     <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-search'" onclick="searchOrder()">Search</a>
     <div style="float:right">
         <a href="#" id="addOrderLinkBtn" class="easyui-linkbutton i18n1" name="add" data-options="iconCls:'icon-add',plain:true" onclick="addOrder()">添加</a>

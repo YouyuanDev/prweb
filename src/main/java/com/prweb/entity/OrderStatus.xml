@@ -7,13 +7,13 @@
 
 
 
-    <select id="getAllOrderStatus" resultType="OrderStatus">
+    <select id="getAllOrderStatus" resultType="com.prweb.entity.OrderStatus">
         select * from  order_status
         ORDER BY id asc
 
     </select>
 
-    <select id="getOrderStatusByCode" resultType="OrderStatus">
+    <select id="getOrderStatusByCode" resultType="com.prweb.entity.OrderStatus">
         select * from  order_status
         where order_status=#{order_status}
         ORDER BY id asc
