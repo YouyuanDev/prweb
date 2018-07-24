@@ -86,6 +86,7 @@
      #{person_user_no},
      #{company_user_info},
      #{person_user_location},
+     #{company_user_location},
      #{service_items},
      #{service_fee},
      #{order_status},
