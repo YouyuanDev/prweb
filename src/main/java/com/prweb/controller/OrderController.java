@@ -9,6 +9,8 @@ import com.prweb.dao.OrderDao;
 import com.prweb.dao.OrderStatusDao;
 import com.prweb.entity.Account;
 import com.prweb.entity.Business;
+import com.prweb.entity.Location;
+import com.prweb.dao.LocationDao;
 import com.prweb.entity.Order;
 import com.prweb.entity.OrderStatus;
 import com.prweb.util.ComboxItem;
@@ -36,6 +38,9 @@ public class OrderController {
 
     @Autowired
     private OrderStatusDao orderStatusDao;
+
+    @Autowired
+    private LocationDao locationDao;
 
 
     //搜索
@@ -199,6 +204,10 @@ public class OrderController {
 
     //APP定位更新order的person 或 company_user 位置信息
 
+    public OrderController() {
+    }
+
+    //更新个人location到历史location，轨迹保存
     @RequestMapping(value = "/updateLocation")
     @ResponseBody
     public String updateLocation(HttpServletRequest request, HttpServletResponse response) {
@@ -217,14 +226,21 @@ public class OrderController {
            List<Order> orderList=orderDao.getOrderByOrderNo(order_no);
            if(orderList.size()>0){
                Order order=orderList.get(0);
+               Location loc=new Location();
+               loc.setId(0);
+               loc.setOrder_no(order_no);
+               loc.setLocating_time(new Date());
+               loc.setUsername(username);
 
                if(person_user_location!=null){
                    order.setPerson_user_location(person_user_location);
+                   loc.setCoordinate(person_user_location);
                }
                if(company_user_location!=null){
                    order.setCompany_user_location(company_user_location);
+                   loc.setCoordinate(company_user_location);
                }
-
+               locationDao.addLocation(loc);
            }
             json.put("success",true);
         }else{

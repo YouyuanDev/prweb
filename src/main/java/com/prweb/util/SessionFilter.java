@@ -34,6 +34,7 @@ public class SessionFilter extends OncePerRequestFilter{
             "getAllServiceType",
             "getAllFailureType",
             "getAllOrderStatus",
+            "updateLocation",
             "saveOrder"
     }; // 不过滤的uri
 

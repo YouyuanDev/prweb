@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.LocationDao">
+
+
+    <insert id="addLocation" parameterType="com.prweb.entity.Location">
+        INSERT INTO location(
+
+          username,
+          order_no,
+          coordinate,
+          locating_time
+        ) VALUES (
+
+          #{username},
+          #{order_no},
+          #{coordinate},
+          #{locating_time}
+
+        )
+    </insert>
+
+    <update id="updateLocation" parameterType="com.prweb.entity.Location">
+        UPDATE location set
+          username=#{username},
+          order_no=#{order_no},
+          coordinate=#{coordinate},
+          locating_time=#{locating_time}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delLocation">
+        delete from location WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>
