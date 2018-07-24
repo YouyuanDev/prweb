@@ -74,7 +74,9 @@
      service_fee,
      order_status,
      upload_files,
-     remark
+     remark,
+     service_type_code,
+     failure_type_code_list
         ) VALUES (
 
      #{order_no},
@@ -88,7 +90,9 @@
      #{service_fee},
      #{order_status},
      #{upload_files},
-     #{remark}
+     #{remark},
+     #{service_type_code},
+     #{failure_type_code_list}
         )
     </insert>
 
@@ -106,7 +110,9 @@
      service_fee=#{service_fee},
      order_status=#{order_status},
      upload_files=#{upload_files},
-     remark=#{remark}
+     remark=#{remark},
+     service_type_code=#{service_type_code},
+     failure_type_code_list=#{failure_type_code_list}
         where id=#{id}
     </update>
 

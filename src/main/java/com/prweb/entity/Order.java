@@ -21,6 +21,8 @@ public class Order {
     private String order_status;
     private String upload_files;
     private String remark;
+    private String service_type_code;
+    private String failure_type_code_list;
 
 
 
@@ -28,7 +30,7 @@ public class Order {
     }
 
 
-    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_info, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark) {
+    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_info, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list) {
         this.id = id;
         this.order_no = order_no;
         this.business_no = business_no;
@@ -43,6 +45,8 @@ public class Order {
         this.order_status = order_status;
         this.upload_files = upload_files;
         this.remark = remark;
+        this.service_type_code = service_type_code;
+        this.failure_type_code_list = failure_type_code_list;
     }
 
     public int getId() {
@@ -155,5 +159,21 @@ public class Order {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getService_type_code() {
+        return service_type_code;
+    }
+
+    public void setService_type_code(String service_type_code) {
+        this.service_type_code = service_type_code;
+    }
+
+    public String getFailure_type_code_list() {
+        return failure_type_code_list;
+    }
+
+    public void setFailure_type_code_list(String failure_type_code_list) {
+        this.failure_type_code_list = failure_type_code_list;
     }
 }
