@@ -94,8 +94,8 @@
                 var pictures=row.upload_files;
                 if(pictures!=null&&pictures!=""){
                     var imgList=pictures.split(';');
-                    alert(basePath);
-                    alert(imgList);
+                    //alert(basePath);
+                    //alert(imgList);
                     createPictureModel(basePath,imgList);
                 }
 
