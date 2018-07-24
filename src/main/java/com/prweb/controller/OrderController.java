@@ -139,6 +139,7 @@ public class OrderController {
                 }
 
                 json.put("success",true);
+                json.put("OrderNo",order.getOrder_no());
                 json.put("message","保存成功");
 
             }else{
