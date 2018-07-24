@@ -124,8 +124,11 @@ public class OrderController {
                 resTotal=orderDao.updateOrder(order);
             }
             if(resTotal>0){
+                String order_status=order.getOrder_status();
                 json.put("success",true);
                 json.put("message","保存成功");
+                json.put("OrderStatus",order_status);
+
             }else{
                 json.put("success",false);
                 json.put("message","保存失败");
