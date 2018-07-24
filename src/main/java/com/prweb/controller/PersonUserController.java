@@ -34,7 +34,7 @@ public class PersonUserController {
 
         System.out.println("center lon="+lon);
         System.out.println("center lat="+lat);
-        
+
         if(lon==null||lon.equals("")){
             lon="121.480242";//人民广场的坐标
         }

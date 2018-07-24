@@ -19,13 +19,15 @@ public class Order {
     private String service_items;
     private float service_fee;
     private String order_status;
+    private String upload_files;
+
 
 
     public Order() {
     }
 
 
-    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_info, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status) {
+    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_info, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files) {
         this.id = id;
         this.order_no = order_no;
         this.business_no = business_no;
@@ -38,7 +40,9 @@ public class Order {
         this.service_items = service_items;
         this.service_fee = service_fee;
         this.order_status = order_status;
+        this.upload_files = upload_files;
     }
+
 
     public int getId() {
         return id;
@@ -134,5 +138,13 @@ public class Order {
 
     public void setOrder_status(String order_status) {
         this.order_status = order_status;
+    }
+
+    public String getUpload_files() {
+        return upload_files;
+    }
+
+    public void setUpload_files(String upload_files) {
+        this.upload_files = upload_files;
     }
 }

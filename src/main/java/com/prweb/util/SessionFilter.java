@@ -27,7 +27,9 @@ public class SessionFilter extends OncePerRequestFilter{
             "VerifyUserNamePassword",
             "Logout",
             "getAllBusiness",
-            "getNearByCompanyUser"
+            "getNearByCompanyUser",
+            "uploadPicture",
+            "delUploadPicture"
     }; // 不过滤的uri
 
     @Override

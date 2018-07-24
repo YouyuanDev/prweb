@@ -72,7 +72,8 @@
      company_user_location,
      service_items,
      service_fee,
-     order_status
+     order_status,
+     upload_files
         ) VALUES (
 
      #{order_no},
@@ -84,7 +85,8 @@
      #{person_user_location},
      #{service_items},
      #{service_fee},
-     #{order_status}
+     #{order_status},
+     #{upload_files}
 
         )
     </insert>
@@ -101,7 +103,8 @@
      company_user_location=#{company_user_location},
      service_items=#{service_items},
      service_fee=#{service_fee},
-     order_status=#{order_status}
+     order_status=#{order_status},
+     upload_files=#{upload_files}
         where id=#{id}
     </update>
 

@@ -7,6 +7,10 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%
+    String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
+%>
+
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -25,7 +29,14 @@
     <script src="../js/language.js" type="text/javascript"></script>
     <script type="text/javascript">
         var url;
+        var basePath ="<%=basePath%>"+"/upload/pictures/";
         $(function () {
+
+            //删除上传的图片
+            $(document).on('click','.content-del',function () {
+                delUploadPicture($(this));
+            });
+
             $('#yyOrderDialog').dialog({
                 onClose:function () {
                     var type=$('#yyCancelBtn').attr('operationtype');
@@ -57,7 +68,7 @@
                     if(r){
                         $.post(
                             "/Order/delOrder.action",
-                            {"hlparam":idArrs},function (data) {
+                            {hlparam:idArrs},function (data) {
                                 if(data.success){
                                     $("#OrderDatagrids").datagrid("reload");
                                 }
@@ -78,6 +89,17 @@
                 row.order_time=getDate1(row.order_time);
                 row.finsh_time=getDate1(row.finsh_time);
                 $('#OrderForm').form('load',row);
+
+
+                var pictures=row.upload_files;
+                if(pictures!=null&&pictures!=""){
+                    var imgList=pictures.split(';');
+                    alert(basePath);
+                    alert(imgList);
+                    createPictureModel(basePath,imgList);
+                }
+
+
                 url="/Order/saveOrder.action";
             }else{
                 yyAlertTwo();
@@ -138,7 +160,23 @@
         }
         function  clearFormLabel() {
             $('#OrderForm').form('clear');
+            $('#hl-gallery-con').empty();
+            clearMultiUpload(grid);
         }
+
+        //图片上传失败操作
+        function onUploadError() {
+            alert("上传失败!");
+        }
+        //图片上传成功操作
+        function onUploadSuccess(e) {
+            var data=eval("("+e.serverData+")");
+            var imgListstr=editFilesList(0,data.imgUrl);
+            var imgList=imgListstr.split(';');
+            createPictureModel(basePath,imgList);
+        }
+
+
     </script>
 </head>
 <body>
@@ -245,7 +283,17 @@
                     <td><input class="easyui-textbox" type="text" name="order_status" value=""/></td>
                     <td></td>
                 </tr>
+
             </table>
+            <input type="hidden" id="fileslist" name="upload_files" value=""/>
+            <div id="hl-gallery-con" style="width:100%;">
+
+            </div>
+            <div id="multiupload1" class="uc-multiupload" style="width:100%; max-height:200px"
+                 flashurl="../miniui/fileupload/swfupload/swfupload.swf"
+                 uploadurl="../UploadFile/uploadPicture.action" _autoUpload="false" _limittype="*.jpg;*.png;*.jpeg;*.bmp"
+                 onuploaderror="onUploadError" onuploadsuccess="onUploadSuccess">
+            </div>
         </fieldset>
     </form>
 </div>
@@ -258,6 +306,7 @@
 </html>
 <script type="text/javascript">
     mini.parse();
+    var grid= mini.get("multiupload1");
     var keyText = mini.get("keyText");
     function onSearchClick(e) {
         grid.load({
