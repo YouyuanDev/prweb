@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.OrderStatuseDao">
+
+
+
+    <select id="getAllOrderStatus" resultType="OrderStatus">
+        select * from  order_status
+        ORDER BY id asc
+
+    </select>
+
+    <select id="getOrderStatusByCode" resultType="OrderStatus">
+        select * from  order_status
+        where order_status=#{order_status}
+        ORDER BY id asc
+
+    </select>
+
+
+
+</mapper>

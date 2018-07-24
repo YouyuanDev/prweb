@@ -6,8 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.prweb.dao.AccountDao;
 import com.prweb.dao.OrderDao;
+import com.prweb.dao.OrderStatusDao;
 import com.prweb.entity.Account;
 import com.prweb.entity.Order;
+import com.prweb.entity.OrderStatus;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,9 @@ public class OrderController {
 
     @Autowired
     private AccountDao accountDao;
+
+    @Autowired
+    private OrderStatusDao orderStatusDao;
 
 
     //搜索
@@ -125,9 +130,15 @@ public class OrderController {
             }
             if(resTotal>0){
                 String order_status=order.getOrder_status();
+                if(order_status!=null){
+                    List<OrderStatus> oslist= orderStatusDao.getOrderStatusByCode(order_status);
+                    if(oslist.size()>0){
+                        json.put("OrderStatus",oslist.get(0));
+                    }
+                }
+
                 json.put("success",true);
                 json.put("message","保存成功");
-                json.put("OrderStatus",order_status);
 
             }else{
                 json.put("success",false);
