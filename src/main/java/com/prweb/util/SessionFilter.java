@@ -29,7 +29,9 @@ public class SessionFilter extends OncePerRequestFilter{
             "getAllBusiness",
             "getNearByCompanyUser",
             "uploadPicture",
-            "delUploadPicture"
+            "delUploadPicture",
+            "getAllServiceType",
+            "getAllFailureType"
     }; // 不过滤的uri
 
     @Override
