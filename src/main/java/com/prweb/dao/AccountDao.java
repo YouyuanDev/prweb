@@ -26,6 +26,9 @@ public interface AccountDao {
     //手机号登录验证
     public List<Account>  VerifyCellphoneNoPassword(@Param("cell_phone")String cell_phone,@Param("password")String password);
 
+    //手机忘记密码
+    public Account getPasswordByCellPhoneNo(@Param("cell_phone")String cell_phone);
+
     //修改Account
     public int updateAccount(Account account);
     //增加Account

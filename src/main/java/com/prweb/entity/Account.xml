@@ -67,6 +67,14 @@
         </where>
     </select>
 
+    <select id="getPasswordByCellPhoneNo" resultType="com.prweb.entity.Account">
+        select * from  account
+        <where>
+            AND cell_phone=#{cell_phone}
+        </where>
+    </select>
+
+
 
     <insert id="addAccount" parameterType="com.prweb.entity.Account">
         INSERT INTO account(

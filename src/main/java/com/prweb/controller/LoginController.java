@@ -144,6 +144,39 @@ public class LoginController {
     }
 
 
+    //APP手机忘记密码
+    @RequestMapping("/ForgotPassword")
+    @ResponseBody
+    public String ForgotPassword(HttpServletRequest request,HttpServletResponse response){
+        JSONObject json=new JSONObject();
+        String cellphoneno= request.getParameter("cellphoneno");
+        try{
+            int resTotal=0;
+            System.out.println("cellphoneno="+cellphoneno);
+            //System.out.println("ppassword="+ppassword);
+            //if(personDao!=null)
+            String password=null;
+             Account account= accountDao.getPasswordByCellPhoneNo(cellphoneno);
+            if(account!=null){
+                password=account.getPassword();
+                //此处发送手机短信
+
+                json.put("success",true);
+                json.put("msg","登录密码已发送至手机");
+            }else{
+                json.put("success",false);
+                json.put("msg","手机号或密码错误");
+                //System.out.println("fail");
+            }
+            ResponseUtil.write(response,json);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
     //APP手机登录验证
     @RequestMapping("/LoginWithCellPhoneNo")
     @ResponseBody
