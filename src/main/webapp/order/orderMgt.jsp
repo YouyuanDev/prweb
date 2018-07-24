@@ -195,6 +195,8 @@
                 <th field="person_user_no" align="center" width="100" class="i18n1" name="personuserno"></th>
                 <th field="company_user_no" align="center" width="100" class="i18n1" name="companyuserno"></th>
                 <th field="person_user_location" align="center" width="100" class="i18n1" name="personuserlocation"></th>
+                <th field="company_user_location" align="center" width="100" class="i18n1" name="companyuserlocation"></th>
+
                 <th field="service_items" align="center" width="100" class="i18n1" name="serviceitems"></th>
                 <th field="service_fee" align="center" width="100" class="i18n1" name="servicefee"></th>
                 <th field="order_time" align="center" width="100" class="i18n1" name="ordertime" data-options="formatter:formatterdate"></th>
@@ -281,6 +283,12 @@
                     <td width="16%"  class="i18n1" name="personuserlocation"></td>
                     <td><input class="easyui-textbox" type="text" name="person_user_location" value=""/></td>
                     <td></td>
+                    <td width="16%"  class="i18n1" name="companyuserlocation"></td>
+                    <td><input class="easyui-textbox" type="text" name="company_user_location" value=""/></td>
+                    <td></td>
+
+                </tr>
+                <tr>
                     <td width="16%"  class="i18n1" name="orderstatus"></td>
                     <td>
                         <input class="easyui-combobox" type="text" name="order_status"  data-options=
@@ -295,6 +303,8 @@
                     </td>
                     <td></td>
                 </tr>
+
+
                 <tr>
                     <td width="16%"  class="i18n1" name="servicetypecode"></td>
                     <td><input class="easyui-textbox" type="text" name="service_type_code" value=""/></td>
