@@ -54,6 +54,125 @@ public class LoginController {
 //        return password;
 //    }
 
+
+    private JSONObject getFunctionJson(String username,HttpServletRequest request){
+
+        JSONObject json=new JSONObject();
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        session.setAttribute("userSession", username);
+        //设置权限
+        HashMap<String,Object> functionMap=new HashMap<String,Object>();
+        //这里读取数据库设置所有权限
+        String role_no_list=null;
+        if(username!=null) {
+            List<Account> lt=accountDao.getAccountByUserName(username);
+            if(lt.size()>0) {
+                Account account=lt.get(0);
+                role_no_list=account.getRole_no_list();
+                if(role_no_list!=null&&!role_no_list.equals("")){
+                    role_no_list=role_no_list.replace(',',';');
+                    String[] roles= role_no_list.split(";");
+                    for(int i=0;i<roles.length;i++){
+                        List<Role> rolelt=roleDao.getRoleByRoleNo(roles[i]);
+                        //System.out.println("role ="+roles[i]);
+                        if(rolelt.size()>0) {
+                            Role role=rolelt.get(0);
+                            String functionlist = role.getFunction_no_list();
+                            if(functionlist!=null&&!functionlist.equals("")){
+                                functionlist=functionlist.replace(',',';');
+                                String[] func_no_s=functionlist.split(";");
+                                for(int j=0;j<func_no_s.length;j++) {
+                                    List<Function> funlst=functionDao.getFunctionByFunctionNo(func_no_s[j]);
+                                    if(funlst.size()>0){
+                                        //得到function
+                                        Function f=funlst.get(0);
+                                        String function_no=f.getFunction_no();
+                                        String uris=f.getUri();
+                                        functionMap.put(function_no,"1");
+                                        String[] uriArray=uris.split(";");
+                                        for(int n=0;n<uriArray.length;n++){
+                                            functionMap.put(uriArray[n],"1");
+                                            System.out.println("functionMap put="+function_no);
+                                            System.out.println("uri put="+uriArray[n]);
+                                        }
+
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+
+            }
+        }
+        session.setAttribute("userfunctionMap", functionMap);
+        //functionMap.put("index","1");
+
+        //查找是否存在其他用户登录该session
+        HttpSession oldusersession=UserSessionMap.get(username);
+        String msg="";
+        if(oldusersession!=null&&oldusersession.getId()!=session.getId()){
+            msg="（已踢出其他客户端）";
+            System.out.println(msg);
+            UserSessionMap.remove(username);
+            try{
+                oldusersession.invalidate();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+
+        // 保存新用户session到公用UserSessionMap
+        UserSessionMap.put(username,session);
+
+        //跳转到用户主页
+        json.put("success",true);
+        json.put("msg","登录成功"+msg);
+        json.put("roles",role_no_list);
+        //System.out.println("登录验证 success");
+//                String basePath = request.getSession().getServletContext().getRealPath("/");
+//                System.out.println("登录验证 basePath="+basePath);
+//                APICloudPushService.SendPushNotification(basePath,"title标题","内容内容内容内容","2","0","all","");
+////
+        return json;
+    }
+
+
+    //APP手机登录验证
+    @RequestMapping("/LoginWithCellPhoneNo")
+    @ResponseBody
+    public String LoginWithCellPhoneNo(HttpServletRequest request,HttpServletResponse response){
+        JSONObject json=new JSONObject();
+        String cellphoneno= request.getParameter("cellphoneno");
+        String password= request.getParameter("password");
+        try{
+            int resTotal=0;
+            System.out.println("cellphoneno="+cellphoneno);
+            //System.out.println("ppassword="+ppassword);
+            //if(personDao!=null)
+            List<Account> resultList= accountDao.VerifyCellphoneNoPassword(cellphoneno,password);
+            if(resultList.size()>0){
+                json=getFunctionJson(resultList.get(0).getUsername(),request);
+            }else{
+                json.put("success",false);
+                json.put("msg","手机号或密码错误");
+                //System.out.println("fail");
+            }
+            ResponseUtil.write(response,json);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
     //登录验证
     @RequestMapping("/commitLogin")
     @ResponseBody
@@ -68,88 +187,7 @@ public class LoginController {
             //if(personDao!=null)
             List<Account> resultList= accountDao.VerifyUserNamePassword(username,password);
             if(resultList.size()>0){
-                HttpSession session = request.getSession();
-                //把用户数据保存在session域对象中
-                session.setAttribute("userSession", username);
-                //设置权限
-                HashMap<String,Object> functionMap=new HashMap<String,Object>();
-                //这里读取数据库设置所有权限
-                String role_no_list=null;
-                if(username!=null) {
-                    List<Account> lt=accountDao.getAccountByUserName(username);
-                    if(lt.size()>0) {
-                        Account account=lt.get(0);
-                        role_no_list=account.getRole_no_list();
-                        if(role_no_list!=null&&!role_no_list.equals("")){
-                            role_no_list=role_no_list.replace(',',';');
-                            String[] roles= role_no_list.split(";");
-                            for(int i=0;i<roles.length;i++){
-                                List<Role> rolelt=roleDao.getRoleByRoleNo(roles[i]);
-                                //System.out.println("role ="+roles[i]);
-                                if(rolelt.size()>0) {
-                                    Role role=rolelt.get(0);
-                                    String functionlist = role.getFunction_no_list();
-                                    if(functionlist!=null&&!functionlist.equals("")){
-                                        functionlist=functionlist.replace(',',';');
-                                        String[] func_no_s=functionlist.split(";");
-                                        for(int j=0;j<func_no_s.length;j++) {
-                                            List<Function> funlst=functionDao.getFunctionByFunctionNo(func_no_s[j]);
-                                            if(funlst.size()>0){
-                                                //得到function
-                                                Function f=funlst.get(0);
-                                                String function_no=f.getFunction_no();
-                                                String uris=f.getUri();
-                                                functionMap.put(function_no,"1");
-                                                String[] uriArray=uris.split(";");
-                                                for(int n=0;n<uriArray.length;n++){
-                                                    functionMap.put(uriArray[n],"1");
-                                                    System.out.println("functionMap put="+function_no);
-                                                    System.out.println("uri put="+uriArray[n]);
-                                                }
-
-                                            }
-
-
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-
-
-                    }
-                }
-                session.setAttribute("userfunctionMap", functionMap);
-                //functionMap.put("index","1");
-
-                //查找是否存在其他用户登录该session
-                HttpSession oldusersession=UserSessionMap.get(username);
-                String msg="";
-                if(oldusersession!=null&&oldusersession.getId()!=session.getId()){
-                    msg="（已踢出其他客户端）";
-                    System.out.println(msg);
-                    UserSessionMap.remove(username);
-                    try{
-                        oldusersession.invalidate();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
-
-                // 保存新用户session到公用UserSessionMap
-                UserSessionMap.put(username,session);
-
-                //跳转到用户主页
-                json.put("success",true);
-                json.put("msg","登录成功"+msg);
-                json.put("roles",role_no_list);
-                //System.out.println("登录验证 success");
-//                String basePath = request.getSession().getServletContext().getRealPath("/");
-//                System.out.println("登录验证 basePath="+basePath);
-//                APICloudPushService.SendPushNotification(basePath,"title标题","内容内容内容内容","2","0","all","");
-////
+                json=getFunctionJson(username,request);
             }else{
                 json.put("success",false);
                 json.put("msg","用户名或密码错误");

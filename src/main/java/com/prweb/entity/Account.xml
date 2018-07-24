@@ -59,6 +59,13 @@
     </select>
 
 
+    <select id="VerifyCellphoneNoPassword" resultType="com.prweb.entity.Account">
+        select * from  account
+        <where>
+            AND cell_phone=#{cell_phone}
+            AND password=#{password}
+        </where>
+    </select>
 
 
     <insert id="addAccount" parameterType="com.prweb.entity.Account">

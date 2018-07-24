@@ -22,6 +22,7 @@ public class SessionFilter extends OncePerRequestFilter{
     boolean adminMode=false; //测试时暂时关闭
     String[] notFilterList = new String[] {
             "login",
+            "LoginWithCellPhoneNo",
             "commitLogin",
             "error",
             "VerifyUserNamePassword",
@@ -31,7 +32,8 @@ public class SessionFilter extends OncePerRequestFilter{
             "uploadPicture",
             "delUploadPicture",
             "getAllServiceType",
-            "getAllFailureType"
+            "getAllFailureType",
+            "saveOrder"
     }; // 不过滤的uri
 
     @Override
