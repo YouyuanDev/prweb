@@ -188,8 +188,8 @@ public class OrderController {
         return null;
     }
 
-    //用于
-    @RequestMapping("/getAllOrderStatus")
+    //用于下拉框
+    @RequestMapping(value = "getAllOrderStatus",produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String getAllOrderStatus(HttpServletRequest request){
         List<OrderStatus>list=orderStatusDao.getAllOrderStatus();
@@ -204,5 +204,48 @@ public class OrderController {
         String map= JSONObject.toJSONString(colist);
         return map;
     }
+
+    //APP定位更新order的person 或 company_user 位置信息
+
+    @RequestMapping(value = "/updateLocation")
+    @ResponseBody
+    public String updateLocation(HttpServletRequest request, HttpServletResponse response) {
+        System.out.print("updateLocation");
+        String order_no= request.getParameter("order_no");
+        String person_user_location= request.getParameter("person_user_location");
+        String company_user_location= request.getParameter("company_user_location");
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+
+
+        if(order_no!=null&&username!=null){
+           List<Order> orderList=orderDao.getOrderByOrderNo(order_no);
+           if(orderList.size()>0){
+               Order order=orderList.get(0);
+
+               if(person_user_location!=null){
+                   order.setPerson_user_location(person_user_location);
+               }
+               if(company_user_location!=null){
+                   order.setCompany_user_location(company_user_location);
+               }
+
+           }
+            json.put("success",true);
+        }else{
+            json.put("success",false);
+        }
+
+
+        String map= JSONObject.toJSONString(json);
+        return map;
+
+
+    }
+
+
 
 }

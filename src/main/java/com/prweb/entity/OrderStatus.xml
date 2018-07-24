@@ -15,7 +15,7 @@
 
     <select id="getOrderStatusByCode" resultType="com.prweb.entity.OrderStatus">
         select * from  order_status
-        where order_status=#{order_status}
+        where status_code=#{status_code}
         ORDER BY id asc
 
     </select>

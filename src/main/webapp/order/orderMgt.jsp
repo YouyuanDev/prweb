@@ -188,7 +188,7 @@
                 <th field="order_no" align="center" width="100" class="i18n1" name="orderno"></th>
                 <th field="business_no" align="center" width="100" class="i18n1" name="businessno"></th>
                 <th field="person_user_no" align="center" width="100" class="i18n1" name="personuserno"></th>
-                <th field="company_user_info" align="center" width="100" class="i18n1" name="companyuserinfo"></th>
+                <th field="company_user_no" align="center" width="100" class="i18n1" name="companyuserno"></th>
                 <th field="person_user_location" align="center" width="100" class="i18n1" name="personuserlocation"></th>
                 <th field="service_items" align="center" width="100" class="i18n1" name="serviceitems"></th>
                 <th field="service_fee" align="center" width="100" class="i18n1" name="servicefee"></th>
@@ -260,8 +260,8 @@
                     <td width="16%"  class="i18n1" name="personuserno"></td>
                     <td><input class="easyui-textbox" type="text" name="person_user_no" value=""/></td>
                     <td></td>
-                    <td width="16%"  class="i18n1" name="companyuserinfo"></td>
-                    <td><input class="easyui-textbox" type="text" name="company_user_info" value=""/></td>
+                    <td width="16%"  class="i18n1" name="companyuserno"></td>
+                    <td><input class="easyui-textbox" type="text" name="company_user_no" value=""/></td>
                     <td></td>
                 </tr>
                 <tr>

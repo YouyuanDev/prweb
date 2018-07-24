@@ -13,7 +13,7 @@ public class Order {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date finsh_time;
     private String person_user_no;
-    private String company_user_info;
+    private String company_user_no;
     private String person_user_location;
     private String company_user_location;
     private String service_items;
@@ -29,15 +29,14 @@ public class Order {
     public Order() {
     }
 
-
-    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_info, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list) {
+    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_no, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list) {
         this.id = id;
         this.order_no = order_no;
         this.business_no = business_no;
         this.order_time = order_time;
         this.finsh_time = finsh_time;
         this.person_user_no = person_user_no;
-        this.company_user_info = company_user_info;
+        this.company_user_no = company_user_no;
         this.person_user_location = person_user_location;
         this.company_user_location = company_user_location;
         this.service_items = service_items;
@@ -97,12 +96,12 @@ public class Order {
         this.person_user_no = person_user_no;
     }
 
-    public String getCompany_user_info() {
-        return company_user_info;
+    public String getCompany_user_no() {
+        return company_user_no;
     }
 
-    public void setCompany_user_info(String company_user_info) {
-        this.company_user_info = company_user_info;
+    public void setCompany_user_no(String company_user_no) {
+        this.company_user_no = company_user_no;
     }
 
     public String getPerson_user_location() {
