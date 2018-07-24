@@ -86,8 +86,12 @@
             if(row){
                 $('#yyOrderDialog').dialog('open').dialog('setTitle','修改');
                 $('#odbpid').textbox('setValue',row.id);
-                row.order_time=getDate1(row.order_time);
-                row.finsh_time=getDate1(row.finsh_time);
+                if(row.order_time!=undefined) {
+                    row.order_time = getDate1(row.order_time);
+                }
+                if(row.finsh_time!=undefined){
+                    row.finsh_time=getDate1(row.finsh_time);
+                }
                 $('#OrderForm').form('load',row);
 
 
@@ -129,10 +133,11 @@
                         yyAlertFour("请输入服务费用");
                         return false;
                     }
-                    else if($("input[name='finsh_time']").val()==""){
-                        yyAlertFour("请输入完成时间");
-                        return false;
-                    }else if($("input[name='order_status']").val()==""){
+                    // else if($("input[name='finsh_time']").val()==""){
+                    //     yyAlertFour("请输入完成时间");
+                    //     return false;
+                    // }
+                    else if($("input[name='order_status']").val()==""){
                         yyAlertFour("请输入订单状态");
                         return false;
                     }
@@ -278,7 +283,7 @@
                     <td></td>
                     <td width="16%"  class="i18n1" name="orderstatus"></td>
                     <td>
-                        <input lass="easyui-combobox" type="text" name="order_status"  data-options=
+                        <input class="easyui-combobox" type="text" name="order_status"  data-options=
                                 "url:'/Order/getAllOrderStatus.action',
 					        method:'get',
 					        valueField:'id',
