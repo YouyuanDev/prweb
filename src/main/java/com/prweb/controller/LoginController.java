@@ -309,7 +309,11 @@ public class LoginController {
             //if(personDao!=null)
             List<Account> resultList= accountDao.VerifyCellphoneNoPassword(cellphoneno,password);
             if(resultList.size()>0){
-                json=getFunctionJson(resultList.get(0).getUsername(),request);
+                Account account=resultList.get(0);
+                json=getFunctionJson(account.getUsername(),request);
+                json.put("company_user_no",account.getCompany_user_no());
+                json.put("person_user_no",account.getPerson_user_no());
+                
             }else{
                 json.put("success",false);
                 json.put("msg","手机号或密码错误");
