@@ -84,15 +84,28 @@ function getDate(str){
 }
 //时间转化函数
 function getDate1(str){
-    var oDate = new Date(str);
-    y=oDate.getFullYear();
-    m = oDate.getMonth()+1;
-    d = oDate.getDate();
-    h=oDate.getHours();
-    mins=oDate.getMinutes();
-    s=oDate.getSeconds();
-    return  y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d)+' '+(h<10?('0'+h):h)+':'+(mins<10?('0'+mins):mins)+':'+(s<10?('0'+s):s);
+    if(str!=undefined&&str!=""){
+        var oDate = new Date(str);
+        y=oDate.getFullYear();
+        m = oDate.getMonth()+1;
+        d = oDate.getDate();
+        h=oDate.getHours();
+        mins=oDate.getMinutes();
+        s=oDate.getSeconds();
+        return  y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d)+' '+(h<10?('0'+h):h)+':'+(mins<10?('0'+mins):mins)+':'+(s<10?('0'+s):s);
+    }else{
+        return "";
+    }
 }
+//     var oDate = new Date(str);
+//     y=oDate.getFullYear();
+//     m = oDate.getMonth()+1;
+//     d = oDate.getDate();
+//     h=oDate.getHours();
+//     mins=oDate.getMinutes();
+//     s=oDate.getSeconds();
+//     return  y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d)+' '+(h<10?('0'+h):h)+':'+(mins<10?('0'+mins):mins)+':'+(s<10?('0'+s):s);
+// }
 //时间转化函数
 function getDateWithoutTime(str){
     var oDate = new Date(str);
