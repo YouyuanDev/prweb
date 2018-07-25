@@ -2,12 +2,15 @@ package com.prweb.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.prweb.dao.FunctionDao;
 import com.prweb.dao.RoleDao;
+import com.prweb.dao.VerificationCodeDao;
 import com.prweb.entity.Account;
 import com.prweb.entity.Function;
 import com.prweb.entity.Role;
 //import com.prweb.util.APICloudPushService;
+import com.prweb.entity.VerificationCode;
 import com.prweb.util.ResponseUtil;
 import com.prweb.dao.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.prweb.util.AliyunSMS;
 
@@ -42,6 +46,12 @@ public class LoginController {
 
     @Autowired
     private FunctionDao functionDao;
+
+    @Autowired
+    private VerificationCodeDao verificationCodeDao;
+
+
+
 
     //存放登录用户的session
     private Map<String,HttpSession> UserSessionMap=new HashMap<String,HttpSession>();
@@ -144,6 +154,101 @@ public class LoginController {
 ////
         return json;
     }
+
+    public LoginController() {
+    }
+
+    //APP手机注册
+    @RequestMapping("/APPRegister")
+    @ResponseBody
+    public String APPRegister(HttpServletRequest request,HttpServletResponse response){
+        JSONObject json=new JSONObject();
+        String cellphoneno= request.getParameter("cellphoneno");
+        String password= request.getParameter("password");
+        String verifycode= request.getParameter("verifycode");
+
+        try{
+            int resTotal=0;
+            System.out.println("cellphoneno="+cellphoneno);
+            //System.out.println("ppassword="+ppassword);
+            //if(personDao!=null)
+            Account account= accountDao.getPasswordByCellPhoneNo(cellphoneno);
+            if(account==null&&cellphoneno!=null&&password!=null){
+                String verifyCode = String
+                        .valueOf(new Random().nextInt(899999) + 100000);
+                System.out.println("cellphoneno="+cellphoneno);
+                System.out.println("verifyCode="+verifyCode);
+                //此处验证验证码是否可用
+                int count=verificationCodeDao.IsVerificationCodeValid(cellphoneno,verifyCode);
+                if(count==1){
+                    verificationCodeDao.delVerificationCodeByCellPhoneNo(cellphoneno);
+                    json.put("success",true);
+                    json.put("msg","注册成功");
+                }else{
+                    json.put("success",false);
+                    json.put("msg","验证码无效");
+                }
+
+            }else{
+                json.put("success",false);
+                json.put("msg","该手机号已被注册");
+                //System.out.println("fail");
+            }
+            ResponseUtil.write(response,json);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    //发送验证码
+    @RequestMapping("/SendVerCodeSMS")
+    @ResponseBody
+    public String SendVerCodeSMS(HttpServletRequest request,HttpServletResponse response){
+        JSONObject json=new JSONObject();
+        String cellphoneno= request.getParameter("cellphoneno");
+        try{
+            int resTotal=0;
+            System.out.println("cellphoneno="+cellphoneno);
+
+            if(cellphoneno!=null&&!cellphoneno.equals("")){
+                String verifyCode = String
+                        .valueOf(new Random().nextInt(899999) + 100000);
+                System.out.println("cellphoneno="+cellphoneno);
+                System.out.println("verifyCode="+verifyCode);
+                //此处发送手机短信
+
+                int ct=verificationCodeDao.delVerificationCodeByCellPhoneNo(cellphoneno);
+                SendSmsResponse smsresponse=AliyunSMS.sendVerificationCodeSms(cellphoneno,verifyCode);
+                if(smsresponse.getCode().equals("OK")){
+                    VerificationCode vc=new VerificationCode();
+                    vc.setId(0);
+                    vc.setCell_phone_no(cellphoneno);
+                    vc.setVerification_code(verifyCode);
+                    Date now = new Date();
+                    Date expire_time = new Date(now .getTime() + 300000);
+                    vc.setExpire_time(expire_time);
+                    int count=verificationCodeDao.addVerificationCode(vc);
+
+                    json.put("success",true);
+                    json.put("msg","验证码已发送至手机,有效时间5分钟");
+                }else{
+                    json.put("success",false);
+                    json.put("msg","验证码发送错误");
+                }
+            }else{
+                json.put("success",false);
+                json.put("msg","该手机号不存在");
+                //System.out.println("fail");
+            }
+            ResponseUtil.write(response,json);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 
     //APP手机忘记密码

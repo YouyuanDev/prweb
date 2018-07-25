@@ -36,6 +36,7 @@ public class SessionFilter extends OncePerRequestFilter{
             "getAllOrderStatus",
             "updateLocation",
             "ForgotPassword",
+            "SendVerCodeSMS",
             "saveOrder"
     }; // 不过滤的uri
 

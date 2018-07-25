@@ -39,11 +39,54 @@ public class AliyunSMS {
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
     static final String accessKeyId = "LTAIY00vpz8SQ7HZ";
     static final String accessKeySecret = "5HOTwpiPdsu9ikEhkpZA1OZW6C87Kw";
+    //前面，阿里云控制台申请
+    static final String signature="友元科技";
+
+
+
+    //发送验证码
+    public static SendSmsResponse sendVerificationCodeSms(String cellphoneno,String code) throws ClientException {
+
+        //可自助调整超时时间
+        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+
+        //初始化acsClient,暂不支持region化
+        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
+        IAcsClient acsClient = new DefaultAcsClient(profile);
+
+        //组装请求对象-具体描述见控制台-文档部分内容
+        SendSmsRequest request = new SendSmsRequest();
+        //必填:待发送手机号
+        request.setPhoneNumbers(cellphoneno);
+        //必填:短信签名-可在短信控制台中找到
+        request.setSignName(signature);
+        //必填:短信模板-可在短信控制台中找到
+        request.setTemplateCode("SMS_140525106");
+        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+
+
+        request.setTemplateParam("{\"cellphoneno\":\""+cellphoneno+"\", \"code\":\""+code+"\"}");
+
+        //选填-上行短信扩展码(无特殊需求用户请忽略此字段)
+        //request.setSmsUpExtendCode("90997");
+
+        //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
+        request.setOutId("002");
+
+        //hint 此处可能会抛出异常，注意catch
+        SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+
+        return sendSmsResponse;
+    }
 
 
 
 
 
+
+    //忘记密码发送密码到手机号
     public static SendSmsResponse sendPasswordSms(String cellphoneno,String password) throws ClientException {
 
         //可自助调整超时时间
@@ -60,7 +103,7 @@ public class AliyunSMS {
         //必填:待发送手机号
         request.setPhoneNumbers(cellphoneno);
         //必填:短信签名-可在短信控制台中找到
-        request.setSignName("熊猫");
+        request.setSignName(signature);
         //必填:短信模板-可在短信控制台中找到
         request.setTemplateCode("SMS_140525106");
         //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
@@ -89,46 +132,46 @@ public class AliyunSMS {
 
 
 
-    public static SendSmsResponse sendSms() throws ClientException {
-
-
-        String cellphoneno="13774216002";
-        String password="";
-
-        //可自助调整超时时间
-        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
-
-        //初始化acsClient,暂不支持region化
-        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
-        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
-        IAcsClient acsClient = new DefaultAcsClient(profile);
-
-        //组装请求对象-具体描述见控制台-文档部分内容
-        SendSmsRequest request = new SendSmsRequest();
-        //必填:待发送手机号
-        request.setPhoneNumbers(cellphoneno);
-        //必填:短信签名-可在短信控制台中找到
-        //request.setSignName("熊猫");
-        //必填:短信模板-可在短信控制台中找到
-        request.setTemplateCode("SMS_140525106");
-        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
-
-
-
-        request.setTemplateParam("{\"cellphoneno\":\""+cellphoneno+"\", \"password\":\""+password+"\"}");
-
-        //选填-上行短信扩展码(无特殊需求用户请忽略此字段)
-        //request.setSmsUpExtendCode("90997");
-
-        //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
-        request.setOutId("yourOutId");
-
-        //hint 此处可能会抛出异常，注意catch
-        SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-
-        return sendSmsResponse;
-    }
+//    public static SendSmsResponse sendSms() throws ClientException {
+//
+//
+//        String cellphoneno="13774216002";
+//        String password="";
+//
+//        //可自助调整超时时间
+//        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+//        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+//
+//        //初始化acsClient,暂不支持region化
+//        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+//        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
+//        IAcsClient acsClient = new DefaultAcsClient(profile);
+//
+//        //组装请求对象-具体描述见控制台-文档部分内容
+//        SendSmsRequest request = new SendSmsRequest();
+//        //必填:待发送手机号
+//        request.setPhoneNumbers(cellphoneno);
+//        //必填:短信签名-可在短信控制台中找到
+//        //request.setSignName(signature);
+//        //必填:短信模板-可在短信控制台中找到
+//        request.setTemplateCode("SMS_140525106");
+//        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+//
+//
+//
+//        request.setTemplateParam("{\"cellphoneno\":\""+cellphoneno+"\", \"password\":\""+password+"\"}");
+//
+//        //选填-上行短信扩展码(无特殊需求用户请忽略此字段)
+//        //request.setSmsUpExtendCode("90997");
+//
+//        //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
+//        request.setOutId("yourOutId");
+//
+//        //hint 此处可能会抛出异常，注意catch
+//        SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+//
+//        return sendSmsResponse;
+//    }
 
 
 

@@ -7,7 +7,7 @@
 
 
 
-    <select id="getAllServiceType" resultType="ServiceType">
+    <select id="getAllServiceType" resultType="com.prweb.entity.ServiceType">
         select * from  service_type
 
         ORDER BY id asc
