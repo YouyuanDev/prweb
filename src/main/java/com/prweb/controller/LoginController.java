@@ -219,24 +219,35 @@ public class LoginController {
                 System.out.println("verifyCode="+verifyCode);
                 //此处发送手机短信
 
-                int ct=verificationCodeDao.delVerificationCodeByCellPhoneNo(cellphoneno);
-                SendSmsResponse smsresponse=AliyunSMS.sendVerificationCodeSms(cellphoneno,verifyCode);
-                if(smsresponse.getCode().equals("OK")){
-                    VerificationCode vc=new VerificationCode();
-                    vc.setId(0);
-                    vc.setCell_phone_no(cellphoneno);
-                    vc.setVerification_code(verifyCode);
-                    Date now = new Date();
-                    Date expire_time = new Date(now .getTime() + 300000);
-                    vc.setExpire_time(expire_time);
-                    int count=verificationCodeDao.addVerificationCode(vc);
-
-                    json.put("success",true);
-                    json.put("msg","验证码已发送至手机,有效时间5分钟");
-                }else{
+                int res=verificationCodeDao.CanResendVerificationCode(cellphoneno);
+                if(res==1){
+                    //1分钟内存在已发送的验证码，本次不可发送
                     json.put("success",false);
-                    json.put("msg","验证码发送错误");
+                    json.put("msg","60秒内验证码不可重复发送");
+                }else{
+                    int ct=verificationCodeDao.delVerificationCodeByCellPhoneNo(cellphoneno);
+                    SendSmsResponse smsresponse=AliyunSMS.sendVerificationCodeSms(cellphoneno,verifyCode);
+                    if(smsresponse.getCode().equals("OK")){
+                        VerificationCode vc=new VerificationCode();
+                        vc.setId(0);
+                        vc.setCell_phone_no(cellphoneno);
+                        vc.setVerification_code(verifyCode);
+                        Date now = new Date();
+                        Date expire_time = new Date(now .getTime() + 300000);
+                        Date no_resend_until_time = new Date(now .getTime() + 60000);
+                        vc.setExpire_time(expire_time);
+                        vc.setNo_resend_until_time(no_resend_until_time);
+                        int count=verificationCodeDao.addVerificationCode(vc);
+
+                        json.put("success",true);
+                        json.put("msg","验证码已发送至手机,有效时间5分钟");
+                    }else{
+                        json.put("success",false);
+                        json.put("msg","验证码发送错误");
+                    }
                 }
+
+
             }else{
                 json.put("success",false);
                 json.put("msg","该手机号不存在");

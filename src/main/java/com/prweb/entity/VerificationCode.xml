@@ -6,6 +6,14 @@
 <mapper namespace="com.prweb.dao.VerificationCodeDao">
 
 
+    <select id="CanResendVerificationCode" resultType="int">
+        select count(*) from  verification_code_info
+        WHERE
+        cell_phone_no=#{cell_phone_no}
+        AND
+        no_resend_until_time > now()
+    </select>
+
 
 
     <select id="IsVerificationCodeValid" resultType="int">
@@ -24,11 +32,13 @@
         INSERT INTO verification_code_info (
         cell_phone_no,
         verification_code,
-        expire_time
+        expire_time,
+        no_resend_until_time
         ) VALUES (
         #{cell_phone_no},
         #{verification_code},
-        #{expire_time}
+        #{expire_time},
+        #{no_resend_until_time}
         )
     </insert>
 

@@ -8,15 +8,17 @@ public class VerificationCode {
     private String cell_phone_no;
     private String verification_code;
     private Date expire_time;
+    private Date no_resend_until_time;
 
     public VerificationCode() {
     }
 
-    public VerificationCode(int id, String cell_phone_no, String verification_code, Date expire_time) {
+    public VerificationCode(int id, String cell_phone_no, String verification_code, Date expire_time, Date no_resend_until_time) {
         this.id = id;
         this.cell_phone_no = cell_phone_no;
         this.verification_code = verification_code;
         this.expire_time = expire_time;
+        this.no_resend_until_time = no_resend_until_time;
     }
 
     public int getId() {
@@ -49,5 +51,13 @@ public class VerificationCode {
 
     public void setExpire_time(Date expire_time) {
         this.expire_time = expire_time;
+    }
+
+    public Date getNo_resend_until_time() {
+        return no_resend_until_time;
+    }
+
+    public void setNo_resend_until_time(Date no_resend_until_time) {
+        this.no_resend_until_time = no_resend_until_time;
     }
 }
