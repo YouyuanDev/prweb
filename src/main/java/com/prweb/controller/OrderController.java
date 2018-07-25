@@ -67,6 +67,8 @@ public class OrderController {
         }
 
         String mmp= JSONArray.toJSONString(order);
+        if(mmp==null)
+            mmp="";
         System.out.println(mmp);
         return mmp;
     }
@@ -149,8 +151,8 @@ public class OrderController {
 
                 //先判断person_user下是否有未完成的order
 
-                order = orderDao.getCurrentPersonUserOrderByUsername(username);
-                if(order==null){
+                Order currentorder = orderDao.getCurrentPersonUserOrderByUsername(username);
+                if(currentorder==null){
                     //添加
                     //设置orderno
                     String uuuid=UUID.randomUUID().toString();
