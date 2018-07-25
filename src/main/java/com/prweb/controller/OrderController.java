@@ -124,6 +124,10 @@ public class OrderController {
         return mmp;
     }
 
+
+
+
+
     //保存Order
     @RequestMapping(value = "/saveOrder")
     @ResponseBody
@@ -142,28 +146,34 @@ public class OrderController {
             }
 
             if(order.getId()==0){
-                //添加
-                //设置orderno
-                String uuuid=UUID.randomUUID().toString();
-                uuuid=uuuid.replace("-","");
-                order.setOrder_no("OR"+uuuid);
-                //设置order状态
-                if(order.getOrder_status()==null)
-                    order.setOrder_status("pending");
 
-                if(order.getPerson_user_no()==null&&username!=null){
-                    List<Account> accountlist=accountDao.getAccountByUserName(username);
-                    if(accountlist.size()>0){
-                        order.setPerson_user_no(accountlist.get(0).getPerson_user_no());
+                //先判断person_user下是否有未完成的order
+
+                order = orderDao.getCurrentPersonUserOrderByUsername(username);
+                if(order==null){
+                    //添加
+                    //设置orderno
+                    String uuuid=UUID.randomUUID().toString();
+                    uuuid=uuuid.replace("-","");
+                    order.setOrder_no("OR"+uuuid);
+                    //设置order状态
+                    if(order.getOrder_status()==null)
+                        order.setOrder_status("pending");
+
+                    if(order.getPerson_user_no()==null&&username!=null){
+                        List<Account> accountlist=accountDao.getAccountByUserName(username);
+                        if(accountlist.size()>0){
+                            order.setPerson_user_no(accountlist.get(0).getPerson_user_no());
+                        }
                     }
+                    resTotal=orderDao.addOrder(order);
+                }else{
+                    json.put("success",false);
+                    json.put("message","存在未完成的订单");
                 }
-
-
-                resTotal=orderDao.addOrder(order);
 
             }else{
                 //修改！
-
                 resTotal=orderDao.updateOrder(order);
             }
             if(resTotal>0){
