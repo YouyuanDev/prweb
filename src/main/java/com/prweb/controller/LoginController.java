@@ -445,18 +445,23 @@ public class LoginController {
         JSONObject json=new JSONObject();
         try{
 
-            HttpSession session = request.getSession();
+            HttpSession session = request.getSession(false);
             //把用户数据保存在session域对象中
-            String username=(String)session.getAttribute("userSession");
 
-            if(username!=null) {
-                json.put("success",true);
-                json.put("username", username);
-                json.put("msg","获取username成功");
-            }else{
+            if(session==null){
                 json.put("success",false);
-                json.put("username", "");
-                json.put("msg","不存在session，请先登录");
+                json.put("msg","不存在session");
+            }else{
+                String username=(String)session.getAttribute("userSession");
+                if(username!=null) {
+                    json.put("success",true);
+                    json.put("username", username);
+                    json.put("msg","获取username成功");
+                }else{
+                    json.put("success",false);
+                    json.put("username", "");
+                    json.put("msg","不存在session，请先登录");
+                }
             }
 
             ResponseUtil.write(response,json);

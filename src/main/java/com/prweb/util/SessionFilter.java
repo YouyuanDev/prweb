@@ -38,7 +38,8 @@ public class SessionFilter extends OncePerRequestFilter{
             "ForgotPassword",
             "SendVerCodeSMS",
             "APPRegister",
-            "APPIsCellphoneNoValidForRegister"
+            "APPIsCellphoneNoValidForRegister",
+            "getMySession"
     }; // 不过滤的uri
 
     @Override
