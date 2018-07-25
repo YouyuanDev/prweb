@@ -47,7 +47,7 @@ public class OrderController {
     //APP使用 获取当前订单
     @RequestMapping(value = "getCurrentOrder",produces = "text/plain;charset=utf-8")
     @ResponseBody
-    public String getCurrentOrderPersonUser( HttpServletRequest request){
+    public String getCurrentOrder( HttpServletRequest request){
 
         String usertype= request.getParameter("usertype");
         JSONObject json = new JSONObject();
