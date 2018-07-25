@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.prweb.util.AliyunSMS;
+
 
 
 @Controller
@@ -157,10 +159,10 @@ public class LoginController {
             //if(personDao!=null)
             String password=null;
              Account account= accountDao.getPasswordByCellPhoneNo(cellphoneno);
-            if(account!=null){
+            if(account!=null&&cellphoneno!=null){
                 password=account.getPassword();
                 //此处发送手机短信
-
+                AliyunSMS.sendPasswordSms(cellphoneno,password);
                 json.put("success",true);
                 json.put("msg","登录密码已发送至手机");
             }else{
