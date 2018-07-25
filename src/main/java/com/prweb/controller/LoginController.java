@@ -205,12 +205,11 @@ public class LoginController {
             //if(personDao!=null)
             Account account= accountDao.getPasswordByCellPhoneNo(cellphoneno);
             if(account==null&&cellphoneno!=null&&password!=null){
-                String verifyCode = String
-                        .valueOf(new Random().nextInt(899999) + 100000);
+
                 System.out.println("cellphoneno="+cellphoneno);
-                System.out.println("verifyCode="+verifyCode);
+                System.out.println("verifyCode="+verifycode);
                 //此处验证验证码是否可用
-                int count=verificationCodeDao.IsVerificationCodeValid(cellphoneno,verifyCode,new Date());
+                int count=verificationCodeDao.IsVerificationCodeValid(cellphoneno,verifycode,new Date());
                 if(count==1){
                     verificationCodeDao.delVerificationCodeByCellPhoneNo(cellphoneno);
                     json.put("success",true);
