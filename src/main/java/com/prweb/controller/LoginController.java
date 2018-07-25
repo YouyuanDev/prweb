@@ -158,6 +158,38 @@ public class LoginController {
     public LoginController() {
     }
 
+
+
+
+    //APP检测手机号是否可以注册
+    @RequestMapping("/APPIsCellphoneNoValidForRegister")
+    @ResponseBody
+    public String APPIsCellphoneNoValidForRegister(HttpServletRequest request,HttpServletResponse response){
+        JSONObject json=new JSONObject();
+        String cellphoneno= request.getParameter("cellphoneno");
+
+        try{
+            System.out.println("cellphoneno="+cellphoneno);
+            Account account= accountDao.getPasswordByCellPhoneNo(cellphoneno);
+            if(account==null&&cellphoneno!=null){
+                System.out.println("cellphoneno="+cellphoneno);
+                json.put("success",false);
+                json.put("msg","该手机号已被注册");
+
+            }else{
+                json.put("success",true);
+                json.put("msg","该手机号可以使用");
+            }
+            ResponseUtil.write(response,json);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
+
     //APP手机注册
     @RequestMapping("/APPRegister")
     @ResponseBody
@@ -283,7 +315,7 @@ public class LoginController {
                 json.put("msg","登录密码已发送至手机");
             }else{
                 json.put("success",false);
-                json.put("msg","手机号或密码错误");
+                json.put("msg","手机号不存在");
                 //System.out.println("fail");
             }
             ResponseUtil.write(response,json);
