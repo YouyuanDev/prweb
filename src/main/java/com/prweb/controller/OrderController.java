@@ -66,9 +66,18 @@ public class OrderController {
             }
         }
 
-        String mmp= JSONArray.toJSONString(order);
-        if(mmp==null)
-            mmp="";
+
+        if(order!=null){
+            json.put("success",true);
+            json.put("order_no",order.getOrder_no());
+            json.put("msg","存在Order");
+        }else{
+            json.put("success",false);
+            json.put("msg","不存在Order");
+        }
+
+        
+        String mmp= JSONArray.toJSONString(json);
         System.out.println(mmp);
         return mmp;
     }
