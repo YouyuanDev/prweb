@@ -39,7 +39,8 @@ public class SessionFilter extends OncePerRequestFilter{
             "SendVerCodeSMS",
             "APPRegister",
             "APPIsCellphoneNoValidForRegister",
-            "getMySession"
+            "getMySession",
+            "APPSwitchAccoutType"
     }; // 不过滤的uri
 
     @Override

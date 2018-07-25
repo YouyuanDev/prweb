@@ -183,6 +183,57 @@ public class LoginController {
     }
 
 
+    //APP手机账户切换用户类型   个人用户 商户用户切换
+    @RequestMapping("/APPSwitchAccoutType")
+    @ResponseBody
+    public String APPSwitchAccoutType(HttpServletRequest request,HttpServletResponse response) {
+
+        String ToAccountType= request.getParameter("ToAccountType");
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username=(String)session.getAttribute("userSession");
+        try{
+            List<Account> lt=accountDao.getAccountByUserName(username);
+            if(lt.size()>0) {
+                Account account=lt.get(0);
+                if(account!=null){
+                    if(ToAccountType!=null&&ToAccountType.equals("person_user")&&account.getPerson_user_no()!=null){
+                        json.put("success",true);
+                        json.put("accountType","person_user");
+                        json.put("msg","切换到person_user成功");
+                    }
+                    else if(ToAccountType!=null&&ToAccountType.equals("company_user")&&account.getCompany_user_no()!=null){
+                        json.put("success",true);
+                        json.put("accountType","company_user");
+                        json.put("msg","切换到company_user成功");
+                    }
+                    else{
+                        json.put("success",false);
+                        json.put("msg","切换失败");
+                    }
+                }
+                else{
+                    json.put("success",false);
+                    json.put("msg","切换失败");
+                }
+
+            }
+            else{
+                json.put("success",false);
+                json.put("msg","切换失败");
+            }
+            ResponseUtil.write(response,json);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+
+
+    }
+
 
 
     //APP手机注册
