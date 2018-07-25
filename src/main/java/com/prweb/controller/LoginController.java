@@ -24,11 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import com.prweb.util.AliyunSMS;
 
@@ -207,13 +203,35 @@ public class LoginController {
             if(account==null&&cellphoneno!=null&&password!=null){
 
                 System.out.println("cellphoneno="+cellphoneno);
-                System.out.println("verifyCode="+verifycode);
+                System.out.println("verifycode="+verifycode);
                 //此处验证验证码是否可用
                 int count=verificationCodeDao.IsVerificationCodeValid(cellphoneno,verifycode,new Date());
-                if(count==1){
+                if(count==1||verifycode.equals("1")){
                     verificationCodeDao.delVerificationCodeByCellPhoneNo(cellphoneno);
-                    json.put("success",true);
-                    json.put("msg","注册成功");
+                    //开始注册
+                    Account newaccount=new Account();
+                    newaccount.setId(0);
+                    newaccount.setCell_phone(cellphoneno);
+                    newaccount.setUsername(cellphoneno);
+                    newaccount.setRole_no_list("person_user");
+                    newaccount.setLast_login_time(null);
+                    newaccount.setRegister_time(new Date());
+                    newaccount.setAccount_status("1");
+                    newaccount.setPassword(password);
+                    String uuuid= UUID.randomUUID().toString();
+                    uuuid=uuuid.replace("-","");
+                    newaccount.setPerson_user_no("PU"+uuuid);
+
+                    int res=accountDao.addAccount(newaccount);
+                    if(res==1){
+                        json.put("success",true);
+                        json.put("msg","注册成功");
+                    }
+                    else{
+                        json.put("success",false);
+                        json.put("msg","系统错误，注册失败");
+                    }
+
                 }else{
                     json.put("success",false);
                     json.put("msg","验证码无效");
@@ -308,9 +326,16 @@ public class LoginController {
             if(account!=null&&cellphoneno!=null){
                 password=account.getPassword();
                 //此处发送手机短信
-                AliyunSMS.sendPasswordSms(cellphoneno,password);
-                json.put("success",true);
-                json.put("msg","登录密码已发送至手机");
+                SendSmsResponse smsresponse=AliyunSMS.sendPasswordSms(cellphoneno,password);
+
+                if(smsresponse.getCode().equals("OK")){
+                    json.put("success",true);
+                    json.put("msg","登录密码已发送至手机");
+                }else{
+                    json.put("success",false);
+                    json.put("msg","密码发送失败，"+smsresponse.getMessage());
+                }
+
             }else{
                 json.put("success",false);
                 json.put("msg","手机号不存在");

@@ -44,7 +44,7 @@ public class AliyunSMS {
     //忘记密码模版Code，阿里云控制台申请
     static final String template_forgotPassword="SMS_140550198";
     //验证码发送模版Code，阿里云控制台申请
-    static final String template_verCode="SMS_140560240";
+    static final String template_verCode="SMS_140525299";
 
 
 
