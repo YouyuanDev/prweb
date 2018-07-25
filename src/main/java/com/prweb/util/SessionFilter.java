@@ -37,6 +37,7 @@ public class SessionFilter extends OncePerRequestFilter{
             "updateLocation",
             "ForgotPassword",
             "SendVerCodeSMS",
+            "APPRegister",
             "saveOrder"
     }; // 不过滤的uri
 
