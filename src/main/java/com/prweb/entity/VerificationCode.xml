@@ -11,7 +11,7 @@
         WHERE
         cell_phone_no=#{cell_phone_no}
         AND
-        no_resend_until_time > now()
+        no_resend_until_time >= #{now}
     </select>
 
 
@@ -23,7 +23,7 @@
         and
         verification_code=#{verification_code}
         AND
-        expire_time >= now()
+        expire_time >= #{now}
 
 
     </select>

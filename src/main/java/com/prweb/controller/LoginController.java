@@ -179,7 +179,7 @@ public class LoginController {
                 System.out.println("cellphoneno="+cellphoneno);
                 System.out.println("verifyCode="+verifyCode);
                 //此处验证验证码是否可用
-                int count=verificationCodeDao.IsVerificationCodeValid(cellphoneno,verifyCode);
+                int count=verificationCodeDao.IsVerificationCodeValid(cellphoneno,verifyCode,new Date());
                 if(count==1){
                     verificationCodeDao.delVerificationCodeByCellPhoneNo(cellphoneno);
                     json.put("success",true);
@@ -219,8 +219,8 @@ public class LoginController {
                 System.out.println("verifyCode="+verifyCode);
                 //此处发送手机短信
 
-                int res=verificationCodeDao.CanResendVerificationCode(cellphoneno);
-                if(res==1){
+                int res=verificationCodeDao.CanResendVerificationCode(cellphoneno,new Date());
+                if(res==2){
                     //1分钟内存在已发送的验证码，本次不可发送
                     json.put("success",false);
                     json.put("msg","60秒内验证码不可重复发送");
@@ -233,8 +233,8 @@ public class LoginController {
                         vc.setCell_phone_no(cellphoneno);
                         vc.setVerification_code(verifyCode);
                         Date now = new Date();
-                        Date expire_time = new Date(now .getTime() + 300000);
-                        Date no_resend_until_time = new Date(now .getTime() + 60000);
+                        Date expire_time = new Date(now.getTime() + 300000);
+                        Date no_resend_until_time = new Date(now.getTime() + 30000);
                         vc.setExpire_time(expire_time);
                         vc.setNo_resend_until_time(no_resend_until_time);
                         int count=verificationCodeDao.addVerificationCode(vc);
@@ -243,7 +243,7 @@ public class LoginController {
                         json.put("msg","验证码已发送至手机,有效时间5分钟");
                     }else{
                         json.put("success",false);
-                        json.put("msg","验证码发送错误");
+                        json.put("msg","验证码发送错误"+smsresponse.getCode()+" "+smsresponse.getMessage());
                     }
                 }
 
