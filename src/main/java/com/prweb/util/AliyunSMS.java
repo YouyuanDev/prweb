@@ -41,6 +41,11 @@ public class AliyunSMS {
     static final String accessKeySecret = "5HOTwpiPdsu9ikEhkpZA1OZW6C87Kw";
     //前面，阿里云控制台申请
     static final String signature="友元科技";
+    //忘记密码模版Code，阿里云控制台申请
+    static final String template_forgotPassword="SMS_140550198";
+    //验证码发送模版Code，阿里云控制台申请
+    static final String template_verCode="SMS_140560226";
+
 
 
 
@@ -63,7 +68,7 @@ public class AliyunSMS {
         //必填:短信签名-可在短信控制台中找到
         request.setSignName(signature);
         //必填:短信模板-可在短信控制台中找到
-        request.setTemplateCode("SMS_140525106");
+        request.setTemplateCode(template_verCode);
         //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
 
 
@@ -105,7 +110,7 @@ public class AliyunSMS {
         //必填:短信签名-可在短信控制台中找到
         request.setSignName(signature);
         //必填:短信模板-可在短信控制台中找到
-        request.setTemplateCode("SMS_140550198");
+        request.setTemplateCode(template_forgotPassword);
         //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
 
 
