@@ -43,6 +43,36 @@ public class OrderController {
     private LocationDao locationDao;
 
 
+
+    //APP使用 获取当前订单
+    @RequestMapping(value = "getCurrentOrder",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getCurrentOrderPersonUser( HttpServletRequest request){
+
+        String usertype= request.getParameter("usertype");
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+
+        Order order=null;
+        if(username!=null&&usertype!=null){
+            if(usertype.equals("person_user")) {
+                order = orderDao.getCurrentPersonUserOrderByUsername(username);
+            }
+            else if(usertype.equals("company_user")){
+                order = orderDao.getCurrentOrderCompanyUserByUsername(username);
+            }
+        }
+
+        String mmp= JSONArray.toJSONString(order);
+        System.out.println(mmp);
+        return mmp;
+    }
+
+
+
     //搜索
     @RequestMapping(value = "getOrderByLike",produces = "text/plain;charset=utf-8")
     @ResponseBody

@@ -463,7 +463,7 @@ public class LoginController {
                     json.put("msg","不存在session，请先登录");
                 }
             }
-
+            System.out.println("getMySession:"+json.getString("msg"));
             ResponseUtil.write(response,json);
         }catch (Exception e){
             e.printStackTrace();

@@ -24,4 +24,10 @@ public interface OrderDao {
 
     //根据order_no得到Order
     public List<Order> getOrderByOrderNo(@Param("order_no")String order_no);
+
+    //获取person_user的当前正在进行中订单
+    public Order getCurrentPersonUserOrderByUsername(@Param("person_username")String person_username);
+
+    //获取company_user的当前正在进行中订单
+    public Order getCurrentOrderCompanyUserByUsername(@Param("company_username")String company_username);
 }
