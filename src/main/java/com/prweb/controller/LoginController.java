@@ -173,12 +173,11 @@ public class LoginController {
             Account account= accountDao.getPasswordByCellPhoneNo(cellphoneno);
             if(account==null&&cellphoneno!=null){
                 System.out.println("cellphoneno="+cellphoneno);
-                json.put("success",false);
-                json.put("msg","该手机号已被注册");
-
-            }else{
                 json.put("success",true);
                 json.put("msg","该手机号可以使用");
+            }else{
+                json.put("success",false);
+                json.put("msg","该手机号已被注册");
             }
             ResponseUtil.write(response,json);
         }catch (Exception e){
