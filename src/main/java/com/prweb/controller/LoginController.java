@@ -78,7 +78,7 @@ public class LoginController {
                 if(accountType==null)
                     accountType="person_user";
                 session.setAttribute("accountType", accountType);
-
+                json.put("accountType","accountType");
                 role_no_list=account.getRole_no_list();
                 if(role_no_list!=null&&!role_no_list.equals("")){
                     role_no_list=role_no_list.replace(',',';');
