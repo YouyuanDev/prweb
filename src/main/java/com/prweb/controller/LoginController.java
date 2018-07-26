@@ -3,16 +3,10 @@ package com.prweb.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
-import com.prweb.dao.FunctionDao;
-import com.prweb.dao.RoleDao;
-import com.prweb.dao.VerificationCodeDao;
-import com.prweb.entity.Account;
-import com.prweb.entity.Function;
-import com.prweb.entity.Role;
+import com.prweb.dao.*;
+import com.prweb.entity.*;
 //import com.prweb.util.APICloudPushService;
-import com.prweb.entity.VerificationCode;
 import com.prweb.util.ResponseUtil;
-import com.prweb.dao.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +40,8 @@ public class LoginController {
     @Autowired
     private VerificationCodeDao verificationCodeDao;
 
-
+    @Autowired
+    private OrderDao orderDao;
 
 
     //存放登录用户的session
@@ -201,6 +196,24 @@ public class LoginController {
             if(username!=null&&lt.size()>0) {
                 Account account=lt.get(0);
                 if(account!=null){
+
+                    if(ToAccountType!=null){
+                        Order order=null;
+                        if(ToAccountType.equals("person_user")) {
+                            order = orderDao.getCurrentPersonUserOrderByUsername(username);
+                        }
+                        else if(ToAccountType.equals("company_user")){
+                            order = orderDao.getCurrentOrderCompanyUserByUsername(username);
+                        }
+                        if(order!=null){
+                            json.put("success",false);
+                            json.put("msg","存在未完成订单，切换到"+ToAccountType+"失败");
+                            ResponseUtil.write(response,json);
+                            return null;
+                        }
+
+                    }
+
                     if(ToAccountType!=null&&ToAccountType.equals("person_user")&&account.getPerson_user_no()!=null&&!account.getPerson_user_no().equals("")){
                         json.put("success",true);
                         session.setAttribute("accountType","person_user");
