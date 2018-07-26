@@ -77,6 +77,7 @@ public class SessionFilter extends OncePerRequestFilter{
                     StringBuilder sbmessage = new StringBuilder();
                     sbmessage.append("session已过期，请先登录");
                     json.put("success", false);
+                    json.put("relogin", true);
                     json.put("message", sbmessage.toString());
                     System.out.println("弹出没有权限");
                     try {

@@ -291,6 +291,7 @@ public class LoginController {
             }
             else{
                 json.put("success",false);
+                json.put("relogin", true);
                 json.put("msg","切换失败，session不存在或不存在账户信息");
             }
             ResponseUtil.write(response,json);
@@ -486,7 +487,6 @@ public class LoginController {
             if(resultList.size()>0){
                 Account account=resultList.get(0);
                 json=getFunctionJson(account.getUsername(),request);
-
             }else{
                 json.put("success",false);
                 json.put("msg","手机号或密码错误");

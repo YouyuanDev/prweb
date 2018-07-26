@@ -49,31 +49,34 @@ public class OrderController {
     @ResponseBody
     public String getCurrentOrder( HttpServletRequest request){
 
-        String usertype= request.getParameter("usertype");
         JSONObject json = new JSONObject();
         //返回用户session数据
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
 
         Order order=null;
-        if(username!=null&&usertype!=null){
-            if(usertype.equals("person_user")) {
+        if(username!=null&&accountType!=null){
+            if(accountType.equals("person_user")) {
                 order = orderDao.getCurrentPersonUserOrderByUsername(username);
             }
-            else if(usertype.equals("company_user")){
+            else if(accountType.equals("company_user")){
                 order = orderDao.getCurrentOrderCompanyUserByUsername(username);
             }
-        }
-
-
-        if(order!=null){
-            json.put("success",true);
-            json.put("order_no",order.getOrder_no());
-            json.put("msg","存在Order");
+            if(order!=null){
+                json.put("success",true);
+                json.put("order_no",order.getOrder_no());
+                json.put("accountType",accountType);
+                json.put("msg","存在Order");
+            }else{
+                json.put("success",false);
+                json.put("msg","不存在进行中的Order");
+            }
         }else{
             json.put("success",false);
-            json.put("msg","不存在Order");
+            json.put("relogin",true);
+            json.put("msg","session不存在，重新登录");
         }
 
 
@@ -84,7 +87,7 @@ public class OrderController {
 
 
     //发送推送消息
-    public void SendEvent(String basePath,String event, String title,String content){
+    public void SendEventToRoles(String basePath,String event, String title,String content){
         List<HashMap<String,Object>>  lt=roleDao.getRolesByEvent(event);
 
         for(int i=0;i<lt.size();i++){
@@ -95,6 +98,18 @@ public class OrderController {
 
 
     }
+
+    //发送推送消息 accounts  phone ,分隔
+    public void SendPushNotificationToAccounts(String basePath,String event, String title,String content,String userIds){
+
+
+        //发消息
+        APICloudPushService.SendPushNotification(basePath,title,content,"1","0","",userIds);
+
+
+
+    }
+
 
 
     //搜索
@@ -162,9 +177,9 @@ public class OrderController {
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username=(String)session.getAttribute("userSession");
-
+        int resTotal=0;
         try{
-            int resTotal=0;
+
             if(order.getOrder_time()==null){
                 order.setOrder_time(new Date());
             }
@@ -204,11 +219,7 @@ public class OrderController {
                 json.put("success",true);
                 json.put("OrderNo",order.getOrder_no());
                 json.put("message","保存成功");
-                String basePath = request.getSession().getServletContext().getRealPath("/");
-                if(basePath.lastIndexOf('/')==-1){
-                    basePath=basePath.replace('\\','/');
-                }
-                SendEvent(basePath,"order_submit","订单状态变更"+order.getOrder_no(),"order_no="+order.getOrder_no());
+
 
             }else{
                 json.put("success",false);
@@ -223,6 +234,36 @@ public class OrderController {
         }finally {
             try {
                 ResponseUtil.write(response, json);
+
+                if(resTotal>0){
+                    String basePath = request.getSession().getServletContext().getRealPath("/");
+                    if(basePath.lastIndexOf('/')==-1){
+                        basePath=basePath.replace('\\','/');
+                    }
+
+                    String jsonstr= JSONArray.toJSONString(json);
+                    //查找订单的两个有关人员电话
+                    List<HashMap<String,Object>> lt=orderDao.getPushPhoneNosByOrderNo(order.getOrder_no());
+                    if(lt.size()>0){
+
+                        String userIds1=(String)lt.get(0).get("phone1");
+                        String userIds2=(String)lt.get(0).get("phone2");
+                        System.out.println("userIds1="+userIds1);
+                        System.out.println("userIds2="+userIds2);
+
+                        String userIds="";
+                        if(userIds1!=null&&!userIds1.equals("")){
+                            userIds=userIds1;
+                        }
+                        if(userIds2!=null&&!userIds2.equals("")){
+                            userIds=userIds+","+userIds2;
+                        }
+                        System.out.println("userIds="+userIds);
+                        SendPushNotificationToAccounts(basePath,"order_submit","订单:"+order.getOrder_no(),jsonstr,userIds);
+                    }
+
+                }
+
             }catch  (Exception e) {
                 e.printStackTrace();
             }

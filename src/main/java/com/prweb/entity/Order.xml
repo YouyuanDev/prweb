@@ -117,6 +117,17 @@
         limit 50
     </select>
 
+    <select id="getPushPhoneNosByOrderNo" resultType="map">
+    select ac1.cell_phone as phone1,ac2.cell_phone as phone2 from order_info o inner join account ac1 on ac1.person_user_no=o.person_user_no
+
+    left join account ac2 on ac2.company_user_no=o.company_user_no
+
+    where order_no=#{order_no}
+    </select>
+
+
+
+
     <insert id="addOrder" parameterType="com.prweb.entity.Order">
         INSERT INTO order_info(
       order_no,
