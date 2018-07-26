@@ -30,4 +30,10 @@ public interface OrderDao {
 
     //获取company_user的当前正在进行中订单
     public Order getCurrentOrderCompanyUserByUsername(@Param("company_username")String company_username);
+
+
+    //得到附近的pending 订单
+    public List<HashMap<String,Object>>  getNearByPendingOrders(@Param("center_coordinate_lon")String center_coordinate_lon,@Param("center_coordinate_lat")String center_coordinate_lat);
+
+
 }

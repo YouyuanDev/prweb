@@ -104,7 +104,15 @@
 
 
 
+    <select id="getNearByPendingOrders" resultType="map">
+         select  *,6370996.81 * ACOS(COS(31.238269 * PI() / 180) * COS(substring_index(person_user_location,',',-1)* PI() / 180) * COS(121.480242 * PI() / 180 - substring_index(person_user_location,',',1) * PI() / 180)
 
+        + SIN(31.238269 * PI() / 180) * SIN(substring_index(person_user_location,',',-1) * PI() / 180)) distance from order_info
+
+        order by distance asc
+
+        limit 50
+    </select>
 
     <insert id="addOrder" parameterType="com.prweb.entity.Order">
         INSERT INTO order_info(
