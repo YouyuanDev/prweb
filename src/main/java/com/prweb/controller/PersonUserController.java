@@ -1,7 +1,7 @@
 package com.prweb.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.prweb.dao.CompanyUserDao;
+import com.prweb.dao.CompanyDao;
 import com.prweb.entity.Business;
 import com.prweb.entity.CompanyUser;
 import com.prweb.util.ComboxItem;
@@ -20,13 +20,13 @@ import java.util.List;
 public class PersonUserController {
 
     @Autowired
-    CompanyUserDao companyUserDao;
+    CompanyDao companyDao;
 
 
     //用于
-    @RequestMapping(value = "getNearByCompanyUser",produces = "text/plain;charset=utf-8")
+    @RequestMapping(value = "getNearByCompany",produces = "text/plain;charset=utf-8")
     @ResponseBody
-    public String getNearByCompanyUser(HttpServletRequest request){
+    public String getNearByCompany(HttpServletRequest request){
 
         String lon= request.getParameter("lon");
         String lat= request.getParameter("lat");
@@ -44,7 +44,7 @@ public class PersonUserController {
 
 
 
-        List<HashMap<String,Object>> list=companyUserDao.getNearByCompanyUser(lon,lat);
+        List<HashMap<String,Object>> list=companyDao.getNearByCompany(lon,lat);
         String map= JSONObject.toJSONString(list);
         return map;
     }

@@ -28,7 +28,7 @@ public class SessionFilter extends OncePerRequestFilter{
             "VerifyUserNamePassword",
             "Logout",
             "getAllBusiness",
-            "getNearByCompanyUser",
+            "getNearByCompany",
             "uploadPicture",
             "delUploadPicture",
             "getAllServiceType",
