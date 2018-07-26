@@ -72,8 +72,13 @@ public class LoginController {
             List<Account> lt=accountDao.getAccountByUserName(username);
             if(lt.size()>0) {
                 Account account=lt.get(0);
-                //默认首次登录为个人用户
-                session.setAttribute("accountType", "person_user");
+
+                //账户类型转换
+                String accountType=getCurrentOrderAccountType(username);
+                if(accountType==null)
+                    accountType="person_user";
+                session.setAttribute("accountType", accountType);
+
                 role_no_list=account.getRole_no_list();
                 if(role_no_list!=null&&!role_no_list.equals("")){
                     role_no_list=role_no_list.replace(',',';');
@@ -179,6 +184,54 @@ public class LoginController {
         return null;
     }
 
+    //获取账户的当前order
+    private Order getCurrentOrderbyUsername(String username,String accountType){
+        Order order = null;
+        if(username!=null&&!username.equals("")&&accountType!=null&&!accountType.equals("")){
+            List<Account> lt=accountDao.getAccountByUserName(username);
+            if(username!=null&&accountType!=null&&lt.size()>0) {
+                Account account = lt.get(0);
+                if (account != null) {
+                    if (accountType.equals("person_user")) {
+                        order = orderDao.getCurrentPersonUserOrderByUsername(username);
+                    } else if (accountType.equals("company_user")) {
+                        order = orderDao.getCurrentOrderCompanyUserByUsername(username);
+                    }
+                }
+            }
+        }
+        return order;
+    }
+
+    //根据账户的当前order,返回应该转往的账户类型
+    private String getCurrentOrderAccountType(String username){
+        Order order = null;
+        if(username!=null&&!username.equals("")){
+            List<Account> lt=accountDao.getAccountByUserName(username);
+            if(lt.size()>0) {
+                Account account = lt.get(0);
+                if (account != null) {
+
+                    order = orderDao.getCurrentPersonUserOrderByUsername(username);
+                    if(order!=null){
+                        return "person_user";
+                    }
+
+                    order = orderDao.getCurrentOrderCompanyUserByUsername(username);
+                    if(order!=null){
+                        return "company_user";
+                    }
+
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+
+
 
     //APP手机账户切换用户类型   个人用户 商户用户切换
     @RequestMapping("/APPSwitchAccoutType")
@@ -199,10 +252,10 @@ public class LoginController {
                 if(account!=null){
 
                     Order order=null;
-                    if(accountType.equals("person_user")) {
+                    if(accountType.equals("person_user")&&!ToAccountType.equals("person_user")) {
                         order = orderDao.getCurrentPersonUserOrderByUsername(username);
                     }
-                    else if(accountType.equals("company_user")){
+                    else if(accountType.equals("company_user")&&!ToAccountType.equals("company_user")){
                         order = orderDao.getCurrentOrderCompanyUserByUsername(username);
                     }
                     if(order!=null){
@@ -212,7 +265,7 @@ public class LoginController {
                         return null;
                     }
 
-                    
+
                     if(ToAccountType!=null&&ToAccountType.equals("person_user")&&account.getPerson_user_no()!=null&&!account.getPerson_user_no().equals("")){
                         json.put("success",true);
                         session.setAttribute("accountType","person_user");
@@ -433,7 +486,6 @@ public class LoginController {
             if(resultList.size()>0){
                 Account account=resultList.get(0);
                 json=getFunctionJson(account.getUsername(),request);
-
 
             }else{
                 json.put("success",false);
