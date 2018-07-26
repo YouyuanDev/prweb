@@ -49,7 +49,12 @@
 
 
     <select id="getOrderByOrderNo" resultType="map">
-        select * from  order_info o inner join order_status s on o.order_status=s.status_code
+        select o.*,s.*,com.* from  order_info o inner join order_status s on o.order_status=s.status_code
+
+        inner join company_user_info cu on cu.company_user_no=o.company_user_no
+
+        inner join company_info com on com.company_no=cu.company_no
+
         <where>
             <if test="order_no!=null and order_no!=''">
                 AND order_no =#{order_no}
