@@ -109,6 +109,9 @@
 
         + SIN(31.238269 * PI() / 180) * SIN(substring_index(person_user_location,',',-1) * PI() / 180)) distance from order_info
 
+        where order_status='pending'
+
+
         order by distance asc
 
         limit 50
