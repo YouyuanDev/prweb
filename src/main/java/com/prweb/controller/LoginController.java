@@ -201,13 +201,13 @@ public class LoginController {
             if(username!=null&&lt.size()>0) {
                 Account account=lt.get(0);
                 if(account!=null){
-                    if(ToAccountType!=null&&ToAccountType.equals("person_user")&&account.getPerson_user_no()!=null){
+                    if(ToAccountType!=null&&ToAccountType.equals("person_user")&&account.getPerson_user_no()!=null&&!account.getPerson_user_no().equals("")){
                         json.put("success",true);
                         session.setAttribute("accountType","person_user");
                         json.put("accountType","person_user");
                         json.put("msg","切换到person_user成功");
                     }
-                    else if(ToAccountType!=null&&ToAccountType.equals("company_user")&&account.getCompany_user_no()!=null){
+                    else if(ToAccountType!=null&&ToAccountType.equals("company_user")&&account.getCompany_user_no()!=null&&!account.getCompany_user_no().equals("")){
                         json.put("success",true);
                         session.setAttribute("accountType","company_user");
                         json.put("accountType","company_user");
@@ -215,7 +215,7 @@ public class LoginController {
                     }
                     else{
                         json.put("success",false);
-                        json.put("msg","切换失败");
+                        json.put("msg","切换到"+ToAccountType+"失败");
                     }
                 }
                 else{
