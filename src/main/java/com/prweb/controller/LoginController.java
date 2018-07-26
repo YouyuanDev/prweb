@@ -77,6 +77,8 @@ public class LoginController {
             List<Account> lt=accountDao.getAccountByUserName(username);
             if(lt.size()>0) {
                 Account account=lt.get(0);
+                //默认首次登录为个人用户
+                session.setAttribute("accountType", "person_user");
                 role_no_list=account.getRole_no_list();
                 if(role_no_list!=null&&!role_no_list.equals("")){
                     role_no_list=role_no_list.replace(',',';');
@@ -196,16 +198,18 @@ public class LoginController {
         String username=(String)session.getAttribute("userSession");
         try{
             List<Account> lt=accountDao.getAccountByUserName(username);
-            if(lt.size()>0) {
+            if(username!=null&&lt.size()>0) {
                 Account account=lt.get(0);
                 if(account!=null){
                     if(ToAccountType!=null&&ToAccountType.equals("person_user")&&account.getPerson_user_no()!=null){
                         json.put("success",true);
+                        session.setAttribute("accountType","person_user");
                         json.put("accountType","person_user");
                         json.put("msg","切换到person_user成功");
                     }
                     else if(ToAccountType!=null&&ToAccountType.equals("company_user")&&account.getCompany_user_no()!=null){
                         json.put("success",true);
+                        session.setAttribute("accountType","company_user");
                         json.put("accountType","company_user");
                         json.put("msg","切换到company_user成功");
                     }
@@ -417,8 +421,7 @@ public class LoginController {
             if(resultList.size()>0){
                 Account account=resultList.get(0);
                 json=getFunctionJson(account.getUsername(),request);
-                json.put("company_user_no",account.getCompany_user_no());
-                json.put("person_user_no",account.getPerson_user_no());
+
 
             }else{
                 json.put("success",false);
@@ -504,9 +507,11 @@ public class LoginController {
                 json.put("msg","不存在session");
             }else{
                 String username=(String)session.getAttribute("userSession");
+                String accountType=(String)session.getAttribute("accountType");
                 if(username!=null) {
                     json.put("success",true);
                     json.put("username", username);
+                    json.put("accountType", accountType);
                     json.put("msg","获取username成功");
                 }else{
                     json.put("success",false);
