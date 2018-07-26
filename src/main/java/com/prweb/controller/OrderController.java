@@ -4,15 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 
-import com.prweb.dao.AccountDao;
-import com.prweb.dao.OrderDao;
-import com.prweb.dao.OrderStatusDao;
+import com.prweb.dao.*;
 import com.prweb.entity.Account;
 import com.prweb.entity.Business;
 import com.prweb.entity.Location;
-import com.prweb.dao.LocationDao;
 import com.prweb.entity.Order;
 import com.prweb.entity.OrderStatus;
+import com.prweb.util.APICloudPushService;
 import com.prweb.util.ComboxItem;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +40,8 @@ public class OrderController {
     @Autowired
     private LocationDao locationDao;
 
+    @Autowired
+    private RoleDao roleDao;
 
 
     //APP使用 获取当前订单
@@ -82,6 +82,19 @@ public class OrderController {
         return mmp;
     }
 
+
+    //发送推送消息
+    public void SendEvent(String basePath,String event, String title,String content){
+        List<HashMap<String,Object>>  lt=roleDao.getRolesByEvent(event);
+
+        for(int i=0;i<lt.size();i++){
+            String role=(String)lt.get(i).get("role_no");
+            //发消息
+            APICloudPushService.SendPushNotification(basePath,title,content,"1","0",role,"");
+        }
+
+
+    }
 
 
     //搜索
@@ -191,6 +204,11 @@ public class OrderController {
                 json.put("success",true);
                 json.put("OrderNo",order.getOrder_no());
                 json.put("message","保存成功");
+                String basePath = request.getSession().getServletContext().getRealPath("/");
+                if(basePath.lastIndexOf('/')==-1){
+                    basePath=basePath.replace('\\','/');
+                }
+                SendEvent(basePath,"order_submit","订单状态变更"+order.getOrder_no(),"order_no="+order.getOrder_no());
 
             }else{
                 json.put("success",false);
