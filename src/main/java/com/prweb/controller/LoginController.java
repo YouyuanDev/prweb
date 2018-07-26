@@ -191,29 +191,28 @@ public class LoginController {
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username=(String)session.getAttribute("userSession");
+        String accountType=(String)session.getAttribute("accountType");
         try{
             List<Account> lt=accountDao.getAccountByUserName(username);
-            if(username!=null&&lt.size()>0) {
+            if(username!=null&&accountType!=null&&lt.size()>0) {
                 Account account=lt.get(0);
                 if(account!=null){
 
-                    if(ToAccountType!=null){
-                        Order order=null;
-                        if(ToAccountType.equals("person_user")) {
-                            order = orderDao.getCurrentPersonUserOrderByUsername(username);
-                        }
-                        else if(ToAccountType.equals("company_user")){
-                            order = orderDao.getCurrentOrderCompanyUserByUsername(username);
-                        }
-                        if(order!=null){
-                            json.put("success",false);
-                            json.put("msg","存在未完成订单，切换到"+ToAccountType+"失败");
-                            ResponseUtil.write(response,json);
-                            return null;
-                        }
-
+                    Order order=null;
+                    if(accountType.equals("person_user")) {
+                        order = orderDao.getCurrentPersonUserOrderByUsername(username);
+                    }
+                    else if(accountType.equals("company_user")){
+                        order = orderDao.getCurrentOrderCompanyUserByUsername(username);
+                    }
+                    if(order!=null){
+                        json.put("success",false);
+                        json.put("msg","存在未完成订单，切换到"+ToAccountType+"失败");
+                        ResponseUtil.write(response,json);
+                        return null;
                     }
 
+                    
                     if(ToAccountType!=null&&ToAccountType.equals("person_user")&&account.getPerson_user_no()!=null&&!account.getPerson_user_no().equals("")){
                         json.put("success",true);
                         session.setAttribute("accountType","person_user");
