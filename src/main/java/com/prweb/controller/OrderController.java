@@ -264,38 +264,48 @@ public class OrderController {
     public String updateLocation(HttpServletRequest request, HttpServletResponse response) {
         System.out.print("updateLocation");
         String order_no= request.getParameter("order_no");
-        String person_user_location= request.getParameter("person_user_location");
-        String company_user_location= request.getParameter("company_user_location");
+        String my_location= request.getParameter("my_location");
+
         JSONObject json = new JSONObject();
         //返回用户session数据
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
 
 
-        if(order_no!=null&&username!=null){
+        if(order_no!=null&&username!=null&&accountType!=null&&my_location!=null){
            List<Order> orderList=orderDao.getOrderByOrderNo(order_no);
            if(orderList.size()>0){
                Order order=orderList.get(0);
+               if(accountType.equals("person_user")){
+                   order.setPerson_user_location(my_location);
+               }
+               else if(accountType.equals("company_user")){
+                   order.setCompany_user_location(my_location);
+               }
+               int orderRes=orderDao.updateOrder(order);
+
+               //更新定位轨迹坐标
                Location loc=new Location();
                loc.setId(0);
                loc.setOrder_no(order_no);
                loc.setLocating_time(new Date());
                loc.setUsername(username);
-
-               if(person_user_location!=null){
-                   order.setPerson_user_location(person_user_location);
-                   loc.setCoordinate(person_user_location);
+               loc.setCoordinate(my_location);
+               int locRes=locationDao.addLocation(loc);
+               if(orderRes>0){
+                   json.put("success",true);
+                   json.put("msg","定位更新成功");
                }
-               if(company_user_location!=null){
-                   order.setCompany_user_location(company_user_location);
-                   loc.setCoordinate(company_user_location);
-               }
-               locationDao.addLocation(loc);
+           }else{
+               json.put("success",false);
+               json.put("msg","order_no不存在");
            }
-            json.put("success",true);
+
         }else{
             json.put("success",false);
+            json.put("msg","session不存在");
         }
 
 
