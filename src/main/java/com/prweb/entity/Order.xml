@@ -82,16 +82,16 @@
     <select id="getCurrentOrderCompanyUserByUsername" resultType="com.prweb.entity.Order">
         select o.* from  order_info o inner join account ac on o.company_user_no=ac.company_user_no
         <where>
-            <if test="company_user_no!=null and company_user_no!=''">
-                AND username =#{company_user_no}
+            <if test="company_username!=null and company_username!=''">
+                AND username =#{company_username}
             </if>
             <![CDATA[ AND  order_status <> 'finished'   ]]>
 
 
             <![CDATA[ AND  order_status <> 'cancelled'   ]]>
-            AND o.person_user_no is not null
+            AND o.company_user_no is not null
 
-            AND ac.person_user_no is not null
+            AND ac.company_user_no is not null
         </where>
         order by id desc
         limit 1
