@@ -92,7 +92,7 @@
             </if>
             <![CDATA[ AND  order_status <> 'finished'   ]]>
 
-
+            <![CDATA[ AND  order_status <> 'pending'   ]]>
             <![CDATA[ AND  order_status <> 'cancelled'   ]]>
             AND o.company_user_no is not null
 
