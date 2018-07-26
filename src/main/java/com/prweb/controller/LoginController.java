@@ -220,13 +220,13 @@ public class LoginController {
                 }
                 else{
                     json.put("success",false);
-                    json.put("msg","切换失败");
+                    json.put("msg","切换失败，不存在账户信息");
                 }
 
             }
             else{
                 json.put("success",false);
-                json.put("msg","切换失败");
+                json.put("msg","切换失败，session不存在或不存在账户信息");
             }
             ResponseUtil.write(response,json);
         }
