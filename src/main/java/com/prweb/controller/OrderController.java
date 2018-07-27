@@ -344,7 +344,7 @@ public class OrderController {
 
         if(username!=null&&accountType!=null&&my_location!=null){
 
-            if(order_no!=null) {
+            if(order_no!=null&&!order_no.equals("")) {
                 List<Order> orderList = orderDao.getOrderByOrderNo(order_no);
                 if (orderList.size() > 0) {
                     Order order = orderList.get(0);
