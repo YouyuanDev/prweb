@@ -85,7 +85,7 @@
 
             AND username =#{person_username}
 
-            (OR order_status='pending'
+            AND ( order_status='pending'
 
             OR order_status='confirmed'
 
@@ -110,7 +110,7 @@
 
              AND username =#{company_username}
 
-            (OR order_status='confirmed'
+            AND (  order_status='confirmed'
 
             OR order_status='confirmedpaid'
 
