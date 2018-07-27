@@ -353,6 +353,8 @@ public class OrderController {
                     } else if (accountType.equals("company_user")) {
                         order.setCompany_user_location(my_location);
                     }
+                    json.put("person_user_location",order.getPerson_user_location());
+                    json.put("company_user_location",order.getCompany_user_location());
                     int orderRes = orderDao.updateOrder(order);
                 }
             }
