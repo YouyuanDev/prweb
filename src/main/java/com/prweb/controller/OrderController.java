@@ -45,9 +45,9 @@ public class OrderController {
 
 
     //APP使用 获取当前订单
-    @RequestMapping(value = "getCurrentOrder",produces = "text/plain;charset=utf-8")
+    @RequestMapping(value = "getCurrentOrder", produces = "text/plain;charset=utf-8")
     @ResponseBody
-    public String getCurrentOrder( HttpServletRequest request){
+    public String getCurrentOrder(HttpServletRequest request) {
 
         JSONObject json = new JSONObject();
         //返回用户session数据
@@ -56,124 +56,236 @@ public class OrderController {
         String username = (String) session.getAttribute("userSession");
         String accountType = (String) session.getAttribute("accountType");
 
-        Order order=null;
-        if(username!=null&&accountType!=null){
-            if(accountType.equals("person_user")) {
+        Order order = null;
+        if (username != null && accountType != null) {
+            if (accountType.equals("person_user")) {
                 order = orderDao.getCurrentPersonUserOrderByUsername(username);
-            }
-            else if(accountType.equals("company_user")){
+            } else if (accountType.equals("company_user")) {
                 order = orderDao.getCurrentOrderCompanyUserByUsername(username);
             }
-            if(order!=null){
-                json.put("success",true);
-                json.put("order_no",order.getOrder_no());
-                json.put("accountType",accountType);
-                json.put("msg","存在Order");
-            }else{
-                json.put("success",false);
-                json.put("msg","不存在进行中的Order");
+            if (order != null) {
+                json.put("success", true);
+                json.put("order_no", order.getOrder_no());
+                json.put("accountType", accountType);
+                json.put("msg", "存在Order");
+            } else {
+                json.put("success", false);
+                json.put("msg", "不存在进行中的Order");
             }
-        }else{
-            json.put("success",false);
-            json.put("relogin",true);
-            json.put("msg","session不存在，重新登录");
+        } else {
+            json.put("success", false);
+            json.put("relogin", true);
+            json.put("msg", "session不存在，重新登录");
         }
 
 
-        String mmp= JSONArray.toJSONString(json);
+        String mmp = JSONArray.toJSONString(json);
         System.out.println(mmp);
         return mmp;
     }
 
 
     //发送推送消息
-    public void SendEventToRoles(String basePath,String event, String title,String content){
-        List<HashMap<String,Object>>  lt=roleDao.getRolesByEvent(event);
+    public void SendEventToRoles(String basePath, String event, String title, String content) {
+        List<HashMap<String, Object>> lt = roleDao.getRolesByEvent(event);
 
-        for(int i=0;i<lt.size();i++){
-            String role=(String)lt.get(i).get("role_no");
+        for (int i = 0; i < lt.size(); i++) {
+            String role = (String) lt.get(i).get("role_no");
             //发消息
-            APICloudPushService.SendPushNotification(basePath,title,content,"1","0",role,"");
+            APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", role, "");
         }
 
 
     }
 
     //发送推送消息 accounts  phone ,分隔
-    public void SendPushNotificationToAccounts(String basePath,String event, String title,String content,String userIds){
+    public void SendPushNotificationToAccounts(String basePath, String event, String title, String content, String userIds) {
 
 
         //发消息
-        APICloudPushService.SendPushNotification(basePath,title,content,"1","0","",userIds);
-
+        APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
 
 
     }
 
 
-
     //搜索
-    @RequestMapping(value = "getOrderByLike",produces = "text/plain;charset=utf-8")
+    @RequestMapping(value = "getOrderByLike", produces = "text/plain;charset=utf-8")
     @ResponseBody
-    public String getOrderByLike(@RequestParam(value = "order_no",required = false)String order_no, @RequestParam(value = "order_status",required = false)String order_status, @RequestParam(value = "begin_time",required = false)String begin_time, @RequestParam(value = "end_time",required = false)String end_time, HttpServletRequest request){
-        String page= request.getParameter("page");
-        String rows= request.getParameter("rows");
-        if(page==null){
-            page="1";
+    public String getOrderByLike(@RequestParam(value = "order_no", required = false) String order_no, @RequestParam(value = "order_status", required = false) String order_status, @RequestParam(value = "begin_time", required = false) String begin_time, @RequestParam(value = "end_time", required = false) String end_time, HttpServletRequest request) {
+        String page = request.getParameter("page");
+        String rows = request.getParameter("rows");
+        if (page == null) {
+            page = "1";
         }
-        if(rows==null){
-            rows="20";
+        if (rows == null) {
+            rows = "20";
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date beginTime=null;
-        Date endTime=null;
+        Date beginTime = null;
+        Date endTime = null;
 
-        try{
-            if(begin_time!=null&&begin_time!=""){
-                beginTime=sdf.parse(begin_time);
+        try {
+            if (begin_time != null && begin_time != "") {
+                beginTime = sdf.parse(begin_time);
                 System.out.println(beginTime.toString());
             }
-            if(end_time!=null&&end_time!=""){
-                endTime=sdf.parse(end_time);
+            if (end_time != null && end_time != "") {
+                endTime = sdf.parse(end_time);
                 System.out.println(endTime.toString());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        int start=(Integer.parseInt(page)-1)*Integer.parseInt(rows);
-        List<HashMap<String,Object>> list=orderDao.getAllByLike(order_no,order_status,beginTime,endTime,start,Integer.parseInt(rows));
-        int count=orderDao.getCountAllByLike(order_no,order_status,beginTime,endTime);
-        Map<String,Object> maps=new HashMap<String,Object>();
-        maps.put("total",count);
-        maps.put("rows",list);
+        int start = (Integer.parseInt(page) - 1) * Integer.parseInt(rows);
+        List<HashMap<String, Object>> list = orderDao.getAllByLike(order_no, order_status, beginTime, endTime, start, Integer.parseInt(rows));
+        int count = orderDao.getCountAllByLike(order_no, order_status, beginTime, endTime);
+        Map<String, Object> maps = new HashMap<String, Object>();
+        maps.put("total", count);
+        maps.put("rows", list);
         //System.out.println("rrrrrrrrrrrow="+count);
-        String mmp= JSONArray.toJSONString(maps);
+        String mmp = JSONArray.toJSONString(maps);
         //System.out.print("mmp:"+mmp);
         return mmp;
 
     }
-    @RequestMapping(value = "getOrderByOrderNo",produces = "text/plain;charset=utf-8")
+
+    @RequestMapping(value = "getOrderByOrderNo", produces = "text/plain;charset=utf-8")
     @ResponseBody
-    public String getOrderByOrderNo(@RequestParam(value = "order_no",required = false)String order_no, HttpServletRequest request){
-        List<Order> list=orderDao.getOrderByOrderNo(order_no);
-        String mmp= JSONArray.toJSONString(list);
+    public String getOrderByOrderNo(@RequestParam(value = "order_no", required = false) String order_no, HttpServletRequest request) {
+        List<Order> list = orderDao.getOrderByOrderNo(order_no);
+        String mmp = JSONArray.toJSONString(list);
         System.out.println(mmp);
         return mmp;
     }
 
-    @RequestMapping(value = "getOrderMapByOrderNo",produces = "text/plain;charset=utf-8")
+    @RequestMapping(value = "getOrderMapByOrderNo", produces = "text/plain;charset=utf-8")
     @ResponseBody
-    public String getOrderMapByOrderNo(@RequestParam(value = "order_no",required = false)String order_no, HttpServletRequest request){
-        List<HashMap<String,Object>> list=orderDao.getOrderMapByOrderNo(order_no);
-        String mmp= JSONArray.toJSONString(list);
+    public String getOrderMapByOrderNo(@RequestParam(value = "order_no", required = false) String order_no, HttpServletRequest request) {
+        List<HashMap<String, Object>> list = orderDao.getOrderMapByOrderNo(order_no);
+        String mmp = JSONArray.toJSONString(list);
         System.out.println(mmp);
         return mmp;
     }
 
+    //个人用户生成订单
+    @RequestMapping(value = "/PersonUserSubmitPendingOrder")
+    @ResponseBody
+    public String PersonUserSubmitPendingOrder(Order order,HttpServletRequest request, HttpServletResponse response){
+        System.out.print("PersonUserSubmitPendingOrder");
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username=(String)session.getAttribute("userSession");
+        String accountType=(String)session.getAttribute("accountType");
+        int resTotal=0;
+        try{
+
+            if(accountType==null||!accountType.equals("")){
+                json.put("success",false);
+                json.put("relogin",true);
+                json.put("message","不存在session，重新登录");
+            }
+            else{
+
+                if(accountType.equals("person_user")){
+                    if(order.getId()==0){
+                        //先判断person_user下是否有未完成的order
+                        if(order.getOrder_time()==null){
+                            order.setOrder_time(new Date());
+                        }
+                        Order currentorder = orderDao.getCurrentPersonUserOrderByUsername(username);
+                        if(currentorder==null){
+                            //添加
+                            //设置orderno
+                            String uuuid=UUID.randomUUID().toString();
+                            uuuid=uuuid.replace("-","");
+                            order.setOrder_no("OR"+uuuid);
+                            //设置order状态
+                            if(order.getOrder_status()==null)
+                                order.setOrder_status("pending");
+
+                            if(username!=null){
+                                List<Account> accountlist=accountDao.getAccountByUserName(username);
+                                if(accountlist.size()>0){
+                                    order.setPerson_user_no(accountlist.get(0).getPerson_user_no());
+                                }
+                            }
+                            resTotal=orderDao.addOrder(order);
+                        }else{
+                            json.put("success",false);
+                            json.put("message","不能生成新的订单，存在未完成的订单");
+                        }
+
+                    }
+                    if(resTotal>0){
+                        json.put("success",true);
+                        json.put("OrderNo",order.getOrder_no());
+                        json.put("message","订单生成成功");
 
 
+                    }else{
+                        json.put("success",false);
+                        json.put("message","订单生成失败");
+                    }
+                }else{
+                    json.put("success",false);
+                    json.put("message","订单生成失败,accountType为"+accountType);
+                }
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+
+        }finally {
+            try {
+                ResponseUtil.write(response, json);
+                if(resTotal>0){
+                    SendPushNotification(request,json,order.getOrder_no(),"order_submit");
+                }
+
+            }catch  (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+    //发送推送给相关人员
+    private void SendPushNotification(HttpServletRequest request,JSONObject json,String orderNo,String event){
+        String basePath = request.getSession().getServletContext().getRealPath("/");
+        if(basePath.lastIndexOf('/')==-1){
+            basePath=basePath.replace('\\','/');
+        }
+
+        String jsonstr= JSONArray.toJSONString(json);
+        //查找订单的两个有关人员电话
+        List<HashMap<String,Object>> lt=orderDao.getPushPhoneNosByOrderNo(orderNo);
+        if(lt.size()>0){
+
+            String userIds1=(String)lt.get(0).get("phone1");
+            String userIds2=(String)lt.get(0).get("phone2");
+            System.out.println("userIds1="+userIds1);
+            System.out.println("userIds2="+userIds2);
+
+            String userIds="";
+            if(userIds1!=null&&!userIds1.equals("")){
+                userIds=userIds1;
+            }
+            if(userIds2!=null&&!userIds2.equals("")){
+                userIds=userIds+","+userIds2;
+            }
+            System.out.println("userIds="+userIds);
+            SendPushNotificationToAccounts(basePath,event,event+"订单:"+orderNo,jsonstr,userIds);
+        }
+    }
 
 
     //保存Order
@@ -182,44 +294,21 @@ public class OrderController {
     public String saveOrder(Order order,HttpServletRequest request, HttpServletResponse response){
         System.out.print("saveOrder");
         JSONObject json=new JSONObject();
-        //返回用户session数据
-        HttpSession session = request.getSession();
-        //把用户数据保存在session域对象中
-        String username=(String)session.getAttribute("userSession");
+
         int resTotal=0;
         try{
 
             if(order.getOrder_time()==null){
                 order.setOrder_time(new Date());
             }
-
             if(order.getId()==0){
-
-                //先判断person_user下是否有未完成的order
-
-                Order currentorder = orderDao.getCurrentPersonUserOrderByUsername(username);
-                if(currentorder==null){
-                    //添加
-                    //设置orderno
-                    String uuuid=UUID.randomUUID().toString();
-                    uuuid=uuuid.replace("-","");
-                    order.setOrder_no("OR"+uuuid);
-                    //设置order状态
-                    if(order.getOrder_status()==null)
-                        order.setOrder_status("pending");
-
-                    if(order.getPerson_user_no()==null&&username!=null){
-                        List<Account> accountlist=accountDao.getAccountByUserName(username);
-                        if(accountlist.size()>0){
-                            order.setPerson_user_no(accountlist.get(0).getPerson_user_no());
-                        }
-                    }
-                    resTotal=orderDao.addOrder(order);
-                }else{
-                    json.put("success",false);
-                    json.put("message","存在未完成的订单");
-                }
-
+                String uuuid=UUID.randomUUID().toString();
+                uuuid=uuuid.replace("-","");
+                order.setOrder_no("OR"+uuuid);
+                //设置order状态
+                if(order.getOrder_status()==null)
+                    order.setOrder_status("pending");
+                resTotal=orderDao.addOrder(order);
             }else{
                 //修改！
                 resTotal=orderDao.updateOrder(order);
@@ -245,32 +334,7 @@ public class OrderController {
                 ResponseUtil.write(response, json);
 
                 if(resTotal>0){
-                    String basePath = request.getSession().getServletContext().getRealPath("/");
-                    if(basePath.lastIndexOf('/')==-1){
-                        basePath=basePath.replace('\\','/');
-                    }
-
-                    String jsonstr= JSONArray.toJSONString(json);
-                    //查找订单的两个有关人员电话
-                    List<HashMap<String,Object>> lt=orderDao.getPushPhoneNosByOrderNo(order.getOrder_no());
-                    if(lt.size()>0){
-
-                        String userIds1=(String)lt.get(0).get("phone1");
-                        String userIds2=(String)lt.get(0).get("phone2");
-                        System.out.println("userIds1="+userIds1);
-                        System.out.println("userIds2="+userIds2);
-
-                        String userIds="";
-                        if(userIds1!=null&&!userIds1.equals("")){
-                            userIds=userIds1;
-                        }
-                        if(userIds2!=null&&!userIds2.equals("")){
-                            userIds=userIds+","+userIds2;
-                        }
-                        System.out.println("userIds="+userIds);
-                        SendPushNotificationToAccounts(basePath,"order_submit","订单:"+order.getOrder_no(),jsonstr,userIds);
-                    }
-
+                    SendPushNotification(request,json,order.getOrder_no(),"order_save");
                 }
 
             }catch  (Exception e) {
