@@ -70,6 +70,7 @@ public class OrderController {
                 json.put("msg", "存在Order");
             } else {
                 json.put("success", false);
+                json.put("accountType", accountType);
                 json.put("msg", "不存在进行中的Order");
             }
         } else {
