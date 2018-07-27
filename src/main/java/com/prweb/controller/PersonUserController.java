@@ -63,6 +63,151 @@ public class PersonUserController {
         return map;
     }
 
+    //个人用户订单取消
+    @RequestMapping(value = "/PersonUserCancelOrder")
+    @ResponseBody
+    public String PersonUserCancelOrder(HttpServletRequest request, HttpServletResponse response){
+        System.out.print("PersonUserCancelOrder");
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username=(String)session.getAttribute("userSession");
+        String accountType=(String)session.getAttribute("accountType");
+        int resTotal=0;
+        Order order=null;
+        try{
+
+            if(accountType==null||accountType.equals("")){
+                json.put("success",false);
+                json.put("relogin",true);
+                json.put("message","不存在session，重新登录");
+            }
+            else{
+
+                if(accountType.equals("person_user")){
+                    //先判断person_user下是否有未完成的order
+                    order = orderDao.getCurrentPersonUserOrderByUsername(username);
+                    if(order!=null&&!order.getOrder_status().equals("cancelled")&&
+                            order.getOrder_status().equals("finishedconfirmed")){
+                        //设置order状态
+                        order.setOrder_status("cancelled");
+                        resTotal=orderDao.updateOrder(order);
+                    }else{
+                        json.put("success",false);
+                        json.put("message","不存在可取消的订单");
+                    }
+
+                    if(resTotal>0){
+                        json.put("success",true);
+                        json.put("OrderNo",order.getOrder_no());
+                        json.put("message","订单取消成功");
+
+
+                    }else{
+                        json.put("success",false);
+                        json.put("message","订单取消失败");
+                    }
+                }else{
+                    json.put("success",false);
+                    json.put("message","订单取消失败,accountType为"+accountType);
+                }
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+
+        }finally {
+            try {
+                ResponseUtil.write(response, json);
+                if(resTotal>0){
+                    SendPushNotification(request,json,order.getOrder_no(),"order_cancelled");
+                }
+
+            }catch  (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+
+    //个人用户订单确认完成
+    @RequestMapping(value = "/PersonUserConfirmFinishedOrder")
+    @ResponseBody
+    public String PersonUserConfirmFinishedOrder(HttpServletRequest request, HttpServletResponse response){
+        System.out.print("PersonUserConfirmFinishedOrder");
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username=(String)session.getAttribute("userSession");
+        String accountType=(String)session.getAttribute("accountType");
+        int resTotal=0;
+        Order order=null;
+        try{
+
+            if(accountType==null||accountType.equals("")){
+                json.put("success",false);
+                json.put("relogin",true);
+                json.put("message","不存在session，重新登录");
+            }
+            else{
+
+                if(accountType.equals("person_user")){
+
+                    //先判断person_user下是否有未完成的order
+                    order = orderDao.getCurrentPersonUserOrderByUsername(username);
+                    if(order!=null&&order.getOrder_status().equals("finished")){
+                        //设置order状态
+                        order.setOrder_status("finishedconfirmed");
+                        resTotal=orderDao.updateOrder(order);
+                    }else{
+                        json.put("success",false);
+                        json.put("message","不存在可确认完成的订单");
+                    }
+
+                    if(resTotal>0){
+                        json.put("success",true);
+                        json.put("OrderNo",order.getOrder_no());
+                        json.put("message","订单确认完成成功");
+
+
+                    }else{
+                        json.put("success",false);
+                        json.put("message","订单确认完成失败");
+                    }
+                }else{
+                    json.put("success",false);
+                    json.put("message","订单确认完成失败,accountType为"+accountType);
+                }
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+
+        }finally {
+            try {
+                ResponseUtil.write(response, json);
+                if(resTotal>0){
+                    SendPushNotification(request,json,order.getOrder_no(),"order_finishedconfirmed");
+                }
+
+            }catch  (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
 
 
     //个人用户订单付款
