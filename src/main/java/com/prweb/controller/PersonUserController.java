@@ -401,7 +401,7 @@ public class PersonUserController {
                 userIds=userIds+","+userIds2;
             }
             System.out.println("userIds="+userIds);
-            SendPushNotificationToAccounts(basePath,event,event+"订单:"+orderNo,jsonstr,userIds);
+            SendPushNotificationToAccounts(basePath,event,event+"订单:",jsonstr,userIds);
         }
     }
 
