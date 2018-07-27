@@ -64,7 +64,30 @@
         limit 50
     </select>
 
+    <!--附近50家最近的company下的companyUser-->
+    <select id="getNearByCompanyUsers" resultType="map">
 
+        select ac.* from account ac
+
+        inner join company_user_info cu on cu.company_user_no=ac.company_user_no
+
+        inner join company_info c on c.company_no=cu.company_no
+
+        where cu.company_no in (
+
+           select company_no  from  (
+
+            select *,6370996.81 * ACOS(COS(#{center_coordinate_lat} * PI() / 180) * COS(company_location_lat * PI() / 180) * COS(#{center_coordinate_lon} * PI() / 180 - company_location_lon * PI() / 180)
+
+          + SIN(#{center_coordinate_lat} * PI() / 180) * SIN(company_location_lat * PI() / 180)) distance from company_info
+
+          order by distance asc
+
+          limit 50
+	    ) as tt
+
+        )
+    </select>
 
 
     <insert id="addCompany" parameterType="com.prweb.entity.Company">

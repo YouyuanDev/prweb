@@ -331,6 +331,8 @@ public class PersonUserController {
                                     order.setPerson_user_no(accountlist.get(0).getPerson_user_no());
                                 }
                             }
+
+
                             resTotal=orderDao.addOrder(order);
                         }else{
                             json.put("success",false);
@@ -401,6 +403,34 @@ public class PersonUserController {
                 userIds=userIds+","+userIds2;
             }
             System.out.println("userIds="+userIds);
+
+            //如果是新增订单，范围推送
+            if(event!=null&&event.equals("order_submit")){
+                List<Order> orderlist=orderDao.getOrderByOrderNo(orderNo);
+                if(orderlist.size()>0){
+                    Order od=orderlist.get(0);
+                    String person_user_location=od.getPerson_user_location();
+                    String[] loc=null;
+                    if(person_user_location!=null){
+                        loc=person_user_location.split(",");
+                    }
+                    if(loc!=null&&loc.length==2){
+                        //获取用户周围附近的商户下的商户用户
+                        List<HashMap<String,Object>> cmpuserActlist=companyDao.getNearByCompanyUsers(loc[0],loc[1]);
+                        for(int i=0;i<cmpuserActlist.size();i++){
+                            String cell_phone=(String)cmpuserActlist.get(i).get("cell_phone");
+                            if(cell_phone!=null&&!cell_phone.equals("")){
+                                userIds=userIds+","+cell_phone;
+                            }
+                        }
+                        System.out.println("new Order push to："+userIds);
+                    }
+
+                }
+            }
+
+
+
             SendPushNotificationToAccounts(basePath,event,event+"订单:",jsonstr,userIds);
         }
     }

@@ -23,6 +23,9 @@ public interface CompanyDao {
     //得到附近的商户
     public List<HashMap<String,Object>>  getNearByCompany(@Param("center_coordinate_lon")String center_coordinate_lon,@Param("center_coordinate_lat")String center_coordinate_lat);
 
+    //得到附近的商户下的商户用户
+    public List<HashMap<String,Object>>  getNearByCompanyUsers(@Param("center_coordinate_lon")String center_coordinate_lon,@Param("center_coordinate_lat")String center_coordinate_lat);
+
 
     //修改 Company
     public int updateCompany(Company company);
