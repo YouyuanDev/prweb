@@ -121,7 +121,7 @@ public class CompanyUserController {
             try {
                 ResponseUtil.write(response, json);
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_cancelled");
+                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
                 }
 
             }catch  (Exception e) {
@@ -197,7 +197,7 @@ public class CompanyUserController {
             try {
                 ResponseUtil.write(response, json);
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_finished");
+                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
                 }
 
             }catch  (Exception e) {
@@ -272,7 +272,7 @@ public class CompanyUserController {
             try {
                 ResponseUtil.write(response, json);
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_inservice");
+                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
                 }
 
             }catch  (Exception e) {
@@ -363,7 +363,7 @@ public class CompanyUserController {
             try {
                 ResponseUtil.write(response, json);
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_accepted");
+                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
                 }
 
             }catch  (Exception e) {

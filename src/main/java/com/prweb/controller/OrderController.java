@@ -204,7 +204,7 @@ public class OrderController {
             System.out.println("userIds="+userIds);
 
             //如果是新增订单，范围推送
-            if(event!=null&&event.equals("order_submit")){
+            if(event!=null&&event.equals("order_pending")){
                 List<Order> orderlist=orderDao.getOrderByOrderNo(orderNo);
                 if(orderlist.size()>0){
                     Order od=orderlist.get(0);
@@ -281,7 +281,7 @@ public class OrderController {
                 ResponseUtil.write(response, json);
 
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_save");
+                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
                 }
 
             }catch  (Exception e) {
