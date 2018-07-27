@@ -89,7 +89,7 @@ public class PersonUserController {
                     //先判断person_user下是否有未完成的order
                     order = orderDao.getCurrentPersonUserOrderByUsername(username);
                     if(order!=null&&!order.getOrder_status().equals("cancelled")&&
-                            order.getOrder_status().equals("finishedconfirmed")){
+                            !order.getOrder_status().equals("finishedconfirmed")){
                         //设置order状态
                         order.setOrder_status("cancelled");
                         resTotal=orderDao.updateOrder(order);
