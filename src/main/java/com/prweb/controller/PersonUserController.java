@@ -80,7 +80,7 @@ public class PersonUserController {
         Order order=null;
         try{
 
-            if(accountType==null||!accountType.equals("")){
+            if(accountType==null||accountType.equals("")){
                 json.put("success",false);
                 json.put("relogin",true);
                 json.put("message","不存在session，重新登录");
@@ -156,7 +156,7 @@ public class PersonUserController {
         int resTotal=0;
         try{
 
-            if(accountType==null||!accountType.equals("")){
+            if(accountType==null||accountType.equals("")){
                 json.put("success",false);
                 json.put("relogin",true);
                 json.put("message","不存在session，重新登录");
