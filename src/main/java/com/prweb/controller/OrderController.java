@@ -163,6 +163,15 @@ public class OrderController {
         return mmp;
     }
 
+    @RequestMapping(value = "getOrderMapByOrderNo",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getOrderMapByOrderNo(@RequestParam(value = "order_no",required = false)String order_no, HttpServletRequest request){
+        List<HashMap<String,Object>> list=orderDao.getOrderMapByOrderNo(order_no);
+        String mmp= JSONArray.toJSONString(list);
+        System.out.println(mmp);
+        return mmp;
+    }
+
 
 
 
