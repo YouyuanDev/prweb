@@ -342,18 +342,20 @@ public class OrderController {
         String accountType = (String) session.getAttribute("accountType");
 
 
-        if(order_no!=null&&username!=null&&accountType!=null&&my_location!=null){
-           List<Order> orderList=orderDao.getOrderByOrderNo(order_no);
-           if(orderList.size()>0){
-               Order order=orderList.get(0);
-               if(accountType.equals("person_user")){
-                   order.setPerson_user_location(my_location);
-               }
-               else if(accountType.equals("company_user")){
-                   order.setCompany_user_location(my_location);
-               }
-               int orderRes=orderDao.updateOrder(order);
+        if(username!=null&&accountType!=null&&my_location!=null){
 
+            if(order_no!=null) {
+                List<Order> orderList = orderDao.getOrderByOrderNo(order_no);
+                if (orderList.size() > 0) {
+                    Order order = orderList.get(0);
+                    if (accountType.equals("person_user")) {
+                        order.setPerson_user_location(my_location);
+                    } else if (accountType.equals("company_user")) {
+                        order.setCompany_user_location(my_location);
+                    }
+                    int orderRes = orderDao.updateOrder(order);
+                }
+            }
                //更新定位轨迹坐标
                Location loc=new Location();
                loc.setId(0);
@@ -362,14 +364,13 @@ public class OrderController {
                loc.setUsername(username);
                loc.setCoordinate(my_location);
                int locRes=locationDao.addLocation(loc);
-               if(orderRes>0){
+               if(locRes>0){
                    json.put("success",true);
                    json.put("msg","定位更新成功");
+               }else{
+                   json.put("success",false);
+                   json.put("msg","定位更新失败");
                }
-           }else{
-               json.put("success",false);
-               json.put("msg","order_no不存在");
-           }
 
         }else{
             json.put("success",false);
@@ -378,6 +379,7 @@ public class OrderController {
 
 
         String map= JSONObject.toJSONString(json);
+        System.out.print("map");
         return map;
 
 
