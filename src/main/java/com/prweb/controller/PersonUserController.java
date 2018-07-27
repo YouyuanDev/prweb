@@ -64,6 +64,84 @@ public class PersonUserController {
     }
 
 
+
+    //个人用户订单付款
+    @RequestMapping(value = "/PersonUserPayOrder")
+    @ResponseBody
+    public String PersonUserPayOrder(HttpServletRequest request, HttpServletResponse response){
+        System.out.print("PersonUserPayOrder");
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username=(String)session.getAttribute("userSession");
+        String accountType=(String)session.getAttribute("accountType");
+        int resTotal=0;
+        Order order=null;
+        try{
+
+            if(accountType==null||!accountType.equals("")){
+                json.put("success",false);
+                json.put("relogin",true);
+                json.put("message","不存在session，重新登录");
+            }
+            else{
+
+                if(accountType.equals("person_user")){
+
+                    //先判断person_user下是否有未完成的order
+                    order = orderDao.getCurrentPersonUserOrderByUsername(username);
+                    if(order!=null&&order.getOrder_status().equals("confirmed")){
+                        //这里验证付费状态
+
+                        //。。。。。。。。。。
+
+                        //设置order状态
+                        order.setOrder_status("confirmedpaid");
+                        resTotal=orderDao.updateOrder(order);
+                    }else{
+                        json.put("success",false);
+                        json.put("message","不存在未付费的订单");
+                    }
+
+                    if(resTotal>0){
+                        json.put("success",true);
+                        json.put("OrderNo",order.getOrder_no());
+                        json.put("message","订单支付成功");
+
+
+                    }else{
+                        json.put("success",false);
+                        json.put("message","订单支付失败");
+                    }
+                }else{
+                    json.put("success",false);
+                    json.put("message","订单支付失败,accountType为"+accountType);
+                }
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+
+        }finally {
+            try {
+                ResponseUtil.write(response, json);
+                if(resTotal>0){
+                    SendPushNotification(request,json,order.getOrder_no(),"order_confirmedpaid");
+                }
+
+            }catch  (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+
     //个人用户生成订单
     @RequestMapping(value = "/PersonUserSubmitPendingOrder")
     @ResponseBody

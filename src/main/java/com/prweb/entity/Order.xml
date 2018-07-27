@@ -82,14 +82,19 @@
     <select id="getCurrentPersonUserOrderByUsername" resultType="com.prweb.entity.Order">
         select o.* from  order_info o inner join account ac on o.person_user_no=ac.person_user_no
         <where>
-            <if test="person_username!=null and person_username!=''">
-                AND username =#{person_username}
-            </if>
 
-            <![CDATA[ AND  order_status <> 'finished'   ]]>
+            AND username =#{person_username}
 
+            (OR order_status='pending'
 
-            <![CDATA[ AND  order_status <> 'cancelled'   ]]>
+            OR order_status='confirmed'
+
+            OR order_status='confirmedpaid'
+
+            OR order_status='inservice'
+
+            OR order_status='finished'
+            )
 
             AND o.person_user_no is not null
 
@@ -102,13 +107,15 @@
     <select id="getCurrentOrderCompanyUserByUsername" resultType="com.prweb.entity.Order">
         select o.* from  order_info o inner join account ac on o.company_user_no=ac.company_user_no
         <where>
-            <if test="company_username!=null and company_username!=''">
-                AND username =#{company_username}
-            </if>
-            <![CDATA[ AND  order_status <> 'finished'   ]]>
 
-            <![CDATA[ AND  order_status <> 'pending'   ]]>
-            <![CDATA[ AND  order_status <> 'cancelled'   ]]>
+             AND username =#{company_username}
+
+            (OR order_status='confirmed'
+
+            OR order_status='confirmedpaid'
+
+            OR order_status='inservice')
+
             AND o.company_user_no is not null
 
             AND ac.company_user_no is not null
@@ -159,7 +166,8 @@
      upload_files,
      remark,
      service_type_code,
-     failure_type_code_list
+     failure_type_code_list,
+     payment_status
         ) VALUES (
 
      #{order_no},
@@ -176,7 +184,8 @@
      #{upload_files},
      #{remark},
      #{service_type_code},
-     #{failure_type_code_list}
+     #{failure_type_code_list},
+     #{payment_status}
         )
     </insert>
 
@@ -196,7 +205,8 @@
      upload_files=#{upload_files},
      remark=#{remark},
      service_type_code=#{service_type_code},
-     failure_type_code_list=#{failure_type_code_list}
+     failure_type_code_list=#{failure_type_code_list},
+     payment_status=#{payment_status}
         where id=#{id}
     </update>
 

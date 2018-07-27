@@ -60,7 +60,84 @@ public class CompanyUserController {
         return map;
     }
 
-    
+
+    //商户用户完成订单服务
+    @RequestMapping(value = "/CompanyUserFinishService")
+    @ResponseBody
+    public String CompanyUserFinishService(HttpServletRequest request, HttpServletResponse response){
+        System.out.print("CompanyUserFinishService");
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username=(String)session.getAttribute("userSession");
+        String accountType=(String)session.getAttribute("accountType");
+        int resTotal=0;
+        Order order=null;
+        try{
+
+            if(accountType==null||!accountType.equals("")){
+                json.put("success",false);
+                json.put("relogin",true);
+                json.put("message","不存在session，重新登录");
+            }
+            else{
+
+                if(accountType.equals("company_user")){
+
+                    //先判断company_user下是否有未完成的order
+                    order = orderDao.getCurrentOrderCompanyUserByUsername(username);
+                    if(order!=null&&order.getOrder_status().equals("inservice")){
+                        //设置order状态
+                        order.setOrder_status("finished");
+                        //设置完成时间
+                        order.setFinsh_time(new Date());
+                        resTotal=orderDao.updateOrder(order);
+                    }else{
+                        json.put("success",false);
+                        json.put("message","不存在正在服务的订单");
+                    }
+
+                    if(resTotal>0){
+                        json.put("success",true);
+                        json.put("OrderNo",order.getOrder_no());
+                        json.put("message","订单服务完成成功");
+
+
+                    }else{
+                        json.put("success",false);
+                        json.put("message","订单服务完成失败");
+                    }
+                }else{
+                    json.put("success",false);
+                    json.put("message","订单服务完成失败,accountType为"+accountType);
+                }
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+
+        }finally {
+            try {
+                ResponseUtil.write(response, json);
+                if(resTotal>0){
+                    SendPushNotification(request,json,order.getOrder_no(),"order_finished");
+                }
+
+            }catch  (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+
+
+
     //商户用户开始服务订单
     @RequestMapping(value = "/CompanyUserStartService")
     @ResponseBody
@@ -87,13 +164,13 @@ public class CompanyUserController {
 
                         //先判断company_user下是否有未完成的order
                         order = orderDao.getCurrentOrderCompanyUserByUsername(username);
-                        if(order!=null&&order.getOrder_status().equals("confirmed")){
+                        if(order!=null&&order.getOrder_status().equals("confirmedpaid")){
                             //设置order状态
                             order.setOrder_status("inservice");
                             resTotal=orderDao.updateOrder(order);
                         }else{
                             json.put("success",false);
-                            json.put("message","不存在可服务的订单");
+                            json.put("message","不存在可服务且已付费的订单");
                         }
 
                     if(resTotal>0){
