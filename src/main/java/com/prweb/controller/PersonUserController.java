@@ -1,19 +1,26 @@
 package com.prweb.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.prweb.dao.AccountDao;
 import com.prweb.dao.CompanyDao;
+import com.prweb.dao.OrderDao;
+import com.prweb.entity.Account;
 import com.prweb.entity.Business;
 import com.prweb.entity.CompanyUser;
+import com.prweb.entity.Order;
+import com.prweb.util.APICloudPushService;
 import com.prweb.util.ComboxItem;
+import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 @Controller
 @RequestMapping("/PersonUser")
@@ -21,6 +28,13 @@ public class PersonUserController {
 
     @Autowired
     CompanyDao companyDao;
+
+    @Autowired
+    private OrderDao orderDao;
+
+
+    @Autowired
+    private AccountDao accountDao;
 
 
     //用于
@@ -47,6 +61,135 @@ public class PersonUserController {
         List<HashMap<String,Object>> list=companyDao.getNearByCompany(lon,lat);
         String map= JSONObject.toJSONString(list);
         return map;
+    }
+
+
+    //个人用户生成订单
+    @RequestMapping(value = "/PersonUserSubmitPendingOrder")
+    @ResponseBody
+    public String PersonUserSubmitPendingOrder(Order order, HttpServletRequest request, HttpServletResponse response){
+        System.out.print("PersonUserSubmitPendingOrder");
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username=(String)session.getAttribute("userSession");
+        String accountType=(String)session.getAttribute("accountType");
+        int resTotal=0;
+        try{
+
+            if(accountType==null||!accountType.equals("")){
+                json.put("success",false);
+                json.put("relogin",true);
+                json.put("message","不存在session，重新登录");
+            }
+            else{
+
+                if(accountType.equals("person_user")){
+                    if(order.getId()==0){
+                        //先判断person_user下是否有未完成的order
+                        if(order.getOrder_time()==null){
+                            order.setOrder_time(new Date());
+                        }
+                        Order currentorder = orderDao.getCurrentPersonUserOrderByUsername(username);
+                        if(currentorder==null){
+                            //添加
+                            //设置orderno
+                            String uuuid= UUID.randomUUID().toString();
+                            uuuid=uuuid.replace("-","");
+                            order.setOrder_no("OR"+uuuid);
+                            //设置order状态
+                            if(order.getOrder_status()==null)
+                                order.setOrder_status("pending");
+
+                            if(username!=null){
+                                List<Account> accountlist=accountDao.getAccountByUserName(username);
+                                if(accountlist.size()>0){
+                                    order.setPerson_user_no(accountlist.get(0).getPerson_user_no());
+                                }
+                            }
+                            resTotal=orderDao.addOrder(order);
+                        }else{
+                            json.put("success",false);
+                            json.put("message","不能生成新的订单，存在未完成的订单");
+                        }
+
+                    }
+                    if(resTotal>0){
+                        json.put("success",true);
+                        json.put("OrderNo",order.getOrder_no());
+                        json.put("message","订单生成成功");
+
+
+                    }else{
+                        json.put("success",false);
+                        json.put("message","订单生成失败");
+                    }
+                }else{
+                    json.put("success",false);
+                    json.put("message","订单生成失败,accountType为"+accountType);
+                }
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+
+        }finally {
+            try {
+                ResponseUtil.write(response, json);
+                if(resTotal>0){
+                    SendPushNotification(request,json,order.getOrder_no(),"order_submit");
+                }
+
+            }catch  (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+
+    //发送推送给相关人员
+    private void SendPushNotification(HttpServletRequest request,JSONObject json,String orderNo,String event){
+        String basePath = request.getSession().getServletContext().getRealPath("/");
+        if(basePath.lastIndexOf('/')==-1){
+            basePath=basePath.replace('\\','/');
+        }
+
+        String jsonstr= JSONArray.toJSONString(json);
+        //查找订单的两个有关人员电话
+        List<HashMap<String,Object>> lt=orderDao.getPushPhoneNosByOrderNo(orderNo);
+        if(lt.size()>0){
+
+            String userIds1=(String)lt.get(0).get("phone1");
+            String userIds2=(String)lt.get(0).get("phone2");
+            System.out.println("userIds1="+userIds1);
+            System.out.println("userIds2="+userIds2);
+
+            String userIds="";
+            if(userIds1!=null&&!userIds1.equals("")){
+                userIds=userIds1;
+            }
+            if(userIds2!=null&&!userIds2.equals("")){
+                userIds=userIds+","+userIds2;
+            }
+            System.out.println("userIds="+userIds);
+            SendPushNotificationToAccounts(basePath,event,event+"订单:"+orderNo,jsonstr,userIds);
+        }
+    }
+
+    //发送推送消息 accounts  phone ,分隔
+    public void SendPushNotificationToAccounts(String basePath, String event, String title, String content, String userIds) {
+
+
+        //发消息
+        APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
+
+
     }
 
 }
