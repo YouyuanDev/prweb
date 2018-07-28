@@ -337,6 +337,52 @@ public class OrderController {
     public OrderController() {
     }
 
+
+    //获取当前订单的personUser和CompanyUser的Location
+    @RequestMapping(value = "/getPersonUserAndCompanyUserCurrentLocation")
+    @ResponseBody
+    public String getPersonUserAndCompanyUserCurrentLocation(HttpServletRequest request, HttpServletResponse response) {
+        System.out.print("getPersonUserAndCompanyUserCurrentLocation");
+
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
+
+        Order order = null;
+        if (username != null && accountType != null) {
+            if (accountType.equals("person_user")) {
+                order = orderDao.getCurrentPersonUserOrderByUsername(username);
+            } else if (accountType.equals("company_user")) {
+                order = orderDao.getCurrentOrderCompanyUserByUsername(username);
+            }
+            if (order != null) {
+                json.put("success", true);
+                json.put("accountType", accountType);
+                json.put("person_user_location",order.getPerson_user_location());
+                json.put("company_user_location",order.getCompany_user_location());
+                json.put("msg", "存在Order");
+            } else {
+                json.put("success", false);
+                json.put("accountType", accountType);
+                json.put("msg", "不存在未完成的Order");
+            }
+        } else {
+            json.put("success", false);
+            json.put("relogin", true);
+            json.put("msg", "session不存在，重新登录");
+        }
+
+        String map= JSONObject.toJSONString(json);
+        System.out.print(map);
+        return map;
+
+    }
+
+
+
     //更新个人location到历史location，轨迹保存
     @RequestMapping(value = "/updateLocation")
     @ResponseBody
@@ -392,7 +438,7 @@ public class OrderController {
 
 
         String map= JSONObject.toJSONString(json);
-        System.out.print("map");
+        System.out.print(map);
         return map;
 
 
