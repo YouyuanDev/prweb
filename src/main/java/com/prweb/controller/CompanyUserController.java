@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.prweb.dao.AccountDao;
 import com.prweb.dao.CompanyDao;
+import com.prweb.dao.CompanyUserDao;
 import com.prweb.dao.OrderDao;
 import com.prweb.entity.Account;
+import com.prweb.entity.Company;
 import com.prweb.entity.Order;
 import com.prweb.util.APICloudPushService;
 import com.prweb.util.ResponseUtil;
@@ -34,6 +36,9 @@ public class CompanyUserController {
 
     @Autowired
     private AccountDao accountDao;
+
+    @Autowired
+    private CompanyUserDao companyUserDao;
 
     //用于商户用户获取附近待接的订单
     @RequestMapping(value = "getNearByPendingOrders",produces = "text/plain;charset=utf-8")
@@ -411,6 +416,40 @@ public class CompanyUserController {
         //发消息
         APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
 
+
+    }
+
+
+    //获取CompanyUserInfo
+    @RequestMapping(value = "getCompanyUserInfo",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getCompanyUserInfo( HttpServletRequest request){
+
+        System.out.print("getCompanyUserInfo");
+
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+
+        List<Company> list=companyUserDao.getCompanyInfoByUsername(username);
+        Company company=null;
+        if(list.size()>0){
+            company=list.get(0);
+            json.put("success",true);
+            json.put("company",company);
+            json.put("message","获取商户信息成功");
+
+        }else{
+            json.put("success",false);
+            json.put("message","获取商户信息失败");
+
+        }
+
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
 
     }
 

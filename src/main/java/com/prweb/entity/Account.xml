@@ -89,7 +89,8 @@
       system_user_no,
       account_status,
         last_login_time,
-      icon_url
+      icon_url,
+      nickname
         ) VALUES (
       #{username},
       #{password},
@@ -102,7 +103,8 @@
       #{system_user_no},
       #{account_status},
       #{last_login_time},
-      #{icon_url}
+      #{icon_url},
+      #{nickname}
         )
     </insert>
 
@@ -119,7 +121,8 @@
       system_user_no= #{system_user_no},
       account_status=#{account_status},
       last_login_time=#{last_login_time},
-      icon_url=#{icon_url}
+      icon_url=#{icon_url},
+      nickname=#{nickname}
 
         where id=#{id}
     </update>

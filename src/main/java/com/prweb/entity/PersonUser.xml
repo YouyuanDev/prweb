@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.PersonUserDao">
+
+
+
+    <select id="getPersonUserByUsername" resultType="com.prweb.entity.PersonUser">
+        select p.* from person_user_info p inner join account a on a.person_user_no=p.person_user_no
+
+        <where>
+            <if test="username!=null and username!=''">
+                AND a.username=#{username}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getPersonUserByPersonUserNo" resultType="com.prweb.entity.PersonUser">
+        select * from person_user_info
+
+        <where>
+            <if test="person_user_no!=null and person_user_no!=''">
+                AND person_user_no=#{person_user_no}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getAllPersonUser" resultType="com.prweb.entity.PersonUser">
+        select * from person_user_info
+
+    </select>
+
+
+
+    <insert id="addPersonUser" parameterType="com.prweb.entity.PersonUser">
+        INSERT INTO person_user_info(
+        person_user_no,
+        person_name,
+        sex,
+        id_card,
+        cell_phone,
+        is_verified
+        )
+        VALUES (
+        #{person_user_no},
+        #{person_name},
+        #{sex},
+        #{id_card},
+        #{cell_phone},
+        #{is_verified}
+        )
+    </insert>
+
+    <update id="updatePersonUser" parameterType="com.prweb.entity.PersonUser">
+        UPDATE person_user_info set
+        person_user_no=#{person_user_no},
+        person_name=#{person_name},
+        sex=#{sex},
+        id_card=#{id_card},
+        cell_phone=#{cell_phone},
+        is_verified=#{is_verified}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delPersonUser">
+        delete from person_user_info WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+
+</mapper>

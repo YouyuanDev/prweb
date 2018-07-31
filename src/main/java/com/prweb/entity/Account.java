@@ -21,11 +21,12 @@ public class Account {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date last_login_time;
     private String icon_url;
+    private String nickname;
 
     public Account() {
     }
 
-    public Account(int id, String username, String password, Date register_time, String cell_phone, String role_no_list, String account_type, String person_user_no, String company_user_no, String system_user_no, String account_status, Date last_login_time, String icon_url) {
+    public Account(int id, String username, String password, Date register_time, String cell_phone, String role_no_list, String account_type, String person_user_no, String company_user_no, String system_user_no, String account_status, Date last_login_time, String icon_url, String nickname) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -39,6 +40,7 @@ public class Account {
         this.account_status = account_status;
         this.last_login_time = last_login_time;
         this.icon_url = icon_url;
+        this.nickname = nickname;
     }
 
     public int getId() {
@@ -143,5 +145,13 @@ public class Account {
 
     public void setIcon_url(String icon_url) {
         this.icon_url = icon_url;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

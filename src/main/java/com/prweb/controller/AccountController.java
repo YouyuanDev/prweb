@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -127,6 +128,38 @@ public class AccountController {
 
 
 
+    //获取accountInfo
+    @RequestMapping(value = "getAccountInfo",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getAccountInfo( HttpServletRequest request){
 
+        System.out.print("getAccountInfo");
+
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
+
+        List<Account> list=accountDao.getAccountByUserName(username);
+        Account account=null;
+        if(list.size()>0){
+            account=list.get(0);
+            json.put("success",true);
+            json.put("account",account);
+            json.put("message","获取账户信息成功");
+
+        }else{
+            json.put("success",false);
+            json.put("message","获取账户信息失败");
+
+        }
+
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+
+    }
 
 }

@@ -5,7 +5,17 @@
 
 <mapper namespace="com.prweb.dao.CompanyUserDao">
 
+    <select id="getCompanyInfoByUsername" resultType="com.prweb.entity.Company">
+        select c.* from company_user_info cu inner join account a on a.company_user_no=cu.company_user_no
+        inner join company_info c on c.company_no=cu.company_no
 
+        <where>
+            <if test="username!=null and username!=''">
+                AND a.username=#{username}
+            </if>
+        </where>
+
+    </select>
 
     <select id="getCompanyUserByCompanyUserNo" resultType="com.prweb.entity.CompanyUser">
         select * from company_user_info
@@ -29,6 +39,9 @@
         company_user_no,
         company_no
 
+        )VALUES (
+        #{company_user_no},
+        #{company_no}
         )
     </insert>
 

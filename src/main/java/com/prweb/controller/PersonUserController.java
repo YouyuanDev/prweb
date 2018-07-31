@@ -5,10 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.prweb.dao.AccountDao;
 import com.prweb.dao.CompanyDao;
 import com.prweb.dao.OrderDao;
-import com.prweb.entity.Account;
-import com.prweb.entity.Business;
-import com.prweb.entity.CompanyUser;
-import com.prweb.entity.Order;
+import com.prweb.dao.PersonUserDao;
+import com.prweb.entity.*;
 import com.prweb.util.APICloudPushService;
 import com.prweb.util.ComboxItem;
 import com.prweb.util.ResponseUtil;
@@ -28,6 +26,9 @@ public class PersonUserController {
 
     @Autowired
     CompanyDao companyDao;
+
+    @Autowired
+    PersonUserDao personUserDao;
 
     @Autowired
     private OrderDao orderDao;
@@ -444,5 +445,41 @@ public class PersonUserController {
 
 
     }
+
+
+    //获取person_user_info
+    @RequestMapping(value = "getPersonUserInfo",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getPersonUserInfo( HttpServletRequest request){
+
+        System.out.print("getPersonUserInfo");
+
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+
+        List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
+        PersonUser personuser=null;
+        if(list.size()>0){
+            personuser=list.get(0);
+            json.put("success",true);
+            json.put("personUser",personuser);
+            json.put("message","获取个人信息成功");
+
+        }else{
+            json.put("success",false);
+            json.put("message","获取个人信息失败");
+
+        }
+
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+
+    }
+
+
 
 }
