@@ -56,13 +56,15 @@
     </insert>
 
     <update id="updatePersonUser" parameterType="com.prweb.entity.PersonUser">
-        UPDATE person_user_info set
-        person_user_no=#{person_user_no},
-        person_name=#{person_name},
-        sex=#{sex},
-        id_card=#{id_card},
-        cell_phone=#{cell_phone},
-        is_verified=#{is_verified}
+        UPDATE person_user_info
+        <trim prefix="set" suffixOverrides=",">
+            <if test="person_user_no!=null and person_user_no!=''">person_user_no=#{person_user_no},</if>
+            <if test="person_name!=null and person_name!=''">person_name=#{person_name},</if>
+            <if test="sex!=null and sex!=''">sex=#{sex},</if>
+            <if test="id_card!=null and id_card!=''">id_card=#{id_card},</if>
+            <if test="cell_phone and cell_phone!=''">cell_phone=#{cell_phone},</if>
+            <if test="is_verified and is_verified!=''">is_verified=#{is_verified},</if>
+        </trim>
         where id=#{id}
     </update>
 

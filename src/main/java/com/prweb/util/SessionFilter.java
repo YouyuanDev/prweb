@@ -40,7 +40,9 @@ public class SessionFilter extends OncePerRequestFilter{
             "APPRegister",
             "APPIsCellphoneNoValidForRegister",
             "getMySession",
-            "APPSwitchAccoutType"
+            "APPSwitchAccoutType",
+            "saveCompanyUserInfo",
+            "savePersonUserInfo"
     }; // 不过滤的uri
 
     @Override

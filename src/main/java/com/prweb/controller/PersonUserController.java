@@ -456,11 +456,12 @@ public class PersonUserController {
 
         JSONObject json = new JSONObject();
         //返回用户session数据
-        HttpSession session = request.getSession();
+        //HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
-        String username = (String) session.getAttribute("userSession");
-
-        List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
+        String person_user_no=request.getParameter("person_user_no");
+        //String username = (String) session.getAttribute("userSession");
+        //List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
+        List<PersonUser> list=personUserDao.getPersonUserByPersonUserNo(person_user_no);
         PersonUser personuser=null;
         if(list.size()>0){
             personuser=list.get(0);
@@ -479,7 +480,45 @@ public class PersonUserController {
         return mmp;
 
     }
+    //保存PersonUser
+    @RequestMapping(value = "/savePersonUserInfo")
+    @ResponseBody
+    public String savePersonUserInfo(PersonUser personUser, HttpServletResponse response){
+        System.out.print("savePersonUserInfo");
 
+        JSONObject json=new JSONObject();
+        try{
+            int resTotal=0;
+            if(personUser.getId()==0){
+                //添加
+                resTotal=personUserDao.addPersonUser(personUser);
+
+            }else{
+                //修改！
+                resTotal=personUserDao.updatePersonUser(personUser);
+            }
+            if(resTotal>0){
+                json.put("success",true);
+                json.put("message","保存成功");
+            }else{
+                json.put("success",false);
+                json.put("message","保存失败");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+
+        }finally {
+            try {
+                ResponseUtil.write(response, json);
+            }catch  (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
 
 }

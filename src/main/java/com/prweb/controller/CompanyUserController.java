@@ -39,6 +39,8 @@ public class CompanyUserController {
 
     @Autowired
     private CompanyUserDao companyUserDao;
+    @Autowired
+    private CompanyDao companyDao;
 
     //用于商户用户获取附近待接的订单
     @RequestMapping(value = "getNearByPendingOrders",produces = "text/plain;charset=utf-8")
@@ -418,8 +420,6 @@ public class CompanyUserController {
 
 
     }
-
-
     //获取CompanyUserInfo
     @RequestMapping(value = "getCompanyUserInfo",produces = "text/plain;charset=utf-8")
     @ResponseBody
@@ -429,28 +429,76 @@ public class CompanyUserController {
 
         JSONObject json = new JSONObject();
         //返回用户session数据
-        HttpSession session = request.getSession();
+        //HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
-        String username = (String) session.getAttribute("userSession");
+        //String username = (String) session.getAttribute("userSession");
 
-        List<Company> list=companyUserDao.getCompanyInfoByUsername(username);
-        Company company=null;
-        if(list.size()>0){
-            company=list.get(0);
-            json.put("success",true);
-            json.put("company",company);
-            json.put("message","获取商户信息成功");
+        //List<Company> list=companyUserDao.getCompanyInfoByUsername(username);
+        String company_user_no=request.getParameter("company_user_no");
+        if(company_user_no!=null&&!company_user_no.equals("")){
+            List<Company> list=companyDao.getCompanyByCompanyUserNo(company_user_no);
+            Company company=null;
+            if(list.size()>0){
+                company=list.get(0);
+                json.put("success",true);
+                json.put("company",company);
+                json.put("message","获取商户信息成功");
 
+            }else{
+                json.put("success",false);
+                json.put("message","获取商户信息失败");
+
+            }
         }else{
             json.put("success",false);
             json.put("message","获取商户信息失败");
-
         }
-
         String mmp= JSONArray.toJSONString(json);
         System.out.print("mmp:"+mmp);
         return mmp;
 
     }
+    //保存PersonUser
+    @RequestMapping(value = "/saveCompanyUserInfo")
+    @ResponseBody
+    public String saveCompanyUserInfo(Company company, HttpServletResponse response){
+        System.out.print("saveCompanyUserInfo");
+
+        JSONObject json=new JSONObject();
+        try{
+            int resTotal=0;
+            if(company.getCompany_found_date()==null){
+                company.setCompany_found_date(new Date());
+            }
+            if(company.getId()==0){
+                //添加
+                resTotal=companyDao.addCompany(company);
+            }else{
+                //修改！
+                resTotal=companyDao.updateCompany(company);
+            }
+            if(resTotal>0){
+                json.put("success",true);
+                json.put("message","保存成功");
+            }else{
+                json.put("success",false);
+                json.put("message","保存失败");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+
+        }finally {
+            try {
+                ResponseUtil.write(response, json);
+            }catch  (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 
 }

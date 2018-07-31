@@ -34,4 +34,6 @@ public interface CompanyDao {
     //删除 Company
     public int delCompany(String[]arrId);
 
+    //根据company_user_no获得Company信息
+    public List<Company> getCompanyByCompanyUserNo(@Param("company_user_no")String company_user_no);
 }

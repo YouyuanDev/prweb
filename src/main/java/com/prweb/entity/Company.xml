@@ -120,18 +120,20 @@
     </insert>
 
     <update id="updateCompany" parameterType="com.prweb.entity.Company">
-        UPDATE company_info set
-        company_no=#{company_no},
-        company_name=#{company_name},
-        company_tax_code=#{company_tax_code},
-        company_found_date=#{company_found_date},
-        is_verified=#{is_verified},
-        contact_person=#{contact_person},
-        cell_phone=#{cell_phone},
-        address=#{address},
-        lane_line=#{lane_line},
-        company_location_lon=#{company_location_lon},
-        company_location_lat=#{company_location_lat}
+        UPDATE company_info
+        <trim prefix="set" suffixOverrides=",">
+            <if test="company_no!=null and company_no!=''">company_no=#{company_no},</if>
+            <if test="company_name!=null and company_name!=''">company_name=#{company_name},</if>
+            <if test="company_tax_code!=null and company_tax_code!=''">company_tax_code=#{company_tax_code},</if>
+            <if test="company_found_date">company_found_date=#{company_found_date},</if>
+            <if test="is_verified!=null and is_verified!=''">is_verified=#{is_verified},</if>
+            <if test="contact_person!=null and contact_person!=''">contact_person=#{contact_person},</if>
+            <if test="cell_phone and cell_phone!=''">cell_phone=#{cell_phone},</if>
+            <if test="address and address!=''">address=#{address},</if>
+            <if test="lane_line and lane_line!=''">lane_line=#{lane_line},</if>
+            <if test="company_location_lon and company_location_lon!=''">company_location_lon=#{company_location_lon},</if>
+            <if test="company_location_lat and company_location_lat!=''">company_location_lat=#{company_location_lat},</if>
+        </trim>
         where id=#{id}
     </update>
 
@@ -142,4 +144,14 @@
             #{item}
         </foreach>
     </delete>
+
+    <select id="getCompanyByCompanyUserNo" resultType="com.prweb.entity.Company">
+        select * from company_user_info cu inner JOIN company_info c on cu.company_no=c.company_no
+        <where>
+            <if test="company_user_no!=null and company_user_no!=''">
+                AND cu.company_user_no=#{company_user_no}
+            </if>
+        </where>
+
+    </select>
 </mapper>

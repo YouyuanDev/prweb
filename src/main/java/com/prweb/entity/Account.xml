@@ -109,21 +109,22 @@
     </insert>
 
     <update id="updateAccount" parameterType="com.prweb.entity.Account">
-        UPDATE account set
-      username=#{username},
-      password= #{password},
-      register_time=#{register_time},
-      cell_phone=#{cell_phone},
-      role_no_list=#{role_no_list},
-      account_type=#{account_type},
-      person_user_no=#{person_user_no},
-      company_user_no=#{company_user_no},
-      system_user_no= #{system_user_no},
-      account_status=#{account_status},
-      last_login_time=#{last_login_time},
-      icon_url=#{icon_url},
-      nickname=#{nickname}
-
+       UPDATE account
+        <trim prefix="set" suffixOverrides=",">
+            <if test="username!=null and username!=''">username=#{username},</if>
+            <if test="password!=null and password!=''">password=#{password},</if>
+            <if test="register_time!=null">register_time=#{register_time},</if>
+            <if test="cell_phone!=null and cell_phone!=''">cell_phone=#{cell_phone},</if>
+            <if test="role_no_list!=null and role_no_list!=''">role_no_list=#{role_no_list},</if>
+            <if test="account_type!=null and account_type!=''">account_type=#{account_type},</if>
+            <if test="person_user_no and person_user_no!=''">person_user_no=#{person_user_no},</if>
+            <if test="company_user_no and company_user_no!=''">company_user_no=#{company_user_no},</if>
+            <if test="system_user_no and system_user_no!=''">system_user_no=#{system_user_no},</if>
+            <if test="account_status and account_status!=''">account_status=#{account_status},</if>
+            <if test="last_login_time">last_login_time=#{last_login_time},</if>
+            <if test="icon_url and icon_url!=''">icon_url=#{icon_url},</if>
+            <if test="nickname and nickname!=''">nickname=#{nickname},</if>
+        </trim>
         where id=#{id}
     </update>
 
