@@ -553,15 +553,15 @@ public class PersonUserController {
                     int res=personUserDao.updatePersonUser(pu);
                     if(res>0){
                         json.put("success",true);
-                        json.put("message","认证提交成功");
+                        json.put("message","个人认证提交成功");
                     }else{
                         json.put("success",false);
                         json.put("message","系统错误");
                     }
 
                 }else{
-                    json.put("success",true);
-                    json.put("message","认证提交成功");
+                    json.put("success",false);
+                    json.put("message","个人认证提交失败，账户已认证或正在认证审核中");
                 }
 
             }else{

@@ -10,6 +10,7 @@ import com.prweb.dao.OrderDao;
 import com.prweb.entity.Account;
 import com.prweb.entity.Company;
 import com.prweb.entity.Order;
+import com.prweb.entity.PersonUser;
 import com.prweb.util.APICloudPushService;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -491,5 +492,61 @@ public class CompanyUserController {
         return null;
     }
 
+    //认证CompanyUser
+    @RequestMapping(value = "/verifyCompanyUserInfo")
+    @ResponseBody
+    public String verifyCompanyUserInfo(HttpServletRequest request){
+        System.out.print("verifyCompanyUserInfo");
+        String id_card_picture_front= request.getParameter("id_card_picture_front");
+        String id_card_picture_back= request.getParameter("id_card_picture_back");
+        String business_certificate_picture= request.getParameter("business_certificate_picture");
+
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+
+        if(username==null){
+            json.put("success",false);
+            json.put("relogin",true);
+            json.put("message","session不存在，请登录");
+        }
+        else if(id_card_picture_back==null||id_card_picture_front==null||business_certificate_picture==null){
+            json.put("success",false);
+            json.put("message","身份证照片或营业执照照片不存在，认证提交失败");
+        }else{
+            List<Company> list=companyUserDao.getCompanyInfoByUsername(username);
+            if(list.size()>0){
+                Company comp=list.get(0);
+                if(comp.getIs_verified().equals("0")||comp.getIs_verified().equals("3")){
+                    comp.setId_card_picture_front(id_card_picture_front);
+                    comp.setId_card_picture_back(id_card_picture_back);
+                    comp.setBusiness_certificate_picture(business_certificate_picture);
+                    comp.setIs_verified("2");
+                    int res=companyDao.updateCompany(comp);
+                    if(res>0){
+                        json.put("success",true);
+                        json.put("message","商户认证提交成功");
+                    }else{
+                        json.put("success",false);
+                        json.put("message","系统错误");
+                    }
+
+                }else{
+                    json.put("success",false);
+                    json.put("message","商户认证提交失败，账户已认证或正在认证审核中");
+                }
+
+            }else{
+                json.put("success",false);
+                json.put("message","不存在该用户名，认证提交失败");
+            }
+        }
+
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+    }
 
 }
