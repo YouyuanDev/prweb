@@ -520,4 +520,59 @@ public class PersonUserController {
     }
 
 
+
+    //认证PersonUser
+    @RequestMapping(value = "/verifyPersonUserInfo")
+    @ResponseBody
+    public String verifyPersonUserInfo(HttpServletRequest request){
+        System.out.print("verifyPersonUserInfo");
+        String id_card_picture_front= request.getParameter("id_card_picture_front");
+        String id_card_picture_back= request.getParameter("id_card_picture_back");
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+
+        if(username==null){
+            json.put("success",false);
+            json.put("relogin",true);
+            json.put("message","session不存在，请登录");
+        }
+        else if(id_card_picture_back==null||id_card_picture_front==null){
+            json.put("success",false);
+            json.put("message","不存在身份证照片，认证提交失败");
+        }else{
+            List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
+            if(list.size()>0){
+                PersonUser pu=list.get(0);
+                if(pu.getIs_verified().equals("0")||pu.getIs_verified().equals("3")){
+                    pu.setId_card_picture_front(id_card_picture_front);
+                    pu.setId_card_picture_back(id_card_picture_back);
+                    pu.setIs_verified("2");
+                    int res=personUserDao.updatePersonUser(pu);
+                    if(res>0){
+                        json.put("success",true);
+                        json.put("message","认证提交成功");
+                    }else{
+                        json.put("success",false);
+                        json.put("message","系统错误");
+                    }
+
+                }else{
+                    json.put("success",true);
+                    json.put("message","认证提交成功");
+                }
+
+            }else{
+                json.put("success",false);
+                json.put("message","不存在该用户名，认证提交失败");
+            }
+        }
+
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+    }
+
 }
