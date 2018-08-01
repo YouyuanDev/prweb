@@ -575,4 +575,53 @@ public class PersonUserController {
         return mmp;
     }
 
+
+    //撤回认证PersonUser
+    @RequestMapping(value = "/cancelVerifyPersonUserInfo")
+    @ResponseBody
+    public String cancelVerifyPersonUserInfo(HttpServletRequest request){
+        System.out.print("cancelVerifyPersonUserInfo");
+
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+
+        if(username==null){
+            json.put("success",false);
+            json.put("relogin",true);
+            json.put("message","session不存在，请登录");
+        }
+        else{
+            List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
+            if(list.size()>0){
+                PersonUser pu=list.get(0);
+                if(pu.getIs_verified().equals("2")){
+                    pu.setIs_verified("0");
+                    int res=personUserDao.updatePersonUser(pu);
+                    if(res>0){
+                        json.put("success",true);
+                        json.put("message","个人认证撤销成功");
+                    }else{
+                        json.put("success",false);
+                        json.put("message","系统错误");
+                    }
+
+                }else{
+                    json.put("success",false);
+                    json.put("message","个人认证撤销失败，没有审核中的认证");
+                }
+
+            }else{
+                json.put("success",false);
+                json.put("message","不存在该用户名，认证撤销失败");
+            }
+        }
+
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+    }
+
 }
