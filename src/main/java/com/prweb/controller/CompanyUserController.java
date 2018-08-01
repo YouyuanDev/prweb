@@ -424,35 +424,26 @@ public class CompanyUserController {
     @RequestMapping(value = "getCompanyUserInfo",produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String getCompanyUserInfo( HttpServletRequest request){
-
         System.out.print("getCompanyUserInfo");
-
         JSONObject json = new JSONObject();
         //返回用户session数据
-        //HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
-        //String username = (String) session.getAttribute("userSession");
+        String username = (String) session.getAttribute("userSession");
+        List<Company> list=companyUserDao.getCompanyInfoByUsername(username);
+        Company company=null;
+        if(list.size()>0){
+            company=list.get(0);
+            json.put("success",true);
+            json.put("company",company);
+            json.put("message","获取商户信息成功");
 
-        //List<Company> list=companyUserDao.getCompanyInfoByUsername(username);
-        String company_user_no=request.getParameter("company_user_no");
-        if(company_user_no!=null&&!company_user_no.equals("")){
-            List<Company> list=companyDao.getCompanyByCompanyUserNo(company_user_no);
-            Company company=null;
-            if(list.size()>0){
-                company=list.get(0);
-                json.put("success",true);
-                json.put("company",company);
-                json.put("message","获取商户信息成功");
-
-            }else{
-                json.put("success",false);
-                json.put("message","获取商户信息失败");
-
-            }
         }else{
             json.put("success",false);
             json.put("message","获取商户信息失败");
+
         }
+
         String mmp= JSONArray.toJSONString(json);
         System.out.print("mmp:"+mmp);
         return mmp;

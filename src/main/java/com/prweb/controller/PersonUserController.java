@@ -456,12 +456,11 @@ public class PersonUserController {
 
         JSONObject json = new JSONObject();
         //返回用户session数据
-        //HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
-        String person_user_no=request.getParameter("person_user_no");
-        //String username = (String) session.getAttribute("userSession");
-        //List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
-        List<PersonUser> list=personUserDao.getPersonUserByPersonUserNo(person_user_no);
+        String username = (String) session.getAttribute("userSession");
+
+        List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
         PersonUser personuser=null;
         if(list.size()>0){
             personuser=list.get(0);
