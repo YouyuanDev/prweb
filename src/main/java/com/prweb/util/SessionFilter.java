@@ -42,7 +42,8 @@ public class SessionFilter extends OncePerRequestFilter{
             "getMySession",
             "APPSwitchAccoutType",
             "saveCompanyUserInfo",
-            "savePersonUserInfo"
+            "savePersonUserInfo",
+            "getCurrentOrderAliPayInfo"
     }; // 不过滤的uri
 
     @Override

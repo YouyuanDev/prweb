@@ -11,6 +11,7 @@ import com.prweb.entity.Location;
 import com.prweb.entity.Order;
 import com.prweb.entity.OrderStatus;
 import com.prweb.util.APICloudPushService;
+import com.prweb.util.AliPayService;
 import com.prweb.util.ComboxItem;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -443,6 +444,51 @@ public class OrderController {
 
 
     }
+
+
+    //获取当前订单的支付宝支付信息
+    @RequestMapping(value = "/getCurrentOrderAliPayInfo")
+    @ResponseBody
+    public String getCurrentOrderAliPayInfo(HttpServletRequest request, HttpServletResponse response) {
+        System.out.print("getCurrentOrderAliPayInfo");
+
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
+
+        Order order = null;
+        if (username != null && accountType != null) {
+            if (accountType.equals("person_user")) {
+                order = orderDao.getCurrentPersonUserOrderByUsername(username);
+            }
+            if (order != null) {
+                AliPayService alipay=new AliPayService();
+                order.setService_items("测试订单项目");
+                String orderInfo=alipay.getOrderInfoByAliPay(order.getOrder_no(),order.getService_items(),order.getService_fee());
+                json.put("orderInfo", orderInfo);
+                json.put("success", true);
+                json.put("msg", "存在支付信息");
+            } else {
+                json.put("success", false);
+                json.put("accountType", accountType);
+                json.put("msg", "不存在未完成的Order");
+            }
+        } else {
+            json.put("success", false);
+            json.put("relogin", true);
+            json.put("msg", "session不存在，重新登录");
+        }
+
+        String map= JSONObject.toJSONString(json);
+        System.out.print(map);
+        return map;
+
+    }
+
+
 
 
 }
