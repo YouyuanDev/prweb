@@ -343,7 +343,7 @@ public class OrderController {
     @RequestMapping(value = "/getPersonUserAndCompanyUserCurrentLocation")
     @ResponseBody
     public String getPersonUserAndCompanyUserCurrentLocation(HttpServletRequest request, HttpServletResponse response) {
-        System.out.print("getPersonUserAndCompanyUserCurrentLocation");
+        //System.out.print("getPersonUserAndCompanyUserCurrentLocation");
 
         JSONObject json = new JSONObject();
         //返回用户session数据
@@ -377,7 +377,7 @@ public class OrderController {
         }
 
         String map= JSONObject.toJSONString(json);
-        System.out.print(map);
+        //System.out.print(map);
         return map;
 
     }
@@ -489,6 +489,90 @@ public class OrderController {
     }
 
 
+    //支付宝支付回调函数
+    @RequestMapping(value = "/AliPayNotify")
+    @ResponseBody
+    public String AliPayNotify(HttpServletRequest request) {
+        System.out.print("AliPayNotify");
+        Map<String,String> params=new HashMap<String,String>();
+        Map requestParamMap=request.getParameterMap();
+        String content="";
+        List<String> lt=new ArrayList<>();
+        for(Iterator iter=requestParamMap.keySet().iterator();iter.hasNext();){
+            String name=(String)iter.next();
+            String[] values=(String[])requestParamMap.get(name);
+            String valueStr="";
+            for(int i=0;i< values.length;i++){
+                valueStr=(i==values.length-1)?valueStr+values[i]:valueStr+values[i]+",";
+            }
+            params.put(name,valueStr);
+            System.out.println(name+"="+valueStr);
+            if(!name.equals("sign")&&!name.equals("sign_type"))
+            lt.add(name);
+        }
+        String sign=params.get("sign");
+//        String sign_type=params.get("sign_type");
+        String out_trade_no=params.get("out_trade_no");
+        String trade_status=params.get("trade_status");
+//        System.out.println("sign="+sign);
+//        System.out.println("sign_type="+sign_type);
+//        System.out.println("out_trade_no="+out_trade_no);
 
+        String [] contentArray=(String[])lt.toArray();
+        //排序
+        Arrays.sort(contentArray);
+//        for(int i=0;i<contentArray.length;i++){
+//            System.out.println(contentArray[i]);
+//        }
+        StringBuffer sb = new StringBuffer("");
+        for (int i = 0; i < contentArray.length; i++) {
+            if(i==(contentArray.length-1)){
+                sb.append(contentArray[i]);
+            }else{
+                sb.append(contentArray[i]+"&");
+            }
+        }
+        content=sb.toString();
+        System.out.println(content);
+
+        AliPayService alipay=new AliPayService();
+        boolean verified=alipay.verify(content,sign);
+
+        JSONObject json = new JSONObject();
+        if (verified&&out_trade_no!=null&&trade_status!=null) {
+
+            if(trade_status.equals("TRADE_SUCCESS")||trade_status.equals("TRADE_FINISHED")){
+                List<Order> list = orderDao.getOrderByOrderNo(out_trade_no);
+                if (list.size()>0) {
+                    Order order=list.get(0);
+                    order.setPayment_status("aliPay");
+                    if(order.getOrder_status().equals("confirmed"))
+                        order.setOrder_status("confirmedpaid");
+                    int res=orderDao.updateOrder(order);
+                    if(res>0){
+                        json.put("success", true);
+                        json.put("msg", "订单支付成功");
+                    }else{
+                        json.put("success", false);
+                        json.put("msg", "系统错误，订单支付数据更新失败");
+                    }
+
+                } else {
+                    json.put("success", false);
+                    json.put("msg", "订单支付数据更新失败");
+                }
+            }else{
+                json.put("success", false);
+                json.put("msg", "订单支付失败 trade_status="+trade_status);
+            }
+
+
+        }
+
+        String map= JSONObject.toJSONString(json);
+        System.out.print(map);
+        return map;
+
+    }
 
 }

@@ -43,6 +43,7 @@ public class SessionFilter extends OncePerRequestFilter{
             "APPSwitchAccoutType",
             "saveCompanyUserInfo",
             "savePersonUserInfo",
+            "AliPayNotify",
             "getCurrentOrderAliPayInfo"
     }; // 不过滤的uri
 

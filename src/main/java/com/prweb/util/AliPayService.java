@@ -23,7 +23,7 @@ public class AliPayService {
     static final String seller_id = "2088231183736857";
 
     //回调服务器地址
-    static final String notify_url="http://notify.msp.hk/notify.htm";
+    static final String notify_url="http://116.62.17.42/Order/AliPayNotify.action";
 
     //开发者私钥
     static final String private_key="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMY0B8ECj+CqpEGE" +
@@ -142,10 +142,10 @@ public class AliPayService {
      * @param content 待签名数据
      * @param sign 签名值
      * @param ali_public_key 支付宝公钥
-     * @param input_charset 编码格式
+   //  * @param input_charset 编码格式
      * @return 布尔值
      */
-    public static boolean verify(String content, String sign, String ali_public_key, String input_charset)
+    public boolean verify(String content, String sign)
     {
         try
         {
@@ -156,7 +156,7 @@ public class AliPayService {
                     .getInstance(SIGN_ALGORITHMS);
 
             signature.initVerify(pubKey);
-            signature.update( content.getBytes(input_charset) );
+            signature.update( content.getBytes("utf-8") );
 
             boolean bverify = signature.verify( Base64.decode(sign) );
             return bverify;
