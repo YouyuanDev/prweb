@@ -20,12 +20,16 @@ public class Company {
     private String lane_line;
     private String company_location_lon;
     private String company_location_lat;
+    private String id_card_picture_front;
+    private String id_card_picture_back;
+    private String business_certificate_picture;
+
 
 
     public Company() {
     }
 
-    public Company(int id, String company_no, String company_name, String company_tax_code, Date company_found_date, String is_verified, String contact_person, String cell_phone, String address, String lane_line, String company_location_lon, String company_location_lat) {
+    public Company(int id, String company_no, String company_name, String company_tax_code, Date company_found_date, String is_verified, String contact_person, String cell_phone, String address, String lane_line, String company_location_lon, String company_location_lat, String id_card_picture_front, String id_card_picture_back, String business_certificate_picture) {
         this.id = id;
         this.company_no = company_no;
         this.company_name = company_name;
@@ -38,6 +42,9 @@ public class Company {
         this.lane_line = lane_line;
         this.company_location_lon = company_location_lon;
         this.company_location_lat = company_location_lat;
+        this.id_card_picture_front = id_card_picture_front;
+        this.id_card_picture_back = id_card_picture_back;
+        this.business_certificate_picture = business_certificate_picture;
     }
 
     public int getId() {
@@ -134,5 +141,29 @@ public class Company {
 
     public void setCompany_location_lat(String company_location_lat) {
         this.company_location_lat = company_location_lat;
+    }
+
+    public String getId_card_picture_front() {
+        return id_card_picture_front;
+    }
+
+    public void setId_card_picture_front(String id_card_picture_front) {
+        this.id_card_picture_front = id_card_picture_front;
+    }
+
+    public String getId_card_picture_back() {
+        return id_card_picture_back;
+    }
+
+    public void setId_card_picture_back(String id_card_picture_back) {
+        this.id_card_picture_back = id_card_picture_back;
+    }
+
+    public String getBusiness_certificate_picture() {
+        return business_certificate_picture;
+    }
+
+    public void setBusiness_certificate_picture(String business_certificate_picture) {
+        this.business_certificate_picture = business_certificate_picture;
     }
 }

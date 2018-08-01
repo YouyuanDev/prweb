@@ -43,7 +43,9 @@
         sex,
         id_card,
         cell_phone,
-        is_verified
+        is_verified,
+        id_card_picture_front,
+        id_card_picture_back
         )
         VALUES (
         #{person_user_no},
@@ -51,7 +53,9 @@
         #{sex},
         #{id_card},
         #{cell_phone},
-        #{is_verified}
+        #{is_verified},
+        #{id_card_picture_front},
+        #{id_card_picture_back}
         )
     </insert>
 
@@ -64,6 +68,8 @@
             <if test="id_card!=null and id_card!=''">id_card=#{id_card},</if>
             <if test="cell_phone and cell_phone!=''">cell_phone=#{cell_phone},</if>
             <if test="is_verified and is_verified!=''">is_verified=#{is_verified},</if>
+            <if test="id_card_picture_front and id_card_picture_front!=''">id_card_picture_front=#{id_card_picture_front},</if>
+            <if test="id_card_picture_back and id_card_picture_back!=''">id_card_picture_back=#{id_card_picture_back},</if>
         </trim>
         where id=#{id}
     </update>

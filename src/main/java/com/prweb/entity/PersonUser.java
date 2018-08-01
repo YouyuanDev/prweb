@@ -9,12 +9,15 @@ public class PersonUser {
     private String id_card;
     private String cell_phone;
     private String is_verified;
+    private String id_card_picture_front;
+    private String id_card_picture_back;
+
 
 
     public PersonUser() {
     }
 
-    public PersonUser(int id, String person_user_no, String person_name, String sex, String id_card, String cell_phone, String is_verified) {
+    public PersonUser(int id, String person_user_no, String person_name, String sex, String id_card, String cell_phone, String is_verified, String id_card_picture_front, String id_card_picture_back) {
         this.id = id;
         this.person_user_no = person_user_no;
         this.person_name = person_name;
@@ -22,6 +25,8 @@ public class PersonUser {
         this.id_card = id_card;
         this.cell_phone = cell_phone;
         this.is_verified = is_verified;
+        this.id_card_picture_front = id_card_picture_front;
+        this.id_card_picture_back = id_card_picture_back;
     }
 
     public int getId() {
@@ -78,5 +83,21 @@ public class PersonUser {
 
     public void setIs_verified(String is_verified) {
         this.is_verified = is_verified;
+    }
+
+    public String getId_card_picture_front() {
+        return id_card_picture_front;
+    }
+
+    public void setId_card_picture_front(String id_card_picture_front) {
+        this.id_card_picture_front = id_card_picture_front;
+    }
+
+    public String getId_card_picture_back() {
+        return id_card_picture_back;
+    }
+
+    public void setId_card_picture_back(String id_card_picture_back) {
+        this.id_card_picture_back = id_card_picture_back;
     }
 }
