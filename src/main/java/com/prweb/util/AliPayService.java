@@ -23,7 +23,7 @@ public class AliPayService {
     static final String seller_id = "2088231183736857";
 
     //回调服务器地址
-    static final String notify_url="http://116.62.17.42/Order/AliPayNotify.action";
+    static final String notify_url="http://116.62.17.42:9090/Order/AliPayNotify.action";
 
     //开发者私钥
     static final String private_key="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMY0B8ECj+CqpEGE" +

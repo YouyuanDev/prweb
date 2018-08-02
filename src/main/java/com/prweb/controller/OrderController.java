@@ -517,23 +517,25 @@ public class OrderController {
 //        System.out.println("sign="+sign);
 //        System.out.println("sign_type="+sign_type);
 //        System.out.println("out_trade_no="+out_trade_no);
-
-        String [] contentArray=(String[])lt.toArray();
-        //排序
-        Arrays.sort(contentArray);
+        if(lt.size()>0){
+            String [] contentArray=(String[])lt.toArray();
+            //排序
+            Arrays.sort(contentArray);
 //        for(int i=0;i<contentArray.length;i++){
 //            System.out.println(contentArray[i]);
 //        }
-        StringBuffer sb = new StringBuffer("");
-        for (int i = 0; i < contentArray.length; i++) {
-            if(i==(contentArray.length-1)){
-                sb.append(contentArray[i]);
-            }else{
-                sb.append(contentArray[i]+"&");
+            StringBuffer sb = new StringBuffer("");
+            for (int i = 0; i < contentArray.length; i++) {
+                if(i==(contentArray.length-1)){
+                    sb.append(contentArray[i]);
+                }else{
+                    sb.append(contentArray[i]+"&");
+                }
             }
+            content=sb.toString();
+            System.out.println(content);
         }
-        content=sb.toString();
-        System.out.println(content);
+
 
         AliPayService alipay=new AliPayService();
         boolean verified=alipay.verify(content,sign);
