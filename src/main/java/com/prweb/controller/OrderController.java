@@ -388,7 +388,7 @@ public class OrderController {
     @RequestMapping(value = "/updateLocation")
     @ResponseBody
     public String updateLocation(HttpServletRequest request, HttpServletResponse response) {
-        System.out.print("updateLocation");
+        //System.out.print("updateLocation");
         String order_no= request.getParameter("order_no");
         String my_location= request.getParameter("my_location");
 
@@ -439,7 +439,7 @@ public class OrderController {
 
 
         String map= JSONObject.toJSONString(json);
-        System.out.print(map);
+        //System.out.print(map);
         return map;
 
 
@@ -466,7 +466,7 @@ public class OrderController {
             }
             if (order != null) {
                 AliPayService alipay=new AliPayService();
-                order.setService_items("测试订单项目");
+                order.setService_items("test order");
                 String orderInfo=alipay.getOrderInfoByAliPay(order.getOrder_no(),order.getService_items(),order.getService_fee());
                 json.put("orderInfo", orderInfo);
                 json.put("success", true);
@@ -518,7 +518,8 @@ public class OrderController {
 //        System.out.println("sign_type="+sign_type);
 //        System.out.println("out_trade_no="+out_trade_no);
         if(lt.size()>0){
-            String [] contentArray=(String[])lt.toArray();
+            String[] contentArray =new String[lt.size()];
+            lt.toArray(contentArray);
             //排序
             Arrays.sort(contentArray);
 //        for(int i=0;i<contentArray.length;i++){
@@ -526,23 +527,27 @@ public class OrderController {
 //        }
             StringBuffer sb = new StringBuffer("");
             for (int i = 0; i < contentArray.length; i++) {
-                if(i==(contentArray.length-1)){
-                    sb.append(contentArray[i]);
-                }else{
-                    sb.append(contentArray[i]+"&");
+                sb.append(contentArray[i]);
+                sb.append("=\"");
+                sb.append(params.get(contentArray[i]));
+                sb.append("\"");
+                if(i<(contentArray.length-1)){
+                    sb.append("&");
                 }
             }
             content=sb.toString();
+            System.out.println("=================================");
             System.out.println(content);
+            System.out.println("=================================");
         }
 
 
         AliPayService alipay=new AliPayService();
         boolean verified=alipay.verify(content,sign);
-
+//        boolean flag = AlipaySignature.rsaCheckV1(params, alipaypublicKey, charset,"RSA2")
         JSONObject json = new JSONObject();
         if (verified&&out_trade_no!=null&&trade_status!=null) {
-
+            System.out.println("sign verified!!!!");
             if(trade_status.equals("TRADE_SUCCESS")||trade_status.equals("TRADE_FINISHED")){
                 List<Order> list = orderDao.getOrderByOrderNo(out_trade_no);
                 if (list.size()>0) {
@@ -569,6 +574,8 @@ public class OrderController {
             }
 
 
+        }else{
+            System.out.println("sign failed verfification!");
         }
 
         String map= JSONObject.toJSONString(json);

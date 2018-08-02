@@ -105,7 +105,7 @@ public class SessionFilter extends OncePerRequestFilter{
             //下面开始验证访问权限
             HashMap<String,Object> functionMap=(HashMap<String,Object>)request.getSession().getAttribute("userfunctionMap");
             if(functionMap!=null&&functionMap.containsKey(reqfunctionCode)){
-                System.out.println("存在存在页面"+reqfunctionCode+"的权限");
+                //System.out.println("存在存在页面"+reqfunctionCode+"的权限");
                 authrized=true;
             }
             //System.out.println("authrized===="+authrized);
