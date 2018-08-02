@@ -528,9 +528,9 @@ public class OrderController {
             StringBuffer sb = new StringBuffer("");
             for (int i = 0; i < contentArray.length; i++) {
                 sb.append(contentArray[i]);
-                sb.append("=\"");
+                sb.append("=");
                 sb.append(params.get(contentArray[i]));
-                sb.append("\"");
+                //sb.append("\"");
                 if(i<(contentArray.length-1)){
                     sb.append("&");
                 }

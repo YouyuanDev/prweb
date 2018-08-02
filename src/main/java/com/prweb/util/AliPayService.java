@@ -141,7 +141,7 @@ public class AliPayService {
      * RSA验签名检查
      * @param content 待签名数据
      * @param sign 签名值
-     * @param ali_public_key 支付宝公钥
+   //  * @param ali_public_key 支付宝公钥
    //  * @param input_charset 编码格式
      * @return 布尔值
      */
@@ -231,8 +231,8 @@ public class AliPayService {
 
     public static void main(String[] args) throws InterruptedException {
 
-        String content="body=\"order body\"&buyer_email=\"137****6002\"&buyer_id=\"2088702692123578\"&discount=\"0.00\"&gmt_create=\"2018-08-02 21:49:31\"&gmt_payment=\"2018-08-02 21:49:32\"&is_total_fee_adjust=\"N\"&notify_id=\"36d09ba8096c402581e84da13c576b1keh\"&notify_time=\"2018-08-02 21:49:32\"&notify_type=\"trade_status_sync\"&out_trade_no=\"OR103\"&payment_type=\"1\"&price=\"0.01\"&quantity=\"1\"&seller_email=\"ketewang@youyuantech.com\"&seller_id=\"2088231183736857\"&subject=\"test order\"&total_fee=\"0.01\"&trade_no=\"2018080221001004570508722798\"&trade_status=\"TRADE_SUCCESS\"&use_coupon=\"N\"";
-        String sign="n+jlPQoubIZxBNHgbgbmoU8MXJGxgxkk3wYk5byyh9zzRsqskzlDYCYz37vWVe+7lwtbVb+3BuRNrIutTDRwXwLctieM5XCU0PQVmQ0XhhzTL7lFyKIu/GjU553B7uYZIh+/NKMdoasrsPgy9Z7qhj4EPazwhGFPGCibJ7orZRU=";
+        String content="body=order body&buyer_email=137****6002&buyer_id=2088702692123578&discount=0.00&gmt_create=2018-08-02 21:59:15&gmt_payment=2018-08-02 21:59:16&is_total_fee_adjust=N&notify_id=1b3ac553ab43152d6704bccd4ccd01dkeh&notify_time=2018-08-02 21:59:16&notify_type=trade_status_sync&out_trade_no=OR104&payment_type=1&price=0.01&quantity=1&seller_email=ketewang@youyuantech.com&seller_id=2088231183736857&subject=test order&total_fee=0.01&trade_no=2018080221001004570508449323&trade_status=TRADE_SUCCESS&use_coupon=N";
+        String sign="dcfD3pjmxI3iJiCAWnJhVB7mZA1qtOoQVpU0mwdB0xBcih5zFVwILCPsNVmC/s7MKdUyejouAFwfKtBoubImzoRmc3xmKY9Vfr9dmb/EVRc7zn8aRvZpX5tHtXjZ9v1rctakSuNrFG87J8yQC43OSfG3wQqcgNAvlgMR731jXx0=";
         AliPayService ali=new AliPayService();
         boolean result=ali.verify(content,sign);
         System.out.println("result="+result);
