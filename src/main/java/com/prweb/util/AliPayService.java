@@ -3,8 +3,11 @@ package com.prweb.util;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipayFundTransToaccountTransferRequest;
 import com.alipay.api.request.AlipayOpenPublicTemplateMessageIndustryModifyRequest;
+import com.alipay.api.request.AlipayTradePayRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
+import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
 import com.alipay.api.response.AlipayOpenPublicTemplateMessageIndustryModifyResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -24,8 +27,12 @@ import java.security.spec.X509EncodedKeySpec;
 public class AliPayService {
 
     //APPID
-
     static final String app_id = "2018080160826887";
+
+    //网页端API appid
+    static final String web_app_id = "2018080360977050";
+
+
 
     //partner ID
     static final String pid = "2088231183736857";
@@ -297,6 +304,36 @@ public class AliPayService {
         return response;
     }
 
+    //订单的商户费用清算转账
+    public AlipayFundTransToaccountTransferResponse transferOrderPaymentToComanyAccount(String order_no,String trade_no) {
+        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", web_app_id, rsa_sha256_private_key, "json", "utf-8", rsa_sha256_ali_public_key, "RSA2");
+        AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest();
+        request.setBizContent("{" +
+                "\"out_biz_no\":\"1111111\"," +
+                "\"payee_type\":\"ALIPAY_LOGONID\"," +
+                "\"payee_account\":\"13774216002\"," +
+                "\"amount\":\"0.1\"," +
+                "\"payer_show_name\":\"熊猫救援服务费\"," +
+                "\"payee_real_name\":\"友元科技\"," +
+                "\"remark\":\"转账备注\"" +
+                "}");
+        AlipayFundTransToaccountTransferResponse response = null;
+        try {
+            response = alipayClient.execute(request);
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+        if (response.isSuccess()) {
+            System.out.println("调用成功");
+        } else {
+
+            System.out.println("调用失败"+response.getCode());
+        }
+
+        return response;
+    }
+
+
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -306,7 +343,7 @@ public class AliPayService {
 //        boolean result=ali.verify(content,sign);
 //        System.out.println("result="+result);
 
-        ali.getOrderPaymentInfo("OR118","2018080321001004570508443810");
-
+        //ali.getOrderPaymentInfo("OR118","2018080321001004570508443810");
+        ali.transferOrderPaymentToComanyAccount("OR118","2018080321001004570508443810");
     }
 }
