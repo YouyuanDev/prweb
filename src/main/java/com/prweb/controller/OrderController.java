@@ -510,9 +510,14 @@ public class OrderController {
             if(!name.equals("sign")&&!name.equals("sign_type"))
             lt.add(name);
         }
+        //签名
         String sign=params.get("sign");
 //        String sign_type=params.get("sign_type");
+        //熊猫救援的订单号
         String out_trade_no=params.get("out_trade_no");
+        //支付宝交易号
+        String trade_no=params.get("trade_no");
+        //支付宝交易状态
         String trade_status=params.get("trade_status");
 //        System.out.println("sign="+sign);
 //        System.out.println("sign_type="+sign_type);
@@ -544,43 +549,59 @@ public class OrderController {
 
         AliPayService alipay=new AliPayService();
         boolean verified=alipay.verify(content,sign);
+        boolean success=false;
 //        boolean flag = AlipaySignature.rsaCheckV1(params, alipaypublicKey, charset,"RSA2")
         JSONObject json = new JSONObject();
+        Order order=null;
         if (verified&&out_trade_no!=null&&trade_status!=null) {
             System.out.println("sign verified!!!!");
             if(trade_status.equals("TRADE_SUCCESS")||trade_status.equals("TRADE_FINISHED")){
                 List<Order> list = orderDao.getOrderByOrderNo(out_trade_no);
                 if (list.size()>0) {
-                    Order order=list.get(0);
-                    order.setPayment_status("aliPay");
+                    order=list.get(0);
+                    order.setPay_method("alipay");
+                    order.setPayment_status(trade_status);
+                    order.setTrade_no(trade_no);
                     if(order.getOrder_status().equals("confirmed"))
                         order.setOrder_status("confirmedpaid");
                     int res=orderDao.updateOrder(order);
                     if(res>0){
-                        json.put("success", true);
-                        json.put("msg", "订单支付成功");
+//                        json.put("success", true);
+//                        json.put("msg", "订单支付成功");
+                        success=true;
                     }else{
+                        success=false;
                         json.put("success", false);
                         json.put("msg", "系统错误，订单支付数据更新失败");
                     }
 
                 } else {
+                    success=false;
                     json.put("success", false);
                     json.put("msg", "订单支付数据更新失败");
                 }
             }else{
+                success=false;
                 json.put("success", false);
                 json.put("msg", "订单支付失败 trade_status="+trade_status);
             }
 
 
         }else{
+            success=false;
             System.out.println("sign failed verfification!");
         }
 
         String map= JSONObject.toJSONString(json);
         System.out.print(map);
-        return map;
+
+        if(success){
+            SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
+            return "success";
+        }else{
+            return "fail";
+        }
+        //return map;
 
     }
 

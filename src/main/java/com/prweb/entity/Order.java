@@ -24,13 +24,15 @@ public class Order {
     private String service_type_code;
     private String failure_type_code_list;
     private String payment_status;
+    private String pay_method;
+    private String trade_no;
 
 
 
     public Order() {
     }
 
-    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_no, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list, String payment_status) {
+    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_no, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list, String payment_status, String pay_method, String trade_no) {
         this.id = id;
         this.order_no = order_no;
         this.business_no = business_no;
@@ -48,6 +50,8 @@ public class Order {
         this.service_type_code = service_type_code;
         this.failure_type_code_list = failure_type_code_list;
         this.payment_status = payment_status;
+        this.pay_method = pay_method;
+        this.trade_no = trade_no;
     }
 
     public int getId() {
@@ -184,5 +188,21 @@ public class Order {
 
     public void setPayment_status(String payment_status) {
         this.payment_status = payment_status;
+    }
+
+    public String getPay_method() {
+        return pay_method;
+    }
+
+    public void setPay_method(String pay_method) {
+        this.pay_method = pay_method;
+    }
+
+    public String getTrade_no() {
+        return trade_no;
+    }
+
+    public void setTrade_no(String trade_no) {
+        this.trade_no = trade_no;
     }
 }

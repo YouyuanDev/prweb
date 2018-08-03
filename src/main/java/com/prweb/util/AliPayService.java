@@ -1,5 +1,12 @@
 package com.prweb.util;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipayOpenPublicTemplateMessageIndustryModifyRequest;
+import com.alipay.api.request.AlipayTradeQueryRequest;
+import com.alipay.api.response.AlipayOpenPublicTemplateMessageIndustryModifyResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import javax.crypto.Cipher;
@@ -16,6 +23,10 @@ import java.security.spec.X509EncodedKeySpec;
 
 public class AliPayService {
 
+    //APPID
+
+    static final String app_id = "2018080160826887";
+
     //partner ID
     static final String pid = "2088231183736857";
 
@@ -25,8 +36,8 @@ public class AliPayService {
     //回调服务器地址
     static final String notify_url="http://116.62.17.42:9090/Order/AliPayNotify.action";
 
-    //开发者私钥
-    static final String private_key="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMY0B8ECj+CqpEGE" +
+    //RSA(SHA1)密钥
+    static final String rsa_sha1_private_key="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMY0B8ECj+CqpEGE" +
             "feHBPzbJMozbDGbgsPenFDVv1vdBdIJSO2uJGJiSws2jbpAyhPOP3vlz+OUesMJj" +
             "SPpUFhNgyLYbi3ZxZYkfSR2DpjJtxO19AK7bhASNvgLAQ+tAUpX68oYhvWJMoZkR" +
             "PnwizBWt5OjSqg6q9zJEUZvF6mvFAgMBAAECgYEAvbLsvPF7zVblMQPjC6BOpVv5" +
@@ -40,12 +51,44 @@ public class AliPayService {
             "codTSID42xocvMPj/IgCrB+J1uad7k+f4kBlV/XXTwz1094XaoqOWOcCQFgGJPyo" +
             "MlVJL6Kl+EZ7HN6w+wbi4Oe20LIdroIwtrB8+vcylsQVi4Li/D6hY49ZWRW6uDo5" +
             "GM8Brhe+XIae5rc=";
+    //RSA(SHA1)支付宝公钥
+    static final String rsa_sha1_ali_public_key="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB";
 
-    public static final String  SIGN_ALGORITHMS = "SHA1WithRSA";
+    public static final String  SIGN_ALGORITHMS_RSA_SHA1 = "SHA1WithRSA";
 
-    //支付宝公钥
-    static final String ali_public_key="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB";
 
+    //RSA(SHA256)密钥
+    static final String rsa_sha256_private_key="MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDcEvQVujj48FUA\n" +
+            "+xNgGhPYHv7WOYnsK3v5idkKXUc3k9vCPrt7NPw7BgCWewNfNteLLULygRyWlpcu" +
+            "4GtBBSB7eTEqh64a8tdqJL5lxtGy9DAhdMcPFnc9s2ijGu5TQ8FOCep9kDZbVfP3" +
+            "IylxQJUHLRGlZ6FEnKE9KG5THD1yRgCTqNuCZegSxVJRxMX6ba5YizK4MpvxDwlJ" +
+            "x4GuPIi1iyQfImTwZ8mV1T/vq2j5FVm9PxmZPjZ/DT7owTrgS3dlTZEel5tfUQAp" +
+            "AxcR62wuTemhvWPhxugBB45n/EVLaHQg6Z+mMy2E7x0KtHDRjsAOX4P6EjQCIHuT" +
+            "Q2d5Vo3/AgMBAAECggEBAKpdidMgHGaqNkPSGke1KFOQexr/5AOODiU5T2m0mCMw" +
+            "NVmEEsLoW7KdjOrxQ8T7wZSeb0soJCd3YIYLeTwWafTr9uHDs0ZtY9FprHNBnKh6" +
+            "XKAptMe7TofXUVOiz4hp1UVCa+LUNyAxw/E3qSdhJX0uqJBxTui8kB22JOH15KOG" +
+            "mfdkoHVq6B1Vk9Qlfe4aAWEI/2RsF4mH0uB3vuv8cy5lvEWE8xqCFAh7sGs5h+kC" +
+            "0AdSic2AYMu5I2ZYWeVgszNV08bHjej/TbnQpVKLQzb/+X93sdcLaLuPbqQxkjsu" +
+            "6HZAuNTWFLJPXHWDkQG1BYVUjJTPxY2Ed8K3rDwAVcECgYEA8LBnPQRDqJYJQUhG" +
+            "cV1l+VT3nnT2BmV+2jZ+w6gOiSLUqT5P3wwkuYI739kTKwjKGmHNNYFPy6cTaRZ3" +
+            "20El2du8n4r9yoHy5t4LBB2iDyGpm4evLzkNTj6HVYoU9/j1FXp//YF+M97t1bM3" +
+            "Tc/CKFizKFUkck7fSVimXzomYW8CgYEA6hLWHxfLpvUxSaIyW9IvKKQizPEAMdmE" +
+            "ElUPSEirAA2gfx7cY8OEneJpr9HCKGPKobYys0JBcQeKBZ557y375yCBPDFR1loW" +
+            "LjzmLOohl7tv0JoyIEenv8+uFBgP0ZUCwazvozm2rEhIHAh/8I0q4np5X9h/DqoN" +
+            "ATofLAOVNHECgYBQ0nuoYqExoEg1UsbM1JcklaKc5BulZDmnnvsMSoevBzIwLst1" +
+            "U8eVP6VJcsRcBBSRrVvSZrzb3xvGgxP2XTcPpBj/3hWBBggB/Hfohubfe+dPYc2y" +
+            "5s6QArFBSR/ncQMjlkIaZ3xwgKCOzSJ6D5TcJYTru0OE2vVh1NHxUj6HIwKBgBFB" +
+            "KDWMjH+XLXXvFeU83isRxlrzHP+PuDOdv42lha1wU7drL/XOsNTunrnOLZDKomI/" +
+            "Swd5x9csJhl58CUYb6w+8ifcvtqdM2tfI9yFuco0j+6Bn1ZP0ebKyVtD1s6tPFHI" +
+            "jLWsiHG0tlQSsFOsJFAjlRTioaMUF/dSMIAPF42RAoGARkOoRlC+AbndDWlPlrUx" +
+            "5SsHTBinckZdMzFpGJwVpk/mYbfSTMyUNkZlZ0O+bgQE4F5babU8fsMLeqeP3PCi" +
+            "t9Ak0RU0POjkM184BgNqZf3o2p2AAa9TfvnrkiUpNaQe74EHAJ3DKVQTsOzrDoO2" +
+            "dvuiW16+MeReGGtyZG235ac=";
+
+    //RSA(SHA256)支付宝公钥
+    static final String rsa_sha256_ali_public_key="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuwKq1hkOoIkNwTKV2bkrtQ+zHx3QvD0x5Ftei26vD28fNtfBqTWAJSbRmfKZxhjqGiEGAXHSgMXyno0aAyAfEt6YiI7DkSizd0C4zjSTrmfe15E0JVlBimx4XjhWK2Hiu1sNg5r9s1JCwHkHuV3pgk3fLxOEfZBNn/gYQGEulei10Ip6sMSGVDmPo+ZyLnGbIHVWrI4FjuS0A3Q6b2Ia47+gLpXIjiuy3PJSeh3prYZ3SwAq9c03tpE+80ZLmA41Mu+0uaqj1IezjB+3MQsXQ35kpJezWh0dTm6az/BmmdVFYQdXPr2SizUKB0lovvKDHOfy3Ip1QrxxA4+m7GPJZQIDAQAB";
+
+    public static final String  SIGN_ALGORITHMS_RSA_SHA256 = "SHA256withRsa";
 
     /**
      *支付宝支付
@@ -91,7 +134,7 @@ public class AliPayService {
         System.out.println(sb.toString());
         String sign = "";
         try {
-            sign = URLEncoder.encode(AliPayService.sign(sb.toString(), private_key, "utf-8"), "utf-8");//private_key私钥
+            sign = URLEncoder.encode(AliPayService.sign(sb.toString(), rsa_sha1_private_key, "utf-8"), "utf-8");//private_key私钥
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -120,7 +163,7 @@ public class AliPayService {
             KeyFactory keyf= KeyFactory.getInstance("RSA");
             PrivateKey priKey= keyf.generatePrivate(priPKCS8);
 
-            java.security.Signature signature = java.security.Signature.getInstance(SIGN_ALGORITHMS);
+            java.security.Signature signature = java.security.Signature.getInstance(SIGN_ALGORITHMS_RSA_SHA1);
 
             signature.initSign(priKey);
             signature.update( content.getBytes(input_charset) );
@@ -150,10 +193,10 @@ public class AliPayService {
         try
         {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            byte[] encodedKey = Base64.decode(ali_public_key);
+            byte[] encodedKey = Base64.decode(rsa_sha1_ali_public_key);
             PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
             java.security.Signature signature = java.security.Signature
-                    .getInstance(SIGN_ALGORITHMS);
+                    .getInstance(SIGN_ALGORITHMS_RSA_SHA1);
 
             signature.initVerify(pubKey);
             signature.update( content.getBytes("utf-8") );
@@ -228,14 +271,42 @@ public class AliPayService {
         return privateKey;
     }
 
+    //获取订单的支付信息
+    public AlipayTradeQueryResponse getOrderPaymentInfo(String order_no,String trade_no){
+
+        //实例化客户端
+        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", app_id, rsa_sha256_private_key, "json", "utf-8", rsa_sha256_ali_public_key, "RSA2");
+        //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.open.public.template.message.industry.modify
+        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+        request.setBizContent("{" +
+                "   \"out_trade_no\":\""+order_no+"\"," +
+                "   \"trade_no\":\""+trade_no+"\"" +
+                "  }");//设置业务参数
+        AlipayTradeQueryResponse response=null;
+        try {
+            response = alipayClient.execute(request);
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+//调用成功，则处理业务逻辑
+        if(response.isSuccess()){
+            //.....
+            System.out.println("getTradeStatus="+response.getTradeStatus());
+
+        }
+        return response;
+    }
+
 
     public static void main(String[] args) throws InterruptedException {
 
-        String content="body=order body&buyer_email=137****6002&buyer_id=2088702692123578&discount=0.00&gmt_create=2018-08-02 21:59:15&gmt_payment=2018-08-02 21:59:16&is_total_fee_adjust=N&notify_id=1b3ac553ab43152d6704bccd4ccd01dkeh&notify_time=2018-08-02 21:59:16&notify_type=trade_status_sync&out_trade_no=OR104&payment_type=1&price=0.01&quantity=1&seller_email=ketewang@youyuantech.com&seller_id=2088231183736857&subject=test order&total_fee=0.01&trade_no=2018080221001004570508449323&trade_status=TRADE_SUCCESS&use_coupon=N";
-        String sign="dcfD3pjmxI3iJiCAWnJhVB7mZA1qtOoQVpU0mwdB0xBcih5zFVwILCPsNVmC/s7MKdUyejouAFwfKtBoubImzoRmc3xmKY9Vfr9dmb/EVRc7zn8aRvZpX5tHtXjZ9v1rctakSuNrFG87J8yQC43OSfG3wQqcgNAvlgMR731jXx0=";
+//        String content="body=order body&buyer_email=137****6002&buyer_id=2088702692123578&discount=0.00&gmt_create=2018-08-02 21:59:15&gmt_payment=2018-08-02 21:59:16&is_total_fee_adjust=N&notify_id=1b3ac553ab43152d6704bccd4ccd01dkeh&notify_time=2018-08-02 21:59:16&notify_type=trade_status_sync&out_trade_no=OR104&payment_type=1&price=0.01&quantity=1&seller_email=ketewang@youyuantech.com&seller_id=2088231183736857&subject=test order&total_fee=0.01&trade_no=2018080221001004570508449323&trade_status=TRADE_SUCCESS&use_coupon=N";
+//        String sign="dcfD3pjmxI3iJiCAWnJhVB7mZA1qtOoQVpU0mwdB0xBcih5zFVwILCPsNVmC/s7MKdUyejouAFwfKtBoubImzoRmc3xmKY9Vfr9dmb/EVRc7zn8aRvZpX5tHtXjZ9v1rctakSuNrFG87J8yQC43OSfG3wQqcgNAvlgMR731jXx0=";
         AliPayService ali=new AliPayService();
-        boolean result=ali.verify(content,sign);
-        System.out.println("result="+result);
+//        boolean result=ali.verify(content,sign);
+//        System.out.println("result="+result);
+
+        ali.getOrderPaymentInfo("OR118","2018080321001004570508443810");
 
     }
 }

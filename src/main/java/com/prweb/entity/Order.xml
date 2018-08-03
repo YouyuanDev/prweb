@@ -167,7 +167,9 @@
      remark,
      service_type_code,
      failure_type_code_list,
-     payment_status
+     payment_status,
+     pay_method,
+     trade_no
         ) VALUES (
 
      #{order_no},
@@ -185,7 +187,9 @@
      #{remark},
      #{service_type_code},
      #{failure_type_code_list},
-     #{payment_status}
+     #{payment_status},
+     #{pay_method},
+     #{trade_no}
         )
     </insert>
 
@@ -206,7 +210,9 @@
      remark=#{remark},
      service_type_code=#{service_type_code},
      failure_type_code_list=#{failure_type_code_list},
-     payment_status=#{payment_status}
+     payment_status=#{payment_status},
+     pay_method=#{pay_method},
+     trade_no=#{trade_no}
         where id=#{id}
     </update>
 
