@@ -40,8 +40,11 @@ public class AliPayService {
     //商家id
     static final String seller_id = "2088231183736857";
 
-    //回调服务器地址
+    //用户支付回调服务器地址
     static final String notify_url="http://116.62.17.42:9090/Order/AliPayNotify.action";
+
+    //平台支付商户回调服务器地址
+    static final String AlipayFundTransToaccount_notify_url="http://116.62.17.42:9090/Order/AlipayFundTransToaccountNotify.action";
 
     //RSA(SHA1)密钥
     static final String rsa_sha1_private_key="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMY0B8ECj+CqpEGE" +
@@ -282,7 +285,7 @@ public class AliPayService {
     public AlipayTradeQueryResponse getOrderPaymentInfo(String order_no,String trade_no){
 
         //实例化客户端
-        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", app_id, rsa_sha256_private_key, "json", "utf-8", rsa_sha256_ali_public_key, "RSA2");
+        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", web_app_id, rsa_sha256_private_key, "json", "utf-8", rsa_sha256_ali_public_key, "RSA2");
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.open.public.template.message.industry.modify
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
         request.setBizContent("{" +
@@ -298,6 +301,7 @@ public class AliPayService {
 //调用成功，则处理业务逻辑
         if(response.isSuccess()){
             //.....
+
             System.out.println("getTradeStatus="+response.getTradeStatus());
 
         }
@@ -305,17 +309,17 @@ public class AliPayService {
     }
 
     //订单的商户费用清算转账
-    public AlipayFundTransToaccountTransferResponse transferOrderPaymentToComanyAccount(String order_no,String trade_no) {
+    public AlipayFundTransToaccountTransferResponse transferOrderPaymentToComanyAccount(String order_no,String payee_account,String payee_real_name,String amount,String remark) {
         AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", web_app_id, rsa_sha256_private_key, "json", "utf-8", rsa_sha256_ali_public_key, "RSA2");
         AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest();
         request.setBizContent("{" +
-                "\"out_biz_no\":\"1111111\"," +
+                "\"out_biz_no\":\""+order_no+"\"," +
                 "\"payee_type\":\"ALIPAY_LOGONID\"," +
-                "\"payee_account\":\"13774216002\"," +
-                "\"amount\":\"0.1\"," +
-                "\"payer_show_name\":\"熊猫救援服务费\"," +
-                "\"payee_real_name\":\"王科特\"," +
-                "\"remark\":\"转账备注\"" +
+                "\"payee_account\":\""+payee_account+"\"," +
+                "\"amount\":\""+amount+"\"," +
+                "\"payer_show_name\":\"熊猫救援\"," +
+                "\"payee_real_name\":\""+payee_real_name+"\"," +
+                "\"remark\":\""+remark+"\"" +
                 "}");
         AlipayFundTransToaccountTransferResponse response = null;
         try {
@@ -325,6 +329,7 @@ public class AliPayService {
         }
         if (response.isSuccess()) {
             System.out.println("调用成功");
+            System.out.println("OutBizNo="+response.getOutBizNo());
         } else {
 
             System.out.println("调用失败"+response.getCode());
@@ -344,6 +349,7 @@ public class AliPayService {
 //        System.out.println("result="+result);
 
         //ali.getOrderPaymentInfo("OR118","2018080321001004570508443810");
-        ali.transferOrderPaymentToComanyAccount("OR118","2018080321001004570508443810");
+        //ali.getOrderInfoByAliPay("OR118","2018080321001004570508443810");
+        AlipayFundTransToaccountTransferResponse response=ali.transferOrderPaymentToComanyAccount("OR118","13774216002","王科特","0.1","熊猫救援服务费清算");
     }
 }

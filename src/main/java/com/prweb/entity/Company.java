@@ -23,13 +23,16 @@ public class Company {
     private String id_card_picture_front;
     private String id_card_picture_back;
     private String business_certificate_picture;
+    private String alipay_payee_account;
+    private String alipay_payee_real_name;
+
 
 
 
     public Company() {
     }
 
-    public Company(int id, String company_no, String company_name, String company_tax_code, Date company_found_date, String is_verified, String contact_person, String cell_phone, String address, String lane_line, String company_location_lon, String company_location_lat, String id_card_picture_front, String id_card_picture_back, String business_certificate_picture) {
+    public Company(int id, String company_no, String company_name, String company_tax_code, Date company_found_date, String is_verified, String contact_person, String cell_phone, String address, String lane_line, String company_location_lon, String company_location_lat, String id_card_picture_front, String id_card_picture_back, String business_certificate_picture, String alipay_payee_account, String alipay_payee_real_name) {
         this.id = id;
         this.company_no = company_no;
         this.company_name = company_name;
@@ -45,6 +48,8 @@ public class Company {
         this.id_card_picture_front = id_card_picture_front;
         this.id_card_picture_back = id_card_picture_back;
         this.business_certificate_picture = business_certificate_picture;
+        this.alipay_payee_account = alipay_payee_account;
+        this.alipay_payee_real_name = alipay_payee_real_name;
     }
 
     public int getId() {
@@ -165,5 +170,21 @@ public class Company {
 
     public void setBusiness_certificate_picture(String business_certificate_picture) {
         this.business_certificate_picture = business_certificate_picture;
+    }
+
+    public String getAlipay_payee_account() {
+        return alipay_payee_account;
+    }
+
+    public void setAlipay_payee_account(String alipay_payee_account) {
+        this.alipay_payee_account = alipay_payee_account;
+    }
+
+    public String getAlipay_payee_real_name() {
+        return alipay_payee_real_name;
+    }
+
+    public void setAlipay_payee_real_name(String alipay_payee_real_name) {
+        this.alipay_payee_real_name = alipay_payee_real_name;
     }
 }

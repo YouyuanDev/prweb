@@ -26,13 +26,18 @@ public class Order {
     private String payment_status;
     private String pay_method;
     private String trade_no;
+    private String order_fund_transfer_status;
+    private String order_fund_transfer_method;
 
-
+    private String alipay_out_biz_no;
+    private String alipay_fund_order_id;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date alipay_fund_transfer_time;
 
     public Order() {
     }
 
-    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_no, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list, String payment_status, String pay_method, String trade_no) {
+    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_no, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list, String payment_status, String pay_method, String trade_no, String order_fund_transfer_status, String order_fund_transfer_method, String alipay_out_biz_no, String alipay_fund_order_id, Date alipay_fund_transfer_time) {
         this.id = id;
         this.order_no = order_no;
         this.business_no = business_no;
@@ -52,6 +57,11 @@ public class Order {
         this.payment_status = payment_status;
         this.pay_method = pay_method;
         this.trade_no = trade_no;
+        this.order_fund_transfer_status = order_fund_transfer_status;
+        this.order_fund_transfer_method = order_fund_transfer_method;
+        this.alipay_out_biz_no = alipay_out_biz_no;
+        this.alipay_fund_order_id = alipay_fund_order_id;
+        this.alipay_fund_transfer_time = alipay_fund_transfer_time;
     }
 
     public int getId() {
@@ -204,5 +214,45 @@ public class Order {
 
     public void setTrade_no(String trade_no) {
         this.trade_no = trade_no;
+    }
+
+    public String getOrder_fund_transfer_status() {
+        return order_fund_transfer_status;
+    }
+
+    public void setOrder_fund_transfer_status(String order_fund_transfer_status) {
+        this.order_fund_transfer_status = order_fund_transfer_status;
+    }
+
+    public String getOrder_fund_transfer_method() {
+        return order_fund_transfer_method;
+    }
+
+    public void setOrder_fund_transfer_method(String order_fund_transfer_method) {
+        this.order_fund_transfer_method = order_fund_transfer_method;
+    }
+
+    public String getAlipay_out_biz_no() {
+        return alipay_out_biz_no;
+    }
+
+    public void setAlipay_out_biz_no(String alipay_out_biz_no) {
+        this.alipay_out_biz_no = alipay_out_biz_no;
+    }
+
+    public String getAlipay_fund_order_id() {
+        return alipay_fund_order_id;
+    }
+
+    public void setAlipay_fund_order_id(String alipay_fund_order_id) {
+        this.alipay_fund_order_id = alipay_fund_order_id;
+    }
+
+    public Date getAlipay_fund_transfer_time() {
+        return alipay_fund_transfer_time;
+    }
+
+    public void setAlipay_fund_transfer_time(Date alipay_fund_transfer_time) {
+        this.alipay_fund_transfer_time = alipay_fund_transfer_time;
     }
 }

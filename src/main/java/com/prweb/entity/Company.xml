@@ -105,7 +105,9 @@
         company_location_lat,
         id_card_picture_front,
         id_card_picture_back,
-        business_certificate_picture
+        business_certificate_picture,
+        alipay_payee_account,
+        alipay_payee_real_name
         ) VALUES (
         #{company_no},
         #{company_name},
@@ -120,8 +122,9 @@
         #{company_location_lat},
         #{id_card_picture_front},
         #{id_card_picture_back},
-        #{business_certificate_picture}
-
+        #{business_certificate_picture},
+        #{alipay_payee_account},
+        #{alipay_payee_real_name}
         )
     </insert>
 
@@ -142,6 +145,8 @@
             <if test="id_card_picture_front and id_card_picture_front!=''">id_card_picture_front=#{id_card_picture_front},</if>
             <if test="id_card_picture_back and id_card_picture_back!=''">id_card_picture_back=#{id_card_picture_back},</if>
             <if test="business_certificate_picture and business_certificate_picture!=''">business_certificate_picture=#{business_certificate_picture},</if>
+            <if test="alipay_payee_account and alipay_payee_account!=''">alipay_payee_account=#{alipay_payee_account},</if>
+            <if test="alipay_payee_real_name and alipay_payee_real_name!=''">alipay_payee_real_name=#{alipay_payee_real_name},</if>
         </trim>
         where id=#{id}
     </update>

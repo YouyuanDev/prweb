@@ -2,12 +2,14 @@ package com.prweb.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
 import com.prweb.dao.AccountDao;
 import com.prweb.dao.CompanyDao;
 import com.prweb.dao.OrderDao;
 import com.prweb.dao.PersonUserDao;
 import com.prweb.entity.*;
 import com.prweb.util.APICloudPushService;
+import com.prweb.util.AliPayService;
 import com.prweb.util.ComboxItem;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -623,5 +625,86 @@ public class PersonUserController {
         System.out.print("mmp:"+mmp);
         return mmp;
     }
+
+
+    //用户确认订单完成
+    @RequestMapping(value = "/confirmOrderFinish")
+    @ResponseBody
+    public String confirmOrderFinish(HttpServletRequest request) {
+        System.out.print("confirmOrderFinish");
+
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
+
+        Order order = null;
+        if (username != null && accountType != null) {
+            if (accountType.equals("person_user")) {
+                order = orderDao.getCurrentPersonUserOrderByUsername(username);
+            }
+            if (order != null&&order.getOrder_status().equals("finished")&&
+                    (order.getOrder_fund_transfer_method()==null||order.getOrder_fund_transfer_method().equals(""))) {
+                String company_user_no=order.getCompany_user_no();
+                String payee_account="";
+                String payee_real_name="";
+                String amount="0.0";
+                amount=String.valueOf(order.getService_fee());
+                String remark="熊猫救援服务费清算";
+                if(company_user_no!=null){
+                    List<Company> cmplist=companyDao.getCompanyByCompanyUserNo(company_user_no);
+                    if(cmplist.size()>0){
+                        payee_account=cmplist.get(0).getAlipay_payee_account();
+                        payee_real_name=cmplist.get(0).getAlipay_payee_real_name();
+                    }
+                }
+
+                //支付开始
+                AliPayService alipay=new AliPayService();
+                AlipayFundTransToaccountTransferResponse response=alipay.transferOrderPaymentToComanyAccount(order.getOrder_no(),payee_account,payee_real_name,amount,remark);
+                if(response.isSuccess()){
+                    order.setOrder_status("finishedconfirmed");
+                    order.setOrder_fund_transfer_method("alipay");
+                    order.setOrder_fund_transfer_status(response.getCode());
+                    order.setAlipay_fund_order_id(response.getOrderId());
+                    order.setAlipay_out_biz_no(response.getOutBizNo());
+                    order.setAlipay_fund_transfer_time(new Date());
+                    System.out.println("getCode="+response.getCode());
+                    System.out.println("getSubMsg="+response.getSubMsg());
+                    int res=orderDao.updateOrder(order);
+                    if(res>0){
+                        json.put("success", true);
+                        json.put("msg", "转账成功,订单确认完成成功！");
+                        SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
+                    }else{
+                        json.put("success", false);
+                        json.put("msg", "转账成功,订单确认完成失败..");
+                    }
+                }else{
+                    json.put("success", false);
+                    json.put("msg", "转账失败，"+response.getSubMsg());
+                }
+
+            } else {
+                json.put("success", false);
+                json.put("accountType", accountType);
+                json.put("msg", "不存在需要确认的订单");
+            }
+        } else {
+            json.put("success", false);
+            json.put("relogin", true);
+            json.put("msg", "session不存在，重新登录");
+        }
+
+
+        String map= JSONObject.toJSONString(json);
+        System.out.print(map);
+        return map;
+
+    }
+
+
 
 }
