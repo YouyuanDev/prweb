@@ -314,7 +314,7 @@ public class AliPayService {
                 "\"payee_account\":\"13774216002\"," +
                 "\"amount\":\"0.1\"," +
                 "\"payer_show_name\":\"熊猫救援服务费\"," +
-                "\"payee_real_name\":\"友元科技\"," +
+                "\"payee_real_name\":\"王科特\"," +
                 "\"remark\":\"转账备注\"" +
                 "}");
         AlipayFundTransToaccountTransferResponse response = null;
