@@ -50,13 +50,16 @@
   <!--</bean>-->
 
 
-    <!-- 配置基于注解的声明式事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
     <!-- 配置事务管理器 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+  <!-- 配置基于注解的声明式事务 -->
+  <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 
-
+  <context:component-scan base-package="com.prweb.service">
+    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+  </context:component-scan>
 
 </beans>

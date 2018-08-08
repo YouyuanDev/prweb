@@ -5,13 +5,17 @@ import com.prweb.dao.AccountDao;
 import com.prweb.dao.CompanyDao;
 import com.prweb.dao.OrderDao;
 import com.prweb.dao.PersonUserDao;
+import com.prweb.entity.Account;
 import com.prweb.entity.Company;
 import com.prweb.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,9 +32,6 @@ public class PersonUserServiceImpl implements PersonUserService{
 
     @Autowired
     private AccountDao accountDao;
-
-
-
     @Transactional
     @Override
     public String confirmOrderFinish(String username, String accountType) throws  RuntimeException {
