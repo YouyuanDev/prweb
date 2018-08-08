@@ -14,26 +14,26 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Service("PersonUserService")
+@Service
 public class PersonUserServiceImpl implements PersonUserService{
-    @Resource
+    @Autowired
     CompanyDao companyDao;
 
-    @Resource
+    @Autowired
     PersonUserDao personUserDao;
 
-    @Resource
+    @Autowired
     private OrderDao orderDao;
 
 
-    @Resource
+    @Autowired
     private AccountDao accountDao;
 
 
 
     @Transactional
     @Override
-    public String confirmOrderFinish(String username, String accountType) {
+    public String confirmOrderFinish(String username, String accountType) throws  RuntimeException {
         System.out.println("username="+username);
         JSONObject json = new JSONObject();
                 Order order = null;

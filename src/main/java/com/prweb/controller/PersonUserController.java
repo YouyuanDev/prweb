@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
+
+
 @Controller
 @RequestMapping("/PersonUser")
 public class PersonUserController {
@@ -45,7 +47,7 @@ public class PersonUserController {
     @Autowired
     private FundTransferRecordDao fundTransferRecordDao;
 
-    @Resource
+    @Autowired
     private PersonUserService personUserService;
 
     //PersonUserService personUserService=new PersonUserServiceImpl();
