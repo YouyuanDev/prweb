@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -221,5 +223,29 @@ public class PersonUserServiceImpl implements PersonUserService{
         return mmp;
     }
 
+
+
+    public String savePersonUserInfo(PersonUser personUser){
+        JSONObject json = new JSONObject();
+        int resTotal=0;
+        if(personUser.getId()==0){
+            //添加
+            resTotal=personUserDao.addPersonUser(personUser);
+
+        }else{
+            //修改！
+            resTotal=personUserDao.updatePersonUser(personUser);
+        }
+        if(resTotal>0){
+            json.put("success",true);
+            json.put("message","保存成功");
+        }else{
+            json.put("success",false);
+            json.put("message","保存失败");
+        }
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+    }
 
 }

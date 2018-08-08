@@ -11,6 +11,7 @@ import com.prweb.entity.Account;
 import com.prweb.entity.Company;
 import com.prweb.entity.Order;
 import com.prweb.entity.PersonUser;
+import com.prweb.service.PushNotificationService;
 import com.prweb.util.APICloudPushService;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class CompanyUserController {
     private CompanyUserDao companyUserDao;
     @Autowired
     private CompanyDao companyDao;
+
+    @Autowired
+    private PushNotificationService pushNotificationService;
 
     //用于商户用户获取附近待接的订单
     @RequestMapping(value = "getNearByPendingOrders",produces = "text/plain;charset=utf-8")
@@ -129,7 +133,12 @@ public class CompanyUserController {
             try {
                 ResponseUtil.write(response, json);
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
+                    String basePath = request.getSession().getServletContext().getRealPath("/");
+                    if(basePath.lastIndexOf('/')==-1){
+                        basePath=basePath.replace('\\','/');
+                    }
+                    pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
+
                 }
 
             }catch  (Exception e) {
@@ -205,7 +214,12 @@ public class CompanyUserController {
             try {
                 ResponseUtil.write(response, json);
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
+                    String basePath = request.getSession().getServletContext().getRealPath("/");
+                    if(basePath.lastIndexOf('/')==-1){
+                        basePath=basePath.replace('\\','/');
+                    }
+                    pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
+
                 }
 
             }catch  (Exception e) {
@@ -280,7 +294,12 @@ public class CompanyUserController {
             try {
                 ResponseUtil.write(response, json);
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
+                    String basePath = request.getSession().getServletContext().getRealPath("/");
+                    if(basePath.lastIndexOf('/')==-1){
+                        basePath=basePath.replace('\\','/');
+                    }
+                    pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
+
                 }
 
             }catch  (Exception e) {
@@ -371,7 +390,11 @@ public class CompanyUserController {
             try {
                 ResponseUtil.write(response, json);
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
+                    String basePath = request.getSession().getServletContext().getRealPath("/");
+                    if(basePath.lastIndexOf('/')==-1){
+                        basePath=basePath.replace('\\','/');
+                    }
+                    pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
                 }
 
             }catch  (Exception e) {
@@ -383,44 +406,9 @@ public class CompanyUserController {
     }
 
 
-    //发送推送给相关人员
-    private void SendPushNotification(HttpServletRequest request,JSONObject json,String orderNo,String event){
-        String basePath = request.getSession().getServletContext().getRealPath("/");
-        if(basePath.lastIndexOf('/')==-1){
-            basePath=basePath.replace('\\','/');
-        }
-
-        String jsonstr= JSONArray.toJSONString(json);
-        //查找订单的两个有关人员电话
-        List<HashMap<String,Object>> lt=orderDao.getPushPhoneNosByOrderNo(orderNo);
-        if(lt.size()>0){
-
-            String userIds1=(String)lt.get(0).get("phone1");
-            String userIds2=(String)lt.get(0).get("phone2");
-            System.out.println("userIds1="+userIds1);
-            System.out.println("userIds2="+userIds2);
-
-            String userIds="";
-            if(userIds1!=null&&!userIds1.equals("")){
-                userIds=userIds1;
-            }
-            if(userIds2!=null&&!userIds2.equals("")){
-                userIds=userIds+","+userIds2;
-            }
-            System.out.println("userIds="+userIds);
-            SendPushNotificationToAccounts(basePath,event,event,jsonstr,userIds);
-        }
-    }
-
-    //发送推送消息 accounts  phone ,分隔
-    public void SendPushNotificationToAccounts(String basePath, String event, String title, String content, String userIds) {
 
 
-        //发消息
-        APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
 
-
-    }
     //获取CompanyUserInfo
     @RequestMapping(value = "getCompanyUserInfo",produces = "text/plain;charset=utf-8")
     @ResponseBody

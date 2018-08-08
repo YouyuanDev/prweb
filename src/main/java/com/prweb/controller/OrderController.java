@@ -10,6 +10,7 @@ import com.prweb.entity.Business;
 import com.prweb.entity.Location;
 import com.prweb.entity.Order;
 import com.prweb.entity.OrderStatus;
+import com.prweb.service.PushNotificationService;
 import com.prweb.util.APICloudPushService;
 import com.prweb.util.AliPayService;
 import com.prweb.util.ComboxItem;
@@ -46,6 +47,9 @@ public class OrderController {
 
     @Autowired
     private CompanyDao companyDao;
+
+    @Autowired
+    private PushNotificationService pushNotificationService;
 
 
 
@@ -135,28 +139,18 @@ public class OrderController {
     }
 
 
-    //发送推送消息
-    public void SendEventToRoles(String basePath, String event, String title, String content) {
-        List<HashMap<String, Object>> lt = roleDao.getRolesByEvent(event);
-
-        for (int i = 0; i < lt.size(); i++) {
-            String role = (String) lt.get(i).get("role_no");
-            //发消息
-            APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", role, "");
-        }
-
-
-    }
-
-    //发送推送消息 accounts  phone ,分隔
-    public void SendPushNotificationToAccounts(String basePath, String event, String title, String content, String userIds) {
-
-
-        //发消息
-        APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
-
-
-    }
+//    //发送推送消息
+//    public void SendEventToRoles(String basePath, String event, String title, String content) {
+//        List<HashMap<String, Object>> lt = roleDao.getRolesByEvent(event);
+//
+//        for (int i = 0; i < lt.size(); i++) {
+//            String role = (String) lt.get(i).get("role_no");
+//            //发消息
+//            APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", role, "");
+//        }
+//
+//
+//    }
 
 
     //搜索
@@ -222,62 +216,7 @@ public class OrderController {
 
 
 
-    //发送推送给相关人员
-    private void SendPushNotification(HttpServletRequest request,JSONObject json,String orderNo,String event){
-        String basePath = request.getSession().getServletContext().getRealPath("/");
-        if(basePath.lastIndexOf('/')==-1){
-            basePath=basePath.replace('\\','/');
-        }
 
-        String jsonstr= JSONArray.toJSONString(json);
-        //查找订单的两个有关人员电话
-        List<HashMap<String,Object>> lt=orderDao.getPushPhoneNosByOrderNo(orderNo);
-        if(lt.size()>0){
-
-            String userIds1=(String)lt.get(0).get("phone1");
-            String userIds2=(String)lt.get(0).get("phone2");
-            System.out.println("userIds1="+userIds1);
-            System.out.println("userIds2="+userIds2);
-
-            String userIds="";
-            if(userIds1!=null&&!userIds1.equals("")){
-                userIds=userIds1;
-            }
-            if(userIds2!=null&&!userIds2.equals("")){
-                userIds=userIds+","+userIds2;
-            }
-            System.out.println("userIds="+userIds);
-
-            //如果是新增订单，范围推送
-            if(event!=null&&event.equals("order_pending")){
-                List<Order> orderlist=orderDao.getOrderByOrderNo(orderNo);
-                if(orderlist.size()>0){
-                    Order od=orderlist.get(0);
-                    String person_user_location=od.getPerson_user_location();
-                    String[] loc=null;
-                    if(person_user_location!=null){
-                        loc=person_user_location.split(",");
-                    }
-                    if(loc!=null&&loc.length==2){
-                        //获取用户周围附近的商户下的商户用户
-                        List<HashMap<String,Object>> cmpuserActlist=companyDao.getNearByCompanyUsers(loc[0],loc[1]);
-                        for(int i=0;i<cmpuserActlist.size();i++){
-                            String cell_phone=(String)cmpuserActlist.get(i).get("cell_phone");
-                            if(cell_phone!=null&&!cell_phone.equals("")){
-                                userIds=userIds+","+cell_phone;
-                            }
-                        }
-                        System.out.println("new Order push to："+userIds);
-                    }
-
-                }
-            }
-
-
-
-            SendPushNotificationToAccounts(basePath,event,event+"订单:",jsonstr,userIds);
-        }
-    }
 
 
     //保存Order
@@ -324,10 +263,14 @@ public class OrderController {
         }finally {
             try {
                 ResponseUtil.write(response, json);
-
                 if(resTotal>0){
-                    SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
+                    String basePath = request.getSession().getServletContext().getRealPath("/");
+                    if(basePath.lastIndexOf('/')==-1){
+                        basePath=basePath.replace('\\','/');
+                    }
+                    pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
                 }
+
 
             }catch  (Exception e) {
                 e.printStackTrace();
@@ -640,7 +583,13 @@ public class OrderController {
         System.out.print(map);
 
         if(success){
-            SendPushNotification(request,json,order.getOrder_no(),"order_"+order.getOrder_status());
+
+                String basePath = request.getSession().getServletContext().getRealPath("/");
+                if(basePath.lastIndexOf('/')==-1){
+                    basePath=basePath.replace('\\','/');
+                }
+                pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
+
             return "success";
         }else{
             return "fail";
