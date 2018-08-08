@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PersonUserServiceImpl implements PersonUserService{
@@ -36,6 +37,10 @@ public class PersonUserServiceImpl implements PersonUserService{
 
     @Autowired
     private AccountDao accountDao;
+
+
+    @Autowired
+    private PushNotificationService pushNotificationService;
 
 
 
@@ -248,4 +253,141 @@ public class PersonUserServiceImpl implements PersonUserService{
         return mmp;
     }
 
+
+
+    public String PersonUserSubmitPendingOrder(String username,String accountType,Order order,String basePath){
+        JSONObject json = new JSONObject();
+
+        if(accountType==null||accountType.equals("")){
+            json.put("success",false);
+            json.put("relogin",true);
+            json.put("message","不存在session，重新登录");
+        }
+        else{
+
+            if(accountType.equals("person_user")){
+                int resTotal=0;
+                if(order.getId()==0){
+                    //先判断person_user下是否有未完成的order
+                    if(order.getOrder_time()==null){
+                        order.setOrder_time(new Date());
+                    }
+                    Order currentorder = orderDao.getCurrentPersonUserOrderByUsername(username);
+                    if(currentorder==null){
+                        //添加
+                        //设置orderno
+                        String uuuid= UUID.randomUUID().toString();
+                        uuuid=uuuid.replace("-","");
+                        order.setOrder_no("OR"+uuuid);
+                        //设置order状态
+                        if(order.getOrder_status()==null)
+                            order.setOrder_status("pending");
+
+                        if(username!=null){
+                            List<Account> accountlist=accountDao.getAccountByUserName(username);
+                            if(accountlist.size()>0){
+                                order.setPerson_user_no(accountlist.get(0).getPerson_user_no());
+                            }
+                        }
+
+                        resTotal=orderDao.addOrder(order);
+
+                    }else{
+                        json.put("success",false);
+                        json.put("message","不能生成新的订单，存在未完成的订单");
+                    }
+
+                }
+                if(resTotal>0){
+                    json.put("success",true);
+                    json.put("OrderNo",order.getOrder_no());
+                    json.put("message","订单生成成功");
+                    pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
+
+                }else{
+                    json.put("success",false);
+                    json.put("message","订单生成失败");
+                }
+            }else{
+                json.put("success",false);
+                json.put("message","订单生成失败,accountType为"+accountType);
+            }
+
+        }
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+    }
+
+
+    public String getPersonUserInfo(String username){
+        JSONObject json = new JSONObject();
+        List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
+        if(list.size()>0){
+            PersonUser personuser=list.get(0);
+            json.put("success",true);
+            json.put("personUser",personuser);
+            json.put("message","获取个人信息成功");
+
+        }else{
+            json.put("success",false);
+            json.put("message","获取个人信息失败");
+
+        }
+
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+    }
+
+
+    public String PersonUserCancelOrder(String username,String accountType,String basePath){
+        JSONObject json = new JSONObject();
+        if(accountType==null||accountType.equals("")){
+            json.put("success",false);
+            json.put("relogin",true);
+            json.put("message","不存在session，重新登录");
+        }
+        else{
+            if(accountType.equals("person_user")){
+                //先判断person_user下是否有未完成的order
+                int resTotal=0;
+                Order order=orderDao.getCurrentPersonUserOrderByUsername(username);
+                if(order!=null&&!order.getOrder_status().equals("cancelled")&&
+                        !order.getOrder_status().equals("finishedconfirmed")){
+                    //设置order状态
+                    order.setOrder_status("cancelled");
+                    resTotal=orderDao.updateOrder(order);
+                }else{
+                    json.put("success",false);
+                    json.put("message","不存在可取消的订单");
+                }
+
+                if(resTotal>0){
+                    json.put("success",true);
+                    json.put("OrderNo",order.getOrder_no());
+                    json.put("message","订单取消成功");
+                    pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
+
+                }else{
+                    json.put("success",false);
+                    json.put("message","订单取消失败");
+                }
+            }else{
+                json.put("success",false);
+                json.put("message","订单取消失败,accountType为"+accountType);
+            }
+
+        }
+        String mmp= JSONArray.toJSONString(json);
+        System.out.print("mmp:"+mmp);
+        return mmp;
+    }
+
+
+    public String getNearByCompany(String lon,String lat){
+        List<HashMap<String,Object>> list=companyDao.getNearByCompany(lon,lat);
+        String map= JSONObject.toJSONString(list);
+        return map;
+    }
 }
