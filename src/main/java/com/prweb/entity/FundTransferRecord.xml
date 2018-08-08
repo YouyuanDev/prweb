@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.FundTransferRecordDao">
+
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from  fund_transfer_record f
+
+        <where>
+            <if test="transfer_no!=null and transfer_no!=''">
+                AND f.transfer_no LIKE CONCAT('%',#{transfer_no},'%')
+            </if>
+            <if test="company_no!=null and company_no!=''">
+                AND f.company_no LIKE CONCAT('%',#{company_no},'%')
+            </if>
+
+        </where>
+    </select>
+
+
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from  fund_transfer_record f
+
+        <where>
+            <if test="transfer_no!=null and transfer_no!=''">
+                AND f.transfer_no LIKE CONCAT('%',#{transfer_no},'%')
+            </if>
+            <if test="company_no!=null and company_no!=''">
+                AND f.company_no LIKE CONCAT('%',#{company_no},'%')
+            </if>
+
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+
+    <select id="getFundTransferRecordByTransferNo" resultType="com.prweb.entity.FundTransferRecord">
+        select * from  fund_transfer_record f
+
+        <where>
+            <if test="transfer_no!=null and transfer_no!=''">
+                AND f.transfer_no =#{transfer_no}
+            </if>
+        </where>
+
+    </select>
+
+
+
+    <insert id="addFundTransferRecord" parameterType="com.prweb.entity.FundTransferRecord">
+        INSERT INTO fund_transfer_record (
+        transfer_no,
+        company_no,
+        fund_transfer_method,
+        transfer_amount,
+        payee_account,
+        payee_real_name,
+        transfer_status,
+        transfer_date,
+        sub_msg
+        )
+         VALUES (
+        #{transfer_no},
+        #{company_no},
+        #{fund_transfer_method},
+        #{transfer_amount},
+        #{payee_account},
+        #{payee_real_name},
+        #{transfer_status},
+        #{transfer_date},
+        #{sub_msg}
+         )
+    </insert>
+
+    <update id="updateFundTransferRecord" parameterType="com.prweb.entity.FundTransferRecord">
+        UPDATE fund_transfer_record set
+        transfer_no=#{transfer_no},
+        company_no=#{company_no},
+        fund_transfer_method=#{fund_transfer_method},
+         transfer_amount=#{transfer_amount},
+         payee_account=#{payee_account},
+         payee_real_name=#{payee_real_name},
+         transfer_status=#{transfer_status},
+         transfer_date=#{transfer_date},
+         sub_msg=#{sub_msg},
+
+         where id=#{id}
+    </update>
+
+
+    <delete id="delFundTransferRecord">
+        delete from fund_transfer_record WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

@@ -107,7 +107,8 @@
         id_card_picture_back,
         business_certificate_picture,
         alipay_payee_account,
-        alipay_payee_real_name
+        alipay_payee_real_name,
+        pr_account_amount
         ) VALUES (
         #{company_no},
         #{company_name},
@@ -124,7 +125,8 @@
         #{id_card_picture_back},
         #{business_certificate_picture},
         #{alipay_payee_account},
-        #{alipay_payee_real_name}
+        #{alipay_payee_real_name},
+        #{pr_account_amount}
         )
     </insert>
 
@@ -147,6 +149,7 @@
             <if test="business_certificate_picture and business_certificate_picture!=''">business_certificate_picture=#{business_certificate_picture},</if>
             <if test="alipay_payee_account and alipay_payee_account!=''">alipay_payee_account=#{alipay_payee_account},</if>
             <if test="alipay_payee_real_name and alipay_payee_real_name!=''">alipay_payee_real_name=#{alipay_payee_real_name},</if>
+            <if test="pr_account_amount and pr_account_amount!=''">pr_account_amount=#{pr_account_amount},</if>
         </trim>
         where id=#{id}
     </update>
@@ -160,7 +163,7 @@
     </delete>
 
     <select id="getCompanyByCompanyUserNo" resultType="com.prweb.entity.Company">
-        select * from company_user_info cu inner JOIN company_info c on cu.company_no=c.company_no
+        select c.* from company_user_info cu inner JOIN company_info c on cu.company_no=c.company_no
         <where>
             <if test="company_user_no!=null and company_user_no!=''">
                 AND cu.company_user_no=#{company_user_no}
