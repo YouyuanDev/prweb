@@ -7,6 +7,7 @@ import com.prweb.dao.*;
 import com.prweb.entity.*;
 import com.prweb.service.PersonUserService;
 import com.prweb.service.PersonUserServiceImpl;
+import com.prweb.service.PushNotificationService;
 import com.prweb.util.APICloudPushService;
 import com.prweb.util.AliPayService;
 import com.prweb.util.ComboxItem;
@@ -50,7 +51,9 @@ public class PersonUserController {
     @Autowired
     private PersonUserService personUserService;
 
-    //PersonUserService personUserService=new PersonUserServiceImpl();
+    @Autowired
+    private PushNotificationService pushNotificationService;
+
 
     //用于
     @RequestMapping(value = "getNearByCompany",produces = "text/plain;charset=utf-8")
@@ -446,19 +449,11 @@ public class PersonUserController {
 
 
 
-            SendPushNotificationToAccounts(basePath,event,event+"订单:",jsonstr,userIds);
+            pushNotificationService.SendPushNotificationToAccounts(basePath,event,event+"订单:",jsonstr,userIds);
         }
     }
 
-    //发送推送消息 accounts  phone ,分隔
-    public void SendPushNotificationToAccounts(String basePath, String event, String title, String content, String userIds) {
 
-
-        //发消息
-        APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
-
-
-    }
 
 
     //获取person_user_info
@@ -547,46 +542,10 @@ public class PersonUserController {
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
+        String map=personUserService.verifyPersonUserInfo(username,accountType,id_card_picture_back,id_card_picture_front);
 
-        if(username==null){
-            json.put("success",false);
-            json.put("relogin",true);
-            json.put("message","session不存在，请登录");
-        }
-        else if(id_card_picture_back==null||id_card_picture_front==null){
-            json.put("success",false);
-            json.put("message","不存在身份证照片，认证提交失败");
-        }else{
-            List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
-            if(list.size()>0){
-                PersonUser pu=list.get(0);
-                if(pu.getIs_verified().equals("0")||pu.getIs_verified().equals("3")){
-                    pu.setId_card_picture_front(id_card_picture_front);
-                    pu.setId_card_picture_back(id_card_picture_back);
-                    pu.setIs_verified("2");
-                    int res=personUserDao.updatePersonUser(pu);
-                    if(res>0){
-                        json.put("success",true);
-                        json.put("message","个人认证提交成功");
-                    }else{
-                        json.put("success",false);
-                        json.put("message","系统错误");
-                    }
-
-                }else{
-                    json.put("success",false);
-                    json.put("message","个人认证提交失败，账户已认证或正在认证审核中");
-                }
-
-            }else{
-                json.put("success",false);
-                json.put("message","不存在该用户名，认证提交失败");
-            }
-        }
-
-        String mmp= JSONArray.toJSONString(json);
-        System.out.print("mmp:"+mmp);
-        return mmp;
+        return map;
     }
 
 
@@ -595,47 +554,14 @@ public class PersonUserController {
     @ResponseBody
     public String cancelVerifyPersonUserInfo(HttpServletRequest request){
         System.out.print("cancelVerifyPersonUserInfo");
-
-        JSONObject json=new JSONObject();
         //返回用户session数据
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
+        String map=personUserService.cancelVerifyPersonUserInfo(username,accountType);
 
-        if(username==null){
-            json.put("success",false);
-            json.put("relogin",true);
-            json.put("message","session不存在，请登录");
-        }
-        else{
-            List<PersonUser> list=personUserDao.getPersonUserByUsername(username);
-            if(list.size()>0){
-                PersonUser pu=list.get(0);
-                if(pu.getIs_verified().equals("2")){
-                    pu.setIs_verified("0");
-                    int res=personUserDao.updatePersonUser(pu);
-                    if(res>0){
-                        json.put("success",true);
-                        json.put("message","个人认证撤销成功");
-                    }else{
-                        json.put("success",false);
-                        json.put("message","系统错误");
-                    }
-
-                }else{
-                    json.put("success",false);
-                    json.put("message","个人认证撤销失败，没有审核中的认证");
-                }
-
-            }else{
-                json.put("success",false);
-                json.put("message","不存在该用户名，认证撤销失败");
-            }
-        }
-
-        String mmp= JSONArray.toJSONString(json);
-        System.out.print("mmp:"+mmp);
-        return mmp;
+        return map;
     }
 
 
