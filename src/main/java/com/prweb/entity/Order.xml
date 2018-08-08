@@ -75,6 +75,30 @@
 
     </select>
 
+    <select id="getAllPersonUserOrderByUsername" resultType="com.prweb.entity.Order">
+        select o.* from  order_info o inner join account ac on o.person_user_no=ac.person_user_no
+        <where>
+
+            AND o.person_user_no is not null
+
+            AND ac.person_user_no is not null
+        </where>
+        order by id desc
+    </select>
+
+
+    <select id="getAllCompanyUserOrderByUsername" resultType="com.prweb.entity.Order">
+        select o.* from  order_info o inner join account ac on o.company_user_no=ac.company_user_no
+        <where>
+
+            AND username =#{company_username}
+
+            AND o.company_user_no is not null
+
+            AND ac.company_user_no is not null
+        </where>
+        order by id desc
+    </select>
 
 
 

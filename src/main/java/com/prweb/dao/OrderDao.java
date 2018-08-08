@@ -45,4 +45,10 @@ public interface OrderDao {
     public List<HashMap<String,Object>>  getPushPhoneNosByOrderNo(@Param("order_no")String order_no);
 
 
+    //得到PersonUser历史订单
+    public List<Order> getAllPersonUserOrderByUsername(@Param("person_username")String person_username);
+
+    //得到CompanyUser历史订单
+    public List<Order> getAllCompanyUserOrderByUsername(@Param("company_username")String company_username);
+
 }

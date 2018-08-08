@@ -49,6 +49,50 @@ public class OrderController {
 
 
 
+    //APP使用 获取所有历史订单  /Order/getAllOrderList.action
+    @RequestMapping(value = "getAllOrderList", produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getAllOrderList(HttpServletRequest request) {
+
+        JSONObject json = new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+        String accountType = (String) session.getAttribute("accountType");
+
+        List<Order> orderList = null;
+        if (username != null && accountType != null) {
+            if (accountType.equals("person_user")) {
+                orderList = orderDao.getAllPersonUserOrderByUsername(username);
+            } else if (accountType.equals("company_user")) {
+                orderList = orderDao.getAllCompanyUserOrderByUsername(username);
+            }
+            if (orderList != null&&orderList.size()>0) {
+                json.put("success", true);
+                json.put("orderList", orderList);
+                json.put("accountType", accountType);
+                json.put("msg", "存在Order");
+            } else {
+                json.put("success", false);
+                json.put("accountType", accountType);
+                json.put("msg", "不存在进行中的Order");
+            }
+        } else {
+            json.put("success", false);
+            json.put("relogin", true);
+            json.put("msg", "session不存在，重新登录");
+        }
+
+
+        String mmp = JSONArray.toJSONString(json);
+        System.out.println(mmp);
+        return mmp;
+
+
+    }
+
+
     //APP使用 获取当前订单
     @RequestMapping(value = "getCurrentOrder", produces = "text/plain;charset=utf-8")
     @ResponseBody

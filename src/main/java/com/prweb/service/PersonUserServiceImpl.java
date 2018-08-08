@@ -45,8 +45,8 @@ public class PersonUserServiceImpl implements PersonUserService{
             if (order != null&&order.getOrder_status().equals("finished")&&
                     (order.getOrder_fund_transfer_method()==null||order.getOrder_fund_transfer_method().equals(""))) {
                 String company_user_no=order.getCompany_user_no();
-                String payee_account="";
-                String payee_real_name="";
+//                String payee_account="";
+//                String payee_real_name="";
                 String amount="0.0";
                 float f_amount=0;
                 f_amount=order.getService_fee();
@@ -65,15 +65,11 @@ public class PersonUserServiceImpl implements PersonUserService{
                             Company cmp=cmplist.get(0);
                             cmp.setPr_account_amount(cmp.getPr_account_amount()+f_amount);
                             int count=companyDao.updateCompany(cmp);
-                            count=0;
                             if(count>0){
                                 json.put("success", true);
                                 json.put("msg", "订单确认完成成功！");
                             }else{
-                                json.put("success", false);
-                                json.put("msg", "商户余额修改失败,订单确认完成失败！");
-                                throw new RuntimeException("手动模拟转账时出现异常");
-                                //throw new RuntimeSqlException("手动模拟转账时出现异常");
+                                throw new RuntimeException("向商户转账时出现异常");
                             }
                         }else{
                             json.put("success", false);
