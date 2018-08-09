@@ -34,24 +34,34 @@ public class OrderServiceImpl implements OrderService {
 
 
 
-    public String getAllOrderList(String username,String accountType){
+    public String getAllOrderList(String username,String accountType,String page, String rows ){
         JSONObject json = new JSONObject();
         List<Order> orderList = null;
         if (username != null && accountType != null) {
-            if (accountType.equals("person_user")) {
-                orderList = orderDao.getAllPersonUserOrderByUsername(username);
-            } else if (accountType.equals("company_user")) {
-                orderList = orderDao.getAllCompanyUserOrderByUsername(username);
-            }
-            if (orderList != null&&orderList.size()>0) {
-                json.put("success", true);
-                json.put("orderList", orderList);
-                json.put("accountType", accountType);
-                json.put("msg", "存在Order");
-            } else {
+            if(page!=null){
+                if (rows == null) {
+                    rows = "20";
+                }
+                int start = (Integer.parseInt(page) - 1) * Integer.parseInt(rows);
+                if (accountType.equals("person_user")) {
+                    orderList = orderDao.getAllPersonUserOrderByUsername(username,start,Integer.parseInt(rows));
+                } else if (accountType.equals("company_user")) {
+                    orderList = orderDao.getAllCompanyUserOrderByUsername(username,start,Integer.parseInt(rows));
+                }
+                if (orderList != null&&orderList.size()>0) {
+                    json.put("success", true);
+                    json.put("orderList", orderList);
+                    json.put("accountType", accountType);
+                    json.put("msg", "订单加载成功!");
+                } else {
+                    json.put("success", false);
+                    json.put("accountType", accountType);
+                    json.put("msg", "订单加载完毕!");
+                }
+            }else{
                 json.put("success", false);
                 json.put("accountType", accountType);
-                json.put("msg", "不存在进行中的Order");
+                json.put("msg", "订单加载完毕!");
             }
         } else {
             json.put("success", false);
