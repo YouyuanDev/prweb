@@ -202,7 +202,15 @@ public class OrderController {
         String map= JSONObject.toJSONString(colist);
         return map;
     }
+    //得到所有的订单状态用于app
 
+    @RequestMapping(value ="/getAllOrderStatusForAPP",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getAllOrderStatusForAPP(HttpServletRequest request){
+        List<OrderStatus> list=orderStatusDao.getAllOrderStatus();
+        String mmp= JSONArray.toJSONString(list);
+        return mmp;
+    }
     //APP定位更新order的person 或 company_user 位置信息
 
     public OrderController() {
