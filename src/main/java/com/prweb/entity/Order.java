@@ -17,7 +17,7 @@ public class Order {
     private String person_user_location;
     private String company_user_location;
     private String service_items;
-    private String service_fee;
+    private float service_fee;
     private String order_status;
     private String upload_files;
     private String remark;
@@ -37,7 +37,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_no, String person_user_location, String company_user_location, String service_items, String service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list, String payment_status, String pay_method, String trade_no, String order_fund_transfer_status, String order_fund_transfer_method, String alipay_out_biz_no, String alipay_fund_order_id, Date alipay_fund_transfer_time) {
+    public Order(int id, String order_no, String business_no, Date order_time, Date finsh_time, String person_user_no, String company_user_no, String person_user_location, String company_user_location, String service_items, float service_fee, String order_status, String upload_files, String remark, String service_type_code, String failure_type_code_list, String payment_status, String pay_method, String trade_no, String order_fund_transfer_status, String order_fund_transfer_method, String alipay_out_biz_no, String alipay_fund_order_id, Date alipay_fund_transfer_time) {
         this.id = id;
         this.order_no = order_no;
         this.business_no = business_no;
@@ -144,11 +144,12 @@ public class Order {
         this.service_items = service_items;
     }
 
-    public String getService_fee() {
+
+    public float getService_fee() {
         return service_fee;
     }
 
-    public void setService_fee(String service_fee) {
+    public void setService_fee(float service_fee) {
         this.service_fee = service_fee;
     }
 
