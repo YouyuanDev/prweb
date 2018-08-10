@@ -6,7 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.prweb.dao.ServiceTypeDao;
 import com.prweb.entity.Role;
 import com.prweb.entity.ServiceType;
+import com.prweb.service.ServiceTypeService;
 import com.prweb.util.ResponseUtil;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,17 +25,15 @@ import java.util.Map;
 @RequestMapping("/ServiceType")
 public class ServiceTypeController {
 
-
+    
     @Autowired
-    ServiceTypeDao serviceTypeDao;
+    private ServiceTypeService serviceTypeService;
 
     //得到所有的ServiceType
     @RequestMapping(value ="/getAllServiceType",produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String getAllServiceType(HttpServletRequest request){
-        List<ServiceType> list=serviceTypeDao.getAllServiceType();
-        String mmp= JSONArray.toJSONString(list);
-        return mmp;
+        return serviceTypeService.getAllServiceType();
     }
 
 
@@ -51,14 +51,7 @@ public class ServiceTypeController {
             rows="20";
         }
         int start=(Integer.parseInt(page)-1)*Integer.parseInt(rows);
-        List<HashMap<String,Object>> list=serviceTypeDao.getAllByLike(service_type_name,start,Integer.parseInt(rows));
-        int count=serviceTypeDao.getCountAllByLike(service_type_name);
-        Map<String,Object> maps=new HashMap<String,Object>();
-        maps.put("total",count);
-        maps.put("rows",list);
-        String mmp= JSONArray.toJSONString(maps);
-        System.out.print("mmp:"+mmp);
-        return mmp;
+        return serviceTypeService.getServiceTypeByLike(service_type_name,start, Integer.parseInt(rows));
 
     }
 
@@ -68,65 +61,14 @@ public class ServiceTypeController {
     public String saveServiceType(ServiceType serviceType, HttpServletResponse response){
         System.out.print("saveServiceType");
 
-        JSONObject json=new JSONObject();
-        try{
-            int resTotal=0;
-
-
-            if(serviceType.getId()==0){
-                //添加
-                resTotal=serviceTypeDao.addServiceType(serviceType);
-
-            }else{
-                //修改！
-
-                resTotal=serviceTypeDao.updateServiceType(serviceType);
-            }
-            if(resTotal>0){
-                json.put("success",true);
-                json.put("message","保存成功");
-            }else{
-                json.put("success",false);
-                json.put("message","保存失败");
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-            json.put("success",false);
-            json.put("message",e.getMessage());
-
-        }finally {
-            try {
-                ResponseUtil.write(response, json);
-            }catch  (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+        return serviceTypeService.saveServiceType(serviceType);
     }
 
 
     //删除serviceType信息
     @RequestMapping("/delServiceType")
     public String delServiceType(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
-        String[]idArr=hlparam.split(",");
-        int resTotal=0;
-        resTotal=serviceTypeDao.delServiceType(idArr);
-        JSONObject json=new JSONObject();
-        StringBuilder sbmessage = new StringBuilder();
-        sbmessage.append("总共");
-        sbmessage.append(Integer.toString(resTotal));
-        sbmessage.append("项服务类型信息删除成功\n");
-        if(resTotal>0){
-            //System.out.print("删除成功");
-            json.put("success",true);
-        }else{
-            //System.out.print("删除失败");
-            json.put("success",false);
-        }
-        json.put("message",sbmessage.toString());
-        ResponseUtil.write(response,json);
-        return null;
+        return serviceTypeService.delServiceType(hlparam);
     }
 
 

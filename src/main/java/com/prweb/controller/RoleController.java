@@ -27,13 +27,6 @@ import java.util.Map;
 public class RoleController {
 
     @Autowired
-    private RoleDao roleDao;
-
-    @Autowired
-    private PushEventRuleDao pushEventRuleDao;
-
-
-    @Autowired
     private RoleService roleService;
 
     //获取所有role列表
