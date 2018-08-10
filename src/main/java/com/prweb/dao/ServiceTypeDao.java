@@ -21,4 +21,7 @@ public interface ServiceTypeDao {
     public int addServiceType(ServiceType serviceType);
     //删除ServiceType
     public int delServiceType(String[]arrId);
+
+    //获得service_rate
+    public ServiceType getServiceRateByServiceCode(@Param("service_type_code")String service_type_code);
 }

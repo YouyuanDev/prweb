@@ -6,10 +6,7 @@ import com.prweb.dao.AccountDao;
 import com.prweb.dao.CompanyDao;
 import com.prweb.dao.OrderDao;
 import com.prweb.dao.PersonUserDao;
-import com.prweb.entity.Account;
-import com.prweb.entity.Company;
-import com.prweb.entity.Order;
-import com.prweb.entity.PersonUser;
+import com.prweb.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -42,7 +39,8 @@ public class PersonUserServiceImpl implements PersonUserService{
     @Autowired
     private PushNotificationService pushNotificationService;
 
-
+    @Autowired
+    private ServiceTypeService serviceTypeService;
 
     @Transactional
     @Override
@@ -278,10 +276,16 @@ public class PersonUserServiceImpl implements PersonUserService{
                         //设置orderno
                         String uuuid= UUID.randomUUID().toString();
                         uuuid=uuuid.replace("-","");
-                        order.setOrder_no("OR"+uuuid);
+                        order.setOrder_no("OR"+uuuid.toLowerCase());
                         //设置order状态
                         if(order.getOrder_status()==null)
                             order.setOrder_status("pending");
+                        //计算服务费
+                        String service_type_code=order.getService_type_code();
+                        ServiceType st=serviceTypeService.getServiceRateByServiceCode(service_type_code);
+                        if(st!=null){
+                            order.setService_fee(st.getService_rate());
+                        }
 
                         if(username!=null){
                             List<Account> accountlist=accountDao.getAccountByUserName(username);

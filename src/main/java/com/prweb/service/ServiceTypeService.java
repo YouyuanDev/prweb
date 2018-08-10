@@ -15,4 +15,7 @@ public interface ServiceTypeService {
 
     //删除serviceType信息
     public String delServiceType(String hlparam );
+
+    //得到ServiceType 根据service_code
+    public ServiceType getServiceRateByServiceCode(String service_code);
 }
