@@ -28,14 +28,14 @@ public class Company {
 
     private float pr_account_amount;
 
-
+    private String upload_files;
 
 
 
     public Company() {
     }
 
-    public Company(int id, String company_no, String company_name, String company_tax_code, Date company_found_date, String is_verified, String contact_person, String cell_phone, String address, String lane_line, String company_location_lon, String company_location_lat, String id_card_picture_front, String id_card_picture_back, String business_certificate_picture, String alipay_payee_account, String alipay_payee_real_name, float pr_account_amount) {
+    public Company(int id, String company_no, String company_name, String company_tax_code, Date company_found_date, String is_verified, String contact_person, String cell_phone, String address, String lane_line, String company_location_lon, String company_location_lat, String id_card_picture_front, String id_card_picture_back, String business_certificate_picture, String alipay_payee_account, String alipay_payee_real_name, float pr_account_amount, String upload_files) {
         this.id = id;
         this.company_no = company_no;
         this.company_name = company_name;
@@ -54,6 +54,7 @@ public class Company {
         this.alipay_payee_account = alipay_payee_account;
         this.alipay_payee_real_name = alipay_payee_real_name;
         this.pr_account_amount = pr_account_amount;
+        this.upload_files = upload_files;
     }
 
     public int getId() {
@@ -198,5 +199,13 @@ public class Company {
 
     public void setPr_account_amount(float pr_account_amount) {
         this.pr_account_amount = pr_account_amount;
+    }
+
+    public String getUpload_files() {
+        return upload_files;
+    }
+
+    public void setUpload_files(String upload_files) {
+        this.upload_files = upload_files;
     }
 }
