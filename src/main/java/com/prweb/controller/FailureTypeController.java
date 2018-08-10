@@ -23,10 +23,6 @@ import java.util.Map;
 @RequestMapping("/FailureType")
 public class FailureTypeController {
 
-
-    @Autowired
-    private FailureTypeDao failureTypeDao;
-
     @Autowired
     private FailureTypeService failureTypeService;
 
