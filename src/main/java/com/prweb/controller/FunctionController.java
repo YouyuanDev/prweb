@@ -74,6 +74,7 @@ public class FunctionController {
 
     //删除Function信息
     @RequestMapping("/delFunction")
+    @ResponseBody
     public String delFunction(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
         String mmp="";
         try{

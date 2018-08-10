@@ -67,6 +67,7 @@ public class ServiceTypeController {
 
     //删除serviceType信息
     @RequestMapping("/delServiceType")
+    @ResponseBody
     public String delServiceType(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
         return serviceTypeService.delServiceType(hlparam);
     }

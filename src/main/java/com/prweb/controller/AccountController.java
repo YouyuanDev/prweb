@@ -76,6 +76,7 @@ public class AccountController {
 
     //删除Account信息
     @RequestMapping("/delAccount")
+    @ResponseBody
     public String delAccount(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
         String mmp="";
         try{

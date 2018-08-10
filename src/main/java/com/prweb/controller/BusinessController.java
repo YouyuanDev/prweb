@@ -88,6 +88,7 @@ public class BusinessController {
 
     //删除Business信息
     @RequestMapping("/delBusiness")
+    @ResponseBody
     public String delBusiness(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
         JSONObject json=new JSONObject();
         String mmp="";
