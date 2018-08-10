@@ -162,6 +162,7 @@ public class OrderController {
 
     //删除Order信息
     @RequestMapping("/delOrder")
+    @ResponseBody
     public String delOrder(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
         return orderService.delOrder(hlparam);
     }

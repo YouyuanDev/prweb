@@ -80,6 +80,7 @@ public class FailureTypeController {
 
     //删除failureType信息
     @RequestMapping("/delFailureType")
+    @ResponseBody
     public String delFailureType(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
         JSONObject json=new JSONObject();
         String mmp="";

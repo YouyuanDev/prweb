@@ -19,12 +19,13 @@
         INSERT INTO service_type (
         service_type_code,
         service_type_name,
-        service_type_name_en
+        service_type_name_en,
+        service_rate
         ) VALUES (
         #{service_type_code},
         #{service_type_name},
-        #{service_type_name_en}
-
+        #{service_type_name_en},
+        #{service_rate}
         )
     </insert>
 
@@ -32,7 +33,8 @@
         UPDATE service_type set
         service_type_code=#{service_type_code},
         service_type_name=#{service_type_name},
-        service_type_name_en=#{service_type_name_en}
+        service_type_name_en=#{service_type_name_en},
+        service_rate=#{service_rate}
         where id=#{id}
     </update>
 
@@ -64,5 +66,18 @@
             </if>
         </where>
     </select>
+
+
+    <select id="getServiceRateByServiceCode" resultType="com.prweb.entity.ServiceType">
+        select * from  service_type
+        <where>
+            <if test="service_type_code!=null and service_type_code!=''">
+                AND service_type_code =#{service_type_code}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+
 
 </mapper>

@@ -144,6 +144,7 @@ public class Order {
         this.service_items = service_items;
     }
 
+
     public float getService_fee() {
         return service_fee;
     }

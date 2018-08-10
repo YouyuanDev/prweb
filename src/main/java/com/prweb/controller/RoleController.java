@@ -89,6 +89,7 @@ public class RoleController {
 
     //删除Role信息
     @RequestMapping("/delRole")
+    @ResponseBody
     public String delRole(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
         System.out.print("delRole");
         JSONObject json=new JSONObject();

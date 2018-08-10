@@ -106,4 +106,17 @@ public class ServiceTypeServiceImpl implements ServiceTypeService{
         }
 
     }
+
+    public ServiceType getServiceRateByServiceCode(String service_code){
+        try{
+
+             ServiceType serviceType=serviceTypeDao.getServiceRateByServiceCode(service_code);
+             return serviceType;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 }

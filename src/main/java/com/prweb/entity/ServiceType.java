@@ -6,9 +6,17 @@ public class ServiceType {
     private String service_type_code;
     private String service_type_name;
     private String service_type_name_en;
-
+    private float service_rate;
 
     public ServiceType() {
+    }
+
+    public ServiceType(int id, String service_type_code, String service_type_name, String service_type_name_en, float service_rate) {
+        this.id = id;
+        this.service_type_code = service_type_code;
+        this.service_type_name = service_type_name;
+        this.service_type_name_en = service_type_name_en;
+        this.service_rate = service_rate;
     }
 
     public int getId() {
@@ -41,5 +49,13 @@ public class ServiceType {
 
     public void setService_type_name_en(String service_type_name_en) {
         this.service_type_name_en = service_type_name_en;
+    }
+
+    public float getService_rate() {
+        return service_rate;
+    }
+
+    public void setService_rate(float service_rate) {
+        this.service_rate = service_rate;
     }
 }
