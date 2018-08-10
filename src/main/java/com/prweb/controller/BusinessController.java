@@ -6,6 +6,7 @@ import com.prweb.dao.BusinessDao;
 
 
 import com.prweb.entity.Business;
+import com.prweb.service.BusinessService;
 import com.prweb.util.ComboxItem;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,10 @@ import java.util.*;
 @Controller
 @RequestMapping("/Business")
 public class BusinessController {
+
+    
     @Autowired
-    private BusinessDao businessDao;
+    private BusinessService businessService;
 
 
     //搜索
@@ -38,40 +41,22 @@ public class BusinessController {
             rows="20";
         }
         int start=(Integer.parseInt(page)-1)*Integer.parseInt(rows);
-        List<HashMap<String,Object>> list=businessDao.getAllByLike(business_no,business_name,business_type,start,Integer.parseInt(rows));
-        int count=businessDao.getCountAllByLike(business_no,business_name,business_type);
-        Map<String,Object> maps=new HashMap<String,Object>();
-        maps.put("total",count);
-        maps.put("rows",list);
-        //System.out.println("rrrrrrrrrrrow="+count);
-        String mmp= JSONArray.toJSONString(maps);
-        //System.out.print("mmp:"+mmp);
-        return mmp;
+
+        return businessService.getBusinessByLike(business_no,business_name,business_type,start,Integer.parseInt(rows));
 
     }
+
+
     @RequestMapping(value = "getBusinessByBusinessNo",produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String getBusinessByBusinessNo(@RequestParam(value = "business_no",required = false)String business_no, HttpServletRequest request){
-        List<Business> list=businessDao.getBusinessByBusinessNo(business_no);
-        String mmp= JSONArray.toJSONString(list);
-        System.out.println(mmp);
-        return mmp;
+        return businessService.getBusinessByBusinessNo(business_no);
     }
-    //用于
+    //获取所有business用于下拉框
     @RequestMapping("/getAllBusiness")
     @ResponseBody
     public String getAllBusiness(HttpServletRequest request){
-        List<Business>list=businessDao.getAllBusiness();
-        List<ComboxItem> colist=new ArrayList<ComboxItem>();
-        for(int i=0;i<list.size();i++){
-            ComboxItem citem= new ComboxItem();
-            Business mill=((Business)list.get(i));
-            citem.id=mill.getBusiness_no();
-            citem.text= mill.getBusiness_no()+"("+mill.getBusiness_name()+")";
-            colist.add(citem);
-        }
-        String map= JSONObject.toJSONString(colist);
-        return map;
+        return businessService.getAllBusiness();
     }
 
 
@@ -82,62 +67,40 @@ public class BusinessController {
     public String saveBusiness(Business business, HttpServletResponse response)throws Exception{
         System.out.print("saveBusiness");
         JSONObject json=new JSONObject();
+        String mmp="";
         try{
-            int resTotal=0;
-            if(business.getCreate_time()==null){
-                business.setCreate_time(new Date());
-            }
-            if(business.getId()==0){
-                //添加
-                resTotal=businessDao.addBusiness(business);
-            }else{
-                //修改！
-                resTotal=businessDao.updateBusiness(business);
-            }
-            if(resTotal>0){
-                json.put("success",true);
-                json.put("message","保存成功");
-            }else{
-                json.put("success",false);
-                json.put("message","保存失败");
-            }
+            mmp=businessService.saveBusiness(business);
         }catch (Exception e){
             e.printStackTrace();
             json.put("success",false);
             json.put("message",e.getMessage());
-
+            mmp= JSONObject.toJSONString(json);
         }finally {
-            try {
-                ResponseUtil.write(response, json);
-            }catch  (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                ResponseUtil.write(response, json);
+//            }catch  (Exception e) {
+//                e.printStackTrace();
+//            }
+            return mmp;
         }
-        return null;
     }
 
 
     //删除Business信息
     @RequestMapping("/delBusiness")
     public String delBusiness(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
-        String[]idArr=hlparam.split(",");
-        int resTotal=0;
-        resTotal=businessDao.delBusiness(idArr);
         JSONObject json=new JSONObject();
-        StringBuilder sbmessage = new StringBuilder();
-        sbmessage.append("总共");
-        sbmessage.append(Integer.toString(resTotal));
-        sbmessage.append("项业务信息删除成功\n");
-        if(resTotal>0){
-            //System.out.print("删除成功");
-            json.put("success",true);
-        }else{
-            //System.out.print("删除失败");
+        String mmp="";
+        try{
+            mmp=businessService.delBusiness(hlparam);
+        }catch (Exception e){
+            e.printStackTrace();
             json.put("success",false);
+            json.put("message",e.getMessage());
+            mmp= JSONObject.toJSONString(json);
+        }finally {
+            return mmp;
         }
-        json.put("message",sbmessage.toString());
-        ResponseUtil.write(response,json);
-        return null;
     }
 
 }
