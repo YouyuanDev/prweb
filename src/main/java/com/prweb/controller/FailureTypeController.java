@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.prweb.dao.FailureTypeDao;
 import com.prweb.entity.FailureType;
+import com.prweb.service.FailureTypeService;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,15 +25,16 @@ public class FailureTypeController {
 
 
     @Autowired
-    FailureTypeDao failureTypeDao;
+    private FailureTypeDao failureTypeDao;
+
+    @Autowired
+    private FailureTypeService failureTypeService;
 
     //得到所有的FailureType
     @RequestMapping(value ="/getAllFailureType",produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String getAllFailureType(HttpServletRequest request){
-        List<FailureType> list=failureTypeDao.getAllFailureType();
-        String mmp= JSONArray.toJSONString(list);
-        return mmp;
+        return failureTypeService.getAllFailureType();
     }
 
 
@@ -49,14 +51,7 @@ public class FailureTypeController {
             rows="20";
         }
         int start=(Integer.parseInt(page)-1)*Integer.parseInt(rows);
-        List<HashMap<String,Object>> list=failureTypeDao.getAllByLike(failure_type_name,start,Integer.parseInt(rows));
-        int count=failureTypeDao.getCountAllByLike(failure_type_name);
-        Map<String,Object> maps=new HashMap<String,Object>();
-        maps.put("total",count);
-        maps.put("rows",list);
-        String mmp= JSONArray.toJSONString(maps);
-        System.out.print("mmp:"+mmp);
-        return mmp;
+        return failureTypeService.getFailureTypeByLike(failure_type_name,start,Integer.parseInt(rows));
 
     }
 
@@ -67,64 +62,41 @@ public class FailureTypeController {
         System.out.print("saveFailureType");
 
         JSONObject json=new JSONObject();
+        String mmp="";
         try{
-            int resTotal=0;
-
-
-            if(failureType.getId()==0){
-                //添加
-                resTotal=failureTypeDao.addFailureType(failureType);
-
-            }else{
-                //修改！
-
-                resTotal=failureTypeDao.updateFailureType(failureType);
-            }
-            if(resTotal>0){
-                json.put("success",true);
-                json.put("message","保存成功");
-            }else{
-                json.put("success",false);
-                json.put("message","保存失败");
-            }
-
+            mmp=failureTypeService.saveFailureType(failureType);
         }catch (Exception e){
             e.printStackTrace();
             json.put("success",false);
             json.put("message",e.getMessage());
-
+            mmp = JSONArray.toJSONString(json);
         }finally {
-            try {
-                ResponseUtil.write(response, json);
-            }catch  (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                ResponseUtil.write(response, json);
+//            }catch  (Exception e) {
+//                e.printStackTrace();
+//            }
+            return mmp;
         }
-        return null;
+
     }
 
 
     //删除failureType信息
     @RequestMapping("/delFailureType")
     public String delFailureType(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
-        String[]idArr=hlparam.split(",");
-        int resTotal=0;
-        resTotal=failureTypeDao.delFailureType(idArr);
         JSONObject json=new JSONObject();
-        StringBuilder sbmessage = new StringBuilder();
-        sbmessage.append("总共");
-        sbmessage.append(Integer.toString(resTotal));
-        sbmessage.append("项故障类型信息删除成功\n");
-        if(resTotal>0){
-            //System.out.print("删除成功");
-            json.put("success",true);
-        }else{
-            //System.out.print("删除失败");
+        String mmp="";
+        try{
+            mmp=failureTypeService.delFailureType(hlparam);
+        }catch (Exception e){
+            e.printStackTrace();
             json.put("success",false);
+            json.put("message",e.getMessage());
+            mmp = JSONArray.toJSONString(json);
+        }finally {
+            return mmp;
         }
-        json.put("message",sbmessage.toString());
-        ResponseUtil.write(response,json);
-        return null;
     }
 
 }
