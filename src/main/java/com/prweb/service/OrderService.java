@@ -26,4 +26,20 @@ public interface OrderService {
 
     //删除Order信息
     public String delOrder(String hlparam);
+
+    //用于下拉框
+    public String getAllOrderStatus();
+
+    //获取当前订单的personUser和CompanyUser的Location
+    public String getPersonUserAndCompanyUserCurrentLocation(String username,String accountType);
+
+    //更新个人location到历史location，轨迹保存
+    public String updateLocation(String username,String accountType, String order_no,String my_location);
+
+    //获取当前订单的支付宝支付信息
+    public String getCurrentOrderAliPayInfo(String username,String accountType);
+
+    //支付宝支付回调函数
+    public String AliPayNotify(String content,String sign,String out_trade_no,String trade_status,String trade_no,String basePath);
+
 }

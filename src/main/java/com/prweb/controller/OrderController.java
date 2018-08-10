@@ -31,27 +31,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/Order")
 public class OrderController {
-    @Autowired
-    private OrderDao orderDao;
 
-    @Autowired
-    private AccountDao accountDao;
-
-    @Autowired
-    private OrderStatusDao orderStatusDao;
-
-    @Autowired
-    private LocationDao locationDao;
-
-    @Autowired
-    private RoleDao roleDao;
-
-    @Autowired
-    private CompanyDao companyDao;
-
-    @Autowired
-    private PushNotificationService pushNotificationService;
-
+    
     @Autowired
     private OrderService orderService;
 
@@ -190,17 +171,7 @@ public class OrderController {
     @RequestMapping(value = "getAllOrderStatus",produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String getAllOrderStatus(HttpServletRequest request){
-        List<OrderStatus>list=orderStatusDao.getAllOrderStatus();
-        List<ComboxItem> colist=new ArrayList<ComboxItem>();
-        for(int i=0;i<list.size();i++){
-            ComboxItem citem= new ComboxItem();
-            OrderStatus os=((OrderStatus)list.get(i));
-            citem.id=os.getStatus_code();
-            citem.text= os.getStatus_code()+"("+os.getStatus_name()+")";
-            colist.add(citem);
-        }
-        String map= JSONObject.toJSONString(colist);
-        return map;
+        return orderService.getAllOrderStatus();
     }
 
     //APP定位更新order的person 或 company_user 位置信息
@@ -214,42 +185,12 @@ public class OrderController {
     @ResponseBody
     public String getPersonUserAndCompanyUserCurrentLocation(HttpServletRequest request, HttpServletResponse response) {
         //System.out.print("getPersonUserAndCompanyUserCurrentLocation");
-
-        JSONObject json = new JSONObject();
         //返回用户session数据
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username = (String) session.getAttribute("userSession");
         String accountType = (String) session.getAttribute("accountType");
-
-        Order order = null;
-        if (username != null && accountType != null) {
-            if (accountType.equals("person_user")) {
-                order = orderDao.getCurrentPersonUserOrderByUsername(username);
-            } else if (accountType.equals("company_user")) {
-                order = orderDao.getCurrentOrderCompanyUserByUsername(username);
-            }
-            if (order != null) {
-                json.put("success", true);
-                json.put("accountType", accountType);
-                json.put("person_user_location",order.getPerson_user_location());
-                json.put("company_user_location",order.getCompany_user_location());
-                json.put("msg", "存在Order");
-            } else {
-                json.put("success", false);
-                json.put("accountType", accountType);
-                json.put("msg", "不存在未完成的Order");
-            }
-        } else {
-            json.put("success", false);
-            json.put("relogin", true);
-            json.put("msg", "session不存在，重新登录");
-        }
-
-        String map= JSONObject.toJSONString(json);
-        //System.out.print(map);
-        return map;
-
+        return orderService.getPersonUserAndCompanyUserCurrentLocation(username,accountType);
     }
 
 
@@ -261,58 +202,13 @@ public class OrderController {
         //System.out.print("updateLocation");
         String order_no= request.getParameter("order_no");
         String my_location= request.getParameter("my_location");
-
-        JSONObject json = new JSONObject();
         //返回用户session数据
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username = (String) session.getAttribute("userSession");
         String accountType = (String) session.getAttribute("accountType");
 
-
-        if(username!=null&&accountType!=null&&my_location!=null){
-
-            if(order_no!=null&&!order_no.equals("")) {
-                List<Order> orderList = orderDao.getOrderByOrderNo(order_no);
-                if (orderList.size() > 0) {
-                    Order order = orderList.get(0);
-                    if (accountType.equals("person_user")) {
-                        order.setPerson_user_location(my_location);
-                    } else if (accountType.equals("company_user")) {
-                        order.setCompany_user_location(my_location);
-                    }
-                    json.put("person_user_location",order.getPerson_user_location());
-                    json.put("company_user_location",order.getCompany_user_location());
-                    int orderRes = orderDao.updateOrder(order);
-                }
-            }
-               //更新定位轨迹坐标
-               Location loc=new Location();
-               loc.setId(0);
-               loc.setOrder_no(order_no);
-               loc.setLocating_time(new Date());
-               loc.setUsername(username);
-               loc.setCoordinate(my_location);
-               int locRes=locationDao.addLocation(loc);
-               if(locRes>0){
-                   json.put("success",true);
-                   json.put("msg","定位更新成功");
-               }else{
-                   json.put("success",false);
-                   json.put("msg","定位更新失败");
-               }
-
-        }else{
-            json.put("success",false);
-            json.put("msg","session不存在");
-        }
-
-
-        String map= JSONObject.toJSONString(json);
-        //System.out.print(map);
-        return map;
-
-
+        return orderService.updateLocation(username,accountType,order_no,my_location);
     }
 
 
@@ -329,33 +225,7 @@ public class OrderController {
         String username = (String) session.getAttribute("userSession");
         String accountType = (String) session.getAttribute("accountType");
 
-        Order order = null;
-        if (username != null && accountType != null) {
-            if (accountType.equals("person_user")) {
-                order = orderDao.getCurrentPersonUserOrderByUsername(username);
-            }
-            if (order != null) {
-                AliPayService alipay=new AliPayService();
-                order.setService_items("test order");
-                String orderInfo=alipay.getOrderInfoByAliPay(order.getOrder_no(),order.getService_items(),order.getService_fee());
-                json.put("orderInfo", orderInfo);
-                json.put("success", true);
-                json.put("msg", "存在支付信息");
-            } else {
-                json.put("success", false);
-                json.put("accountType", accountType);
-                json.put("msg", "不存在未完成的Order");
-            }
-        } else {
-            json.put("success", false);
-            json.put("relogin", true);
-            json.put("msg", "session不存在，重新登录");
-        }
-
-        String map= JSONObject.toJSONString(json);
-        System.out.print(map);
-        return map;
-
+        return orderService.getCurrentOrderAliPayInfo(username,accountType);
     }
 
 
@@ -415,68 +285,12 @@ public class OrderController {
             System.out.println(content);
             System.out.println("=================================");
         }
-
-
-        AliPayService alipay=new AliPayService();
-        boolean verified=alipay.verify(content,sign);
-        boolean success=false;
-//        boolean flag = AlipaySignature.rsaCheckV1(params, alipaypublicKey, charset,"RSA2")
-        JSONObject json = new JSONObject();
-        Order order=null;
-        if (verified&&out_trade_no!=null&&trade_status!=null) {
-            System.out.println("sign verified!!!!");
-            if(trade_status.equals("TRADE_SUCCESS")||trade_status.equals("TRADE_FINISHED")){
-                List<Order> list = orderDao.getOrderByOrderNo(out_trade_no);
-                if (list.size()>0) {
-                    order=list.get(0);
-                    order.setPay_method("alipay");
-                    order.setPayment_status(trade_status);
-                    order.setTrade_no(trade_no);
-                    if(order.getOrder_status().equals("confirmed"))
-                        order.setOrder_status("confirmedpaid");
-                    int res=orderDao.updateOrder(order);
-                    if(res>0){
-//                        json.put("success", true);
-//                        json.put("msg", "订单支付成功");
-                        success=true;
-                    }else{
-                        success=false;
-                        json.put("success", false);
-                        json.put("msg", "系统错误，订单支付数据更新失败");
-                    }
-
-                } else {
-                    success=false;
-                    json.put("success", false);
-                    json.put("msg", "订单支付数据更新失败");
-                }
-            }else{
-                success=false;
-                json.put("success", false);
-                json.put("msg", "订单支付失败 trade_status="+trade_status);
-            }
-
-
-        }else{
-            success=false;
-            System.out.println("sign failed verfification!");
+        String basePath = request.getSession().getServletContext().getRealPath("/");
+        if(basePath.lastIndexOf('/')==-1){
+            basePath=basePath.replace('\\','/');
         }
 
-        String map= JSONObject.toJSONString(json);
-        System.out.print(map);
-
-        if(success){
-
-                String basePath = request.getSession().getServletContext().getRealPath("/");
-                if(basePath.lastIndexOf('/')==-1){
-                    basePath=basePath.replace('\\','/');
-                }
-                pushNotificationService.SendPushNotification(basePath,json,order.getOrder_no(),"order_"+order.getOrder_status());
-
-            return "success";
-        }else{
-            return "fail";
-        }
+        return orderService.AliPayNotify(content,sign,out_trade_no,trade_status,trade_no,basePath);
         //return map;
 
     }
