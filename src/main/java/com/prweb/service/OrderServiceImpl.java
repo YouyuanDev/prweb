@@ -207,6 +207,12 @@ public class OrderServiceImpl implements OrderService {
         return map;
     }
 
+    public String getAllOrderStatusForAPP(){
+        List<OrderStatus> list=orderStatusDao.getAllOrderStatus();
+        String mmp= JSONArray.toJSONString(list);
+        return mmp;
+    }
+
     public String getPersonUserAndCompanyUserCurrentLocation(String username,String accountType){
         Order order = null;
         JSONObject json=new JSONObject();

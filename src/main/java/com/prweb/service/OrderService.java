@@ -30,6 +30,9 @@ public interface OrderService {
     //用于下拉框
     public String getAllOrderStatus();
 
+    //得到所有的订单状态用于app
+    public String getAllOrderStatusForAPP();
+
     //获取当前订单的personUser和CompanyUser的Location
     public String getPersonUserAndCompanyUserCurrentLocation(String username,String accountType);
 
