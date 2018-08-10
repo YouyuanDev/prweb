@@ -7,7 +7,7 @@ import java.util.Date;
 public interface OrderService {
 
     //APP使用 获取所有历史订单
-    public String getAllOrderList(String username,String accountType);
+    public String getAllOrderList(String username,String accountType,String page, String rows );
 
     //APP使用 获取当前订单
     public String getCurrentOrder(String username,String accountType);

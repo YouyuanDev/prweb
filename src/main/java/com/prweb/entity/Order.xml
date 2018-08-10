@@ -84,6 +84,7 @@
             AND ac.person_user_no is not null
         </where>
         order by id desc
+        limit #{skip},#{take}
     </select>
 
 
@@ -98,6 +99,7 @@
             AND ac.company_user_no is not null
         </where>
         order by id desc
+        limit #{skip},#{take}
     </select>
 
 

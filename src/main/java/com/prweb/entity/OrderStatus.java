@@ -4,7 +4,7 @@ public class OrderStatus {
     private  int id; //流水号
     private String status_code;
     private String status_name;
-    private String status_en;
+    private String status_name_en;
 
     public OrderStatus() {
     }
@@ -33,11 +33,11 @@ public class OrderStatus {
         this.status_name = status_name;
     }
 
-    public String getStatus_en() {
-        return status_en;
+    public String getStatus_name_en() {
+        return status_name_en;
     }
 
-    public void setStatus_en(String status_en) {
-        this.status_en = status_en;
+    public void setStatus_name_en(String status_name_en) {
+        this.status_name_en = status_name_en;
     }
 }

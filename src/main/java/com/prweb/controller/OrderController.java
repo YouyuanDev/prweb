@@ -42,16 +42,15 @@ public class OrderController {
     @RequestMapping(value = "getAllOrderList", produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String getAllOrderList(HttpServletRequest request) {
-
-        JSONObject json = new JSONObject();
-        //返回用户session数据
-        HttpSession session = request.getSession();
-        //把用户数据保存在session域对象中
-        String username = (String) session.getAttribute("userSession");
-        String accountType = (String) session.getAttribute("accountType");
-
-        return orderService.getAllOrderList(username,accountType);
-
+        String page = request.getParameter("page");
+        String rows = request.getParameter("rows");
+            JSONObject json = new JSONObject();
+            //返回用户session数据
+            HttpSession session = request.getSession();
+            //把用户数据保存在session域对象中
+            String username = (String) session.getAttribute("userSession");
+            String accountType = (String) session.getAttribute("accountType");
+            return orderService.getAllOrderList(username,accountType,page,rows);
     }
 
 
@@ -173,7 +172,15 @@ public class OrderController {
     public String getAllOrderStatus(HttpServletRequest request){
         return orderService.getAllOrderStatus();
     }
+    //得到所有的订单状态用于app
 
+    @RequestMapping(value ="/getAllOrderStatusForAPP",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getAllOrderStatusForAPP(HttpServletRequest request){
+        List<OrderStatus> list=orderStatusDao.getAllOrderStatus();
+        String mmp= JSONArray.toJSONString(list);
+        return mmp;
+    }
     //APP定位更新order的person 或 company_user 位置信息
 
     public OrderController() {
