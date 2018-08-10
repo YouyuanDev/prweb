@@ -6,6 +6,7 @@ import com.prweb.dao.AccountDao;
 
 
 import com.prweb.entity.Account;
+import com.prweb.service.AccountService;
 import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,9 +26,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/AccountOperation")
 public class AccountController {
-
+    
     @Autowired
-    private AccountDao accountDao;
+    private AccountService accountService;
 
 
     //获取所有role列表
@@ -43,14 +44,7 @@ public class AccountController {
             rows="20";
         }
         int start=(Integer.parseInt(page)-1)*Integer.parseInt(rows);
-        List<HashMap<String,Object>> list=accountDao.getAllByLike(username,account_status,account_type,start,Integer.parseInt(rows));
-        int count=accountDao.getCountAllByLike(username,account_status,account_type);
-        Map<String,Object> maps=new HashMap<String,Object>();
-        maps.put("total",count);
-        maps.put("rows",list);
-        String mmp= JSONArray.toJSONString(maps);
-        System.out.print("mmp:"+mmp);
-        return mmp;
+        return accountService.getAccountByLike(username,account_status,account_type,start,Integer.parseInt(rows));
 
     }
 
@@ -61,69 +55,40 @@ public class AccountController {
         System.out.print("saveAccount");
 
         JSONObject json=new JSONObject();
+        String mmp="";
         try{
-            int resTotal=0;
-            if(account.getRegister_time()==null){
-                account.setRegister_time(new Date());
-            }
-            if(account.getLast_login_time()==null){
-                account.setLast_login_time(new Date());
-            }
-
-            if(account.getId()==0){
-                //添加
-                resTotal=accountDao.addAccount(account);
-
-            }else{
-                //修改！
-
-                resTotal=accountDao.updateAccount(account);
-            }
-            if(resTotal>0){
-                json.put("success",true);
-                json.put("message","保存成功");
-            }else{
-                json.put("success",false);
-                json.put("message","保存失败");
-            }
-
+            mmp=accountService.saveAccount(account);
         }catch (Exception e){
             e.printStackTrace();
             json.put("success",false);
             json.put("message",e.getMessage());
-
+            mmp= JSONObject.toJSONString(json);
         }finally {
-            try {
-                ResponseUtil.write(response, json);
-            }catch  (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                ResponseUtil.write(response, json);
+//            }catch  (Exception e) {
+//                e.printStackTrace();
+//            }
+            return mmp;
         }
-        return null;
     }
 
 
     //删除Account信息
     @RequestMapping("/delAccount")
     public String delAccount(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
-        String[]idArr=hlparam.split(",");
-        int resTotal=0;
-        resTotal=accountDao.delAccount(idArr);
-        JSONObject json=new JSONObject();
-        StringBuilder sbmessage = new StringBuilder();
-        sbmessage.append("总共");
-        sbmessage.append(Integer.toString(resTotal));
-        sbmessage.append("项角色信息删除成功\n");
-        if(resTotal>0){
-            //System.out.print("删除成功");
-            json.put("success",true);
-        }else{
-            //System.out.print("删除失败");
+        String mmp="";
+        try{
+            mmp=accountService.delAccount(hlparam);
+        }catch (Exception e){
+            JSONObject json=new JSONObject();
+            e.printStackTrace();
             json.put("success",false);
+            json.put("message",e.getMessage());
+            mmp= JSONObject.toJSONString(json);
+        }finally {
+            return mmp;
         }
-        json.put("message",sbmessage.toString());
-        ResponseUtil.write(response,json);
-        return null;
     }
 
 
@@ -140,25 +105,9 @@ public class AccountController {
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username = (String) session.getAttribute("userSession");
-        String accountType = (String) session.getAttribute("accountType");
+        //String accountType = (String) session.getAttribute("accountType");
 
-        List<Account> list=accountDao.getAccountByUserName(username);
-        Account account=null;
-        if(list.size()>0){
-            account=list.get(0);
-            json.put("success",true);
-            json.put("account",account);
-            json.put("message","获取账户信息成功");
-
-        }else{
-            json.put("success",false);
-            json.put("message","获取账户信息失败");
-
-        }
-
-        String mmp= JSONArray.toJSONString(json);
-        System.out.print("mmp:"+mmp);
-        return mmp;
+        return accountService.getAccountInfo(username);
 
     }
 

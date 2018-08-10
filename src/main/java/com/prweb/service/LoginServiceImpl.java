@@ -7,12 +7,8 @@ import com.aliyuncs.exceptions.ClientException;
 import com.prweb.dao.*;
 import com.prweb.entity.*;
 import com.prweb.util.AliyunSMS;
-import com.prweb.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Service

@@ -23,7 +23,7 @@ import java.util.*;
 @RequestMapping("/Business")
 public class BusinessController {
 
-    
+
     @Autowired
     private BusinessService businessService;
 
