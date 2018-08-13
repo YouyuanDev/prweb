@@ -15,10 +15,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PersonUserServiceImpl implements PersonUserService{
@@ -389,9 +386,15 @@ public class PersonUserServiceImpl implements PersonUserService{
     }
 
 
-    public String getNearByCompany(String lon,String lat){
-        List<HashMap<String,Object>> list=companyDao.getNearByCompany(lon,lat);
-        String map= JSONObject.toJSONString(list);
+    public String getNearByCompany(String lon,String lat,int start, int rows){
+        List<HashMap<String,Object>> list=companyDao.getNearByCompany(lon,lat,start,rows);
+        int count = companyDao.getCountNearByCompany(lon,lat);
+        Map<String, Object> maps = new HashMap<String, Object>();
+        maps.put("total", count);
+        maps.put("rows", list);
+        //System.out.println("rrrrrrrrrrrow="+count);
+
+        String map= JSONObject.toJSONString(maps);
         return map;
     }
 }

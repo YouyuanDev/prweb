@@ -54,7 +54,17 @@ public class CompanyUserController {
             lat="31.238269";
         }
 
-        return companyUserService.getNearByPendingOrders(lon,lat);
+        String page = request.getParameter("page");
+        String rows = request.getParameter("rows");
+        if (page == null) {
+            page = "1";
+        }
+        if (rows == null) {
+            rows = "20";
+        }
+
+        int start = (Integer.parseInt(page) - 1) * Integer.parseInt(rows);
+        return companyUserService.getNearByPendingOrders(lon,lat,start,Integer.parseInt(rows));
 
     }
 

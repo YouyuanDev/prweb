@@ -61,8 +61,27 @@
 
         order by distance asc
 
-        limit 50
+        limit #{skip},#{take}
+
     </select>
+
+
+    <select id="getCountNearByCompany" resultType="int">
+       select count(*)
+        from (
+        select *,6370996.81 * ACOS(COS(#{center_coordinate_lat} * PI() / 180) * COS(company_location_lat * PI() / 180) * COS(#{center_coordinate_lon} * PI() / 180 - company_location_lon * PI() / 180)
+
+        + SIN(#{center_coordinate_lat} * PI() / 180) * SIN(company_location_lat * PI() / 180)) distance from company_info
+
+        order by distance asc
+        ) tmp_b
+
+    </select>
+
+
+
+
+
 
     <!--附近50家最近的company下的companyUser-->
     <select id="getNearByCompanyUsers" resultType="map">

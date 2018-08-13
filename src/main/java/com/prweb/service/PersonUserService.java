@@ -28,7 +28,7 @@ public interface PersonUserService {
     public String PersonUserCancelOrder(String username,String accountType,String basePath);
 
     //用于获取个人用户附近商户
-    public String getNearByCompany(String lon,String lat);
+    public String getNearByCompany(String lon,String lat,int start, int rows);
 
 
 }
