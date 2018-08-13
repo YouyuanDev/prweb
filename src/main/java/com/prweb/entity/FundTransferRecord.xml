@@ -63,7 +63,9 @@
         payee_real_name,
         transfer_status,
         transfer_date,
-        sub_msg
+        sub_msg,
+        alipay_out_biz_no,
+        alipay_fund_order_id
         )
          VALUES (
         #{transfer_no},
@@ -74,7 +76,9 @@
         #{payee_real_name},
         #{transfer_status},
         #{transfer_date},
-        #{sub_msg}
+        #{sub_msg},
+        #{alipay_out_biz_no},
+        #{alipay_fund_order_id}
          )
     </insert>
 
@@ -89,7 +93,8 @@
          transfer_status=#{transfer_status},
          transfer_date=#{transfer_date},
          sub_msg=#{sub_msg},
-
+         alipay_out_biz_no=#{alipay_out_biz_no},
+         alipay_fund_order_id=#{alipay_fund_order_id}
          where id=#{id}
     </update>
 

@@ -16,11 +16,13 @@ public class FundTransferRecord {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date transfer_date;
     private String sub_msg;
+    private String alipay_out_biz_no;
+    private String alipay_fund_order_id;
 
     public FundTransferRecord() {
     }
 
-    public FundTransferRecord(int id, String transfer_no, String company_no, String fund_transfer_method, float transfer_amount, String payee_account, String payee_real_name, String transfer_status, Date transfer_date, String sub_msg) {
+    public FundTransferRecord(int id, String transfer_no, String company_no, String fund_transfer_method, float transfer_amount, String payee_account, String payee_real_name, String transfer_status, Date transfer_date, String sub_msg, String alipay_out_biz_no, String alipay_fund_order_id) {
         this.id = id;
         this.transfer_no = transfer_no;
         this.company_no = company_no;
@@ -31,6 +33,8 @@ public class FundTransferRecord {
         this.transfer_status = transfer_status;
         this.transfer_date = transfer_date;
         this.sub_msg = sub_msg;
+        this.alipay_out_biz_no = alipay_out_biz_no;
+        this.alipay_fund_order_id = alipay_fund_order_id;
     }
 
     public int getId() {
@@ -111,5 +115,21 @@ public class FundTransferRecord {
 
     public void setCompany_no(String company_no) {
         this.company_no = company_no;
+    }
+
+    public String getAlipay_out_biz_no() {
+        return alipay_out_biz_no;
+    }
+
+    public void setAlipay_out_biz_no(String alipay_out_biz_no) {
+        this.alipay_out_biz_no = alipay_out_biz_no;
+    }
+
+    public String getAlipay_fund_order_id() {
+        return alipay_fund_order_id;
+    }
+
+    public void setAlipay_fund_order_id(String alipay_fund_order_id) {
+        this.alipay_fund_order_id = alipay_fund_order_id;
     }
 }

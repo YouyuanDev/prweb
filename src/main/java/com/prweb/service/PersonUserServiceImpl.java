@@ -49,8 +49,7 @@ public class PersonUserServiceImpl implements PersonUserService{
             if (accountType.equals("person_user")) {
                 order = orderDao.getCurrentPersonUserOrderByUsername(username);
             }
-            if (order != null&&order.getOrder_status().equals("finished")&&
-                    (order.getOrder_fund_transfer_method()==null||order.getOrder_fund_transfer_method().equals(""))) {
+            if (order != null&&order.getOrder_status().equals("finished")) {
                 String company_user_no=order.getCompany_user_no();
 //                String payee_account="";
 //                String payee_real_name="";
@@ -66,7 +65,7 @@ public class PersonUserServiceImpl implements PersonUserService{
 //                        payee_real_name=cmplist.get(0).getAlipay_payee_real_name();
 
                         order.setOrder_status("finishedconfirmed");
-                        order.setOrder_fund_transfer_method("fund");
+                        //order.setOrder_fund_transfer_method("fund");
                         int res=orderDao.updateOrder(order);
                         if(res>0){
                             Company cmp=cmplist.get(0);

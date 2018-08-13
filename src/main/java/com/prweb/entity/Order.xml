@@ -215,12 +215,7 @@
      failure_type_code_list,
      payment_status,
      pay_method,
-     trade_no,
-     order_fund_transfer_status,
-     order_fund_transfer_method,
-     alipay_out_biz_no,
-     alipay_fund_order_id,
-     alipay_fund_transfer_time
+     trade_no
         ) VALUES (
 
      #{order_no},
@@ -240,12 +235,7 @@
      #{failure_type_code_list},
      #{payment_status},
      #{pay_method},
-     #{trade_no},
-     #{order_fund_transfer_status},
-     #{order_fund_transfer_method},
-     #{alipay_out_biz_no},
-     #{alipay_fund_order_id},
-     #{alipay_fund_transfer_time}
+     #{trade_no}
         )
     </insert>
 
@@ -268,12 +258,7 @@
      failure_type_code_list=#{failure_type_code_list},
      payment_status=#{payment_status},
      pay_method=#{pay_method},
-     trade_no=#{trade_no},
-     order_fund_transfer_status=#{order_fund_transfer_status},
-     order_fund_transfer_method=#{order_fund_transfer_method},
-     alipay_out_biz_no=#{alipay_out_biz_no},
-     alipay_fund_order_id=#{alipay_fund_order_id},
-     alipay_fund_transfer_time=#{alipay_fund_transfer_time}
+     trade_no=#{trade_no}
         where id=#{id}
     </update>
 
