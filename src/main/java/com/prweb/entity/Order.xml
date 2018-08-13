@@ -155,15 +155,35 @@
     <select id="getNearByPendingOrders" resultType="map">
          select  *,6370996.81 * ACOS(COS(31.238269 * PI() / 180) * COS(substring_index(person_user_location,',',-1)* PI() / 180) * COS(121.480242 * PI() / 180 - substring_index(person_user_location,',',1) * PI() / 180)
 
-        + SIN(31.238269 * PI() / 180) * SIN(substring_index(person_user_location,',',-1) * PI() / 180)) distance from order_info
+        + SIN(31.238269 * PI() / 180) * SIN(substring_index(person_user_location,',',-1) * PI() / 180)) distance from order_info o
+
+        inner join account ac on ac.person_user_no=o.person_user_no
 
         where order_status='pending'
 
-
         order by distance asc
 
-        limit 50
+        limit #{skip},#{take}
     </select>
+
+
+
+    <select id="getCountNearByPendingOrders" resultType="int">
+        select count(*)
+        from (
+        select  o.*,6370996.81 * ACOS(COS(31.238269 * PI() / 180) * COS(substring_index(person_user_location,',',-1)* PI() / 180) * COS(121.480242 * PI() / 180 - substring_index(person_user_location,',',1) * PI() / 180)
+
+        + SIN(31.238269 * PI() / 180) * SIN(substring_index(person_user_location,',',-1) * PI() / 180)) distance from order_info o
+
+        inner join account ac on ac.person_user_no=o.person_user_no
+
+        where order_status='pending'
+
+        order by distance asc
+        ) tmp_b
+    </select>
+
+
 
     <select id="getPushPhoneNosByOrderNo" resultType="map">
     select ac1.cell_phone as phone1,ac2.cell_phone as phone2 from order_info o inner join account ac1 on ac1.person_user_no=o.person_user_no

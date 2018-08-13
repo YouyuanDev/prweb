@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -38,9 +39,17 @@ public class CompanyUserServiceImpl implements CompanyUserService{
     private PushNotificationService pushNotificationService;
 
 
-    public String getNearByPendingOrders(String lon,String lat){
-        List<HashMap<String,Object>> list=orderDao.getNearByPendingOrders(lon,lat);
-        String map= JSONObject.toJSONString(list);
+    public String getNearByPendingOrders(String lon,String lat,int start, int rows){
+
+
+        List<HashMap<String,Object>> list=orderDao.getNearByPendingOrders(lon,lat, start, rows);
+        int count = orderDao.getCountNearByPendingOrders(lon,lat);
+        Map<String, Object> maps = new HashMap<String, Object>();
+        maps.put("total", count);
+        maps.put("rows", list);
+        //System.out.println("rrrrrrrrrrrow="+count);
+
+        String map= JSONObject.toJSONString(maps);
         return map;
     }
 

@@ -38,8 +38,9 @@ public interface OrderDao {
 
 
     //得到附近的pending 订单
-    public List<HashMap<String,Object>>  getNearByPendingOrders(@Param("center_coordinate_lon")String center_coordinate_lon,@Param("center_coordinate_lat")String center_coordinate_lat);
+    public List<HashMap<String,Object>>  getNearByPendingOrders(@Param("center_coordinate_lon")String center_coordinate_lon,@Param("center_coordinate_lat")String center_coordinate_lat,@Param("skip")int skip, @Param("take")int take);
 
+    public int getCountNearByPendingOrders(@Param("center_coordinate_lon")String center_coordinate_lon,@Param("center_coordinate_lat")String center_coordinate_lat);
 
     //得到订单的person user 与company user 的手机号
     public List<HashMap<String,Object>>  getPushPhoneNosByOrderNo(@Param("order_no")String order_no);

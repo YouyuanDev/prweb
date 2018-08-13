@@ -5,7 +5,7 @@ import com.prweb.entity.Company;
 public interface CompanyUserService {
 
     //用于商户用户获取附近待接的订单
-    public String getNearByPendingOrders(String lon,String lat);
+    public String getNearByPendingOrders(String lon,String lat,int start, int rows);
 
     //商户用户取消订单服务
     public String CompanyUserCancelOrder(String username,String accountType,String basePath);

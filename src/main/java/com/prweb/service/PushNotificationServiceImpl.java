@@ -54,7 +54,8 @@ public class PushNotificationServiceImpl implements PushNotificationService{
                 userIds=userIds+","+userIds2;
             }
             System.out.println("userIds="+userIds);
-
+            json.put("event",event);
+            jsonstr= JSONArray.toJSONString(json);
             //如果是新增订单，范围推送
             if(event!=null&&event.equals("order_pending")){
                 List<Order> orderlist=orderDao.getOrderByOrderNo(orderNo);
