@@ -57,8 +57,18 @@ public class PersonUserController {
         if(lat==null||lat.equals("")){
             lat="31.238269";
         }
+        String page = request.getParameter("page");
+        String rows = request.getParameter("rows");
+        if (page == null) {
+            page = "1";
+        }
+        if (rows == null) {
+            rows = "20";
+        }
 
-        String map=personUserService.getNearByCompany(lon,lat);
+        int start = (Integer.parseInt(page) - 1) * Integer.parseInt(rows);
+
+        String map=personUserService.getNearByCompany(lon,lat,start,Integer.parseInt(rows));
 
         return map;
 
