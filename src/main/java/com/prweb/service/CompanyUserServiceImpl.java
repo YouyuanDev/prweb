@@ -329,7 +329,7 @@ public class CompanyUserServiceImpl implements CompanyUserService{
         }else{
             json.put("success", false);
             json.put("accountType", accountType);
-            json.put("msg", "账户类型不为商户账户，请切换至商户账户");
+            json.put("message", "账户类型不为商户账户，请切换至商户账户");
         }
 
         String mmp= JSONArray.toJSONString(json);
