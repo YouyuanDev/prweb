@@ -56,7 +56,7 @@ public class ServiceTypeController {
     }
 
     //保存ServiceType
-    @RequestMapping(value = "/saveServiceType")
+    @RequestMapping(value ="/saveServiceType",produces = "text/plain;charset=utf-8")
     @ResponseBody
     public String saveServiceType(ServiceType serviceType, HttpServletResponse response){
         System.out.print("saveServiceType");

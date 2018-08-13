@@ -134,6 +134,7 @@
                 <th field="service_type_code" align="center" width="100" class="i18n1" name="servicetypecode"></th>
                 <th field="service_type_name" align="center" width="100" class="i18n1" name="servicetypename"></th>
                 <th field="service_type_name_en" align="center" width="100" class="i18n1" name="servicetypenameen"></th>
+                <th field="service_rate" align="center" width="100" class="i18n1" name="servicerate"></th>
             </tr>
             </thead>
         </table>
@@ -176,6 +177,11 @@
                     <td class="i18n1" name="servicetypenameen"></td>
                     <td>
                         <input class="easyui-textbox" type="text" value="" name="service_type_name_en" />
+                    </td>
+                    <td></td>
+                    <td class="i18n1" name="servicerate"></td>
+                    <td>
+                        <input class="easyui-numberbox" data-options="min:0,precision:2" type="text" name="service_rate" value=""/>
                     </td>
                     <td></td>
                 </tr>
