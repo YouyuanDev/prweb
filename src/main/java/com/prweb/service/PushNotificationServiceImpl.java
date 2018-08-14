@@ -25,11 +25,36 @@ public class PushNotificationServiceImpl implements PushNotificationService{
     CompanyDao companyDao;
 
 
-    //发送推送消息 accounts  phone ,分隔
-    public void SendPushNotificationToAccounts(String basePath, String event, String title, String content, String userIds) {
-        //发消息
-        APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
+    public class PushServiceThread extends Thread{
+        private String basePath="";
+        private String event="";
+        private String title="";
+        private String content="";
+        private String userIds="";
+
+        public PushServiceThread(String _basePath,String _event, String _title,String _content, String _userIds){
+            //编写子类的构造方法，可缺省
+            basePath=_basePath;
+            event=_event;
+            title=_title;
+            content=_content;
+            userIds=_userIds;
+        }
+        public void run(){
+            //编写自己的线程代码
+            System.out.println(Thread.currentThread().getName());
+            APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
+            System.out.println(Thread.currentThread().getName()+" finished");
+        }
+
     }
+
+
+    //发送推送消息 accounts  phone ,分隔
+//    private void SendPushNotificationToAccounts(String basePath, String event, String title, String content, String userIds) {
+//        //发消息
+//        APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
+//    }
 
 
     //发送推送给相关人员
@@ -80,8 +105,9 @@ public class PushNotificationServiceImpl implements PushNotificationService{
 
                 }
             }
-
-            SendPushNotificationToAccounts(basePath,event,event+"订单:",jsonstr,userIds);
+            PushServiceThread thread = new PushServiceThread(basePath,event,event+"订单:",jsonstr,userIds);
+            thread.setName("PushServiceThread");
+            thread.start();
         }
     }
 
