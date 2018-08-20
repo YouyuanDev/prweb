@@ -116,7 +116,7 @@ public class PushNotificationServiceImpl implements PushNotificationService{
 
                 }
             }
-            PushServiceThread thread = new PushServiceThread(basePath,event,event+"订单:",jsonstr,userIds);
+            PushServiceThread thread = new PushServiceThread(basePath,event,event,jsonstr,userIds);
             thread.setName("PushServiceThread");
             thread.start();
         }
