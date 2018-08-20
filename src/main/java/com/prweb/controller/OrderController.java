@@ -190,12 +190,14 @@ public class OrderController {
     @RequestMapping(value = "/getPersonUserAndCompanyUserCurrentLocation")
     @ResponseBody
     public String getPersonUserAndCompanyUserCurrentLocation(HttpServletRequest request, HttpServletResponse response) {
-        //System.out.print("getPersonUserAndCompanyUserCurrentLocation");
+        System.out.print("getPersonUserAndCompanyUserCurrentLocation");
         //返回用户session数据
         HttpSession session = request.getSession();
         //把用户数据保存在session域对象中
         String username = (String) session.getAttribute("userSession");
         String accountType = (String) session.getAttribute("accountType");
+        System.out.print("username="+username);
+        System.out.print("accountType="+accountType);
         return orderService.getPersonUserAndCompanyUserCurrentLocation(username,accountType);
     }
 

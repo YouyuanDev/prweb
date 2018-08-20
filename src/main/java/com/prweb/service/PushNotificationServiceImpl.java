@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.prweb.dao.CompanyDao;
 import com.prweb.dao.OrderDao;
+import com.prweb.entity.Company;
 import com.prweb.entity.Order;
 import com.prweb.util.APICloudPushService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,16 @@ public class PushNotificationServiceImpl implements PushNotificationService{
 //        //发消息
 //        APICloudPushService.SendPushNotification(basePath, title, content, "1", "0", "", userIds);
 //    }
+
+
+    //发送商户收款人
+    public void SendWithdrawPushNotification(String basePath,JSONObject json,String userIds){
+
+        String jsonstr= JSONArray.toJSONString(json);
+        PushServiceThread thread = new PushServiceThread(basePath,"withdraw","提现成功:",jsonstr,userIds);
+        thread.setName("PushServiceThread");
+        thread.start();
+    }
 
 
     //发送推送给相关人员

@@ -31,4 +31,7 @@ public interface CompanyUserService {
     //认证CompanyUser
     public String verifyCompanyUserInfo(String username,String accountType,String id_card_picture_front,String id_card_picture_back,String business_certificate_picture);
 
+    //获得company
+    public Company getCompanyInfo(String username);
+
 }

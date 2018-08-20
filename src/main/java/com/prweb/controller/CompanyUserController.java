@@ -7,11 +7,9 @@ import com.prweb.dao.AccountDao;
 import com.prweb.dao.CompanyDao;
 import com.prweb.dao.CompanyUserDao;
 import com.prweb.dao.OrderDao;
-import com.prweb.entity.Account;
-import com.prweb.entity.Company;
-import com.prweb.entity.Order;
-import com.prweb.entity.PersonUser;
+import com.prweb.entity.*;
 import com.prweb.service.CompanyUserService;
+import com.prweb.service.FundTransferRecordService;
 import com.prweb.service.PushNotificationService;
 import com.prweb.util.APICloudPushService;
 import com.prweb.util.ResponseUtil;
@@ -34,6 +32,10 @@ public class CompanyUserController {
 
     @Autowired
     private CompanyUserService companyUserService;
+
+    @Autowired
+    private FundTransferRecordService fundTransferRecordService;
+
 
 
     //用于商户用户获取附近待接的订单
@@ -305,5 +307,26 @@ public class CompanyUserController {
         return companyUserService.verifyCompanyUserInfo(username,accountType,id_card_picture_front,id_card_picture_back,business_certificate_picture);
 
     }
+
+    //提现
+    @RequestMapping(value = "/WithdrawCompanyAccount")
+    @ResponseBody
+    public String WithdrawCompanyAccount(HttpServletRequest request){
+        System.out.print("WithdrawCompanyAccount");
+
+        JSONObject json=new JSONObject();
+        //返回用户session数据
+        HttpSession session = request.getSession();
+        //把用户数据保存在session域对象中
+        String username = (String) session.getAttribute("userSession");
+        String amount= request.getParameter("amount");
+        String basePath = request.getSession().getServletContext().getRealPath("/");
+        if(basePath.lastIndexOf('/')==-1){
+            basePath=basePath.replace('\\','/');
+        }
+        return fundTransferRecordService.withdrawDeposit(basePath,username,amount,"");
+
+    }
+
 
 }

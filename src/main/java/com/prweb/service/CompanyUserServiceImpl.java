@@ -387,4 +387,14 @@ public class CompanyUserServiceImpl implements CompanyUserService{
         System.out.print("mmp:"+mmp);
         return mmp;
     }
+
+
+    public Company getCompanyInfo(String username){
+        List<Company> list=companyUserDao.getCompanyInfoByUsername(username);
+        Company company=null;
+        if(list.size()>0) {
+            company = list.get(0);
+        }
+        return company;
+    }
 }
