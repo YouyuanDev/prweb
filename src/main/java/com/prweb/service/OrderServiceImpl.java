@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
 
     public String getAllOrderList(String username,String accountType,String page, String rows ){
         JSONObject json = new JSONObject();
-        List<Order> orderList = null;
+        List<HashMap<String,Object>> orderList = null;
         if (username != null && accountType != null) {
             if(page!=null){
                 if (rows == null) {

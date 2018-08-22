@@ -28,14 +28,15 @@
         var url;
         $(function(){
             var uriArr=[
-                "businessMgt","ServiceTypeMgt","FailureTypeMgt",
+                "businessMgt","ServiceTypeMgt","FailureTypeMgt","commentMgr","FundTransferRecordMgr",
                 "orderMgt",
                 "accountMgt","role","function"
             ];
-            var businessArr=uriArr.slice(0,3);
-            var orderArr=uriArr.slice(3,4);
-            var accountArr=uriArr.slice(4,7);
+            var businessArr=uriArr.slice(0,5);
+            var orderArr=uriArr.slice(5,6);
+            var accountArr=uriArr.slice(6,9);
             var hsMapList="<%=session.getAttribute("userfunctionMap")%>";
+            alert(hsMapList);
             var funArr;
             if(hsMapList!=null&&hsMapList!=""&&hsMapList.length>0){
                 var reg=new RegExp('=1',"g")
@@ -122,6 +123,20 @@
                             $('#hlTab').tabs('add',{
                                 title:node.text,
                                 content:"<iframe scrolling='auto' frameborder='0'  src='basic/FailureTypeMgt.jsp' style='width:100%;height:100%;'></iframe>",
+                                closable:true
+                            });
+                            hlLanguage();
+                        }else if("评论管理"==nodeTxt||"Comment Management"==nodeTxt){
+                            $('#hlTab').tabs('add',{
+                                title:node.text,
+                                content:"<iframe scrolling='auto' frameborder='0'  src='comment/commentMgr.jsp' style='width:100%;height:100%;'></iframe>",
+                                closable:true
+                            });
+                            hlLanguage();
+                        }else if("提现记录管理"==nodeTxt||"Withdrawal Record Management"==nodeTxt){
+                            $('#hlTab').tabs('add',{
+                                title:node.text,
+                                content:"<iframe scrolling='auto' frameborder='0'  src='fund/FundTransferRecordMgr.jsp' style='width:100%;height:100%;'></iframe>",
                                 closable:true
                             });
                             hlLanguage();

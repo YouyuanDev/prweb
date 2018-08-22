@@ -47,9 +47,9 @@ public interface OrderDao {
 
 
     //得到PersonUser历史订单
-    public List<Order> getAllPersonUserOrderByUsername(@Param("person_username")String person_username,@Param("skip")int skip, @Param("take")int take);
+    public List<HashMap<String,Object>> getAllPersonUserOrderByUsername(@Param("person_username")String person_username,@Param("skip")int skip, @Param("take")int take);
 
     //得到CompanyUser历史订单
-    public List<Order> getAllCompanyUserOrderByUsername(@Param("company_username")String company_username,@Param("skip")int skip, @Param("take")int take);
+    public List<HashMap<String,Object>> getAllCompanyUserOrderByUsername(@Param("company_username")String company_username,@Param("skip")int skip, @Param("take")int take);
 
 }

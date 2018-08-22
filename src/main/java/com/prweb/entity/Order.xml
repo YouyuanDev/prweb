@@ -75,9 +75,12 @@
 
     </select>
 
-    <select id="getAllPersonUserOrderByUsername" resultType="com.prweb.entity.Order">
-        select o.* from  order_info o inner join account ac on o.person_user_no=ac.person_user_no
+    <select id="getAllPersonUserOrderByUsername" resultType="map">
+        select o.*,cu.company_no from  order_info o
+        inner join account ac on o.person_user_no=ac.person_user_no
+        left join company_user_info cu on o.company_user_no=cu.company_user_no
         <where>
+            AND ac.username =#{person_username}
 
             AND o.person_user_no is not null
 
@@ -88,11 +91,13 @@
     </select>
 
 
-    <select id="getAllCompanyUserOrderByUsername" resultType="com.prweb.entity.Order">
-        select o.* from  order_info o inner join account ac on o.company_user_no=ac.company_user_no
+    <select id="getAllCompanyUserOrderByUsername" resultType="map">
+        select o.*,cu.company_no from  order_info o
+        inner join account ac on o.company_user_no=ac.company_user_no
+        left join company_user_info cu on o.company_user_no=cu.company_user_no
         <where>
 
-            AND username =#{company_username}
+            AND ac.username =#{company_username}
 
             AND o.company_user_no is not null
 

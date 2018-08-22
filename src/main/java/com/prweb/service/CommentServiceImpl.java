@@ -7,10 +7,7 @@ import com.prweb.entity.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -38,6 +35,9 @@ public class CommentServiceImpl implements CommentService {
         }
         if(comment.getId()==0){
             //添加
+            String uuuid= UUID.randomUUID().toString();
+            uuuid=uuuid.replace("-","");
+            comment.setComment_no(uuuid);
             resTotal=commentDao.addComment(comment);
         }else{
             //修改！
