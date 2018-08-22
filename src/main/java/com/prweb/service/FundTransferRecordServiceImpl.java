@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class FundTransferRecordServiceImpl implements FundTransferRecordService{
@@ -92,5 +90,60 @@ public class FundTransferRecordServiceImpl implements FundTransferRecordService{
         System.out.println(mmp);
         return mmp;
     }
+
+
+    public String getFundTransferRecordByLike(String transfer_no,String company_no,int start,int rows){
+        List<HashMap<String,Object>> list=fundTransferRecordDao.getAllByLike(transfer_no,company_no,start,rows);
+        int count=fundTransferRecordDao.getCountAllByLike(transfer_no,company_no);
+        Map<String,Object> maps=new HashMap<String,Object>();
+        maps.put("total",count);
+        maps.put("rows",list);
+        String mmp= JSONArray.toJSONString(maps);
+        //System.out.print("mmp:"+mmp);
+        return mmp;
+    }
+
+
+//    public String saveFundTransferRecord(FundTransferRecord fundTransferRecord){
+//        int resTotal=0;
+//        JSONObject json=new JSONObject();
+//        if(fundTransferRecord.getId()==0){
+//            //添加
+//            resTotal=fundTransferRecordDao.addFundTransferRecord(fundTransferRecord);
+//        }else{
+//            //修改！
+//            resTotal=fundTransferRecordDao.updateFundTransferRecord(fundTransferRecord);
+//        }
+//        if(resTotal>0){
+//            json.put("success",true);
+//            json.put("message","保存成功");
+//        }else{
+//            json.put("success",false);
+//            json.put("message","保存失败");
+//        }
+//        String map= JSONObject.toJSONString(json);
+//        return map;
+//    }
+//
+//    public String delFundTransferRecord(String hlparam){
+//        String[]idArr=hlparam.split(",");
+//        int resTotal=0;
+//        resTotal=fundTransferRecordDao.delFundTransferRecord(idArr);
+//        JSONObject json=new JSONObject();
+//        StringBuilder sbmessage = new StringBuilder();
+//        sbmessage.append("总共");
+//        sbmessage.append(Integer.toString(resTotal));
+//        sbmessage.append("项提现信息删除成功\n");
+//        if(resTotal>0){
+//            //System.out.print("删除成功");
+//            json.put("success",true);
+//        }else{
+//            //System.out.print("删除失败");
+//            json.put("success",false);
+//        }
+//        json.put("message",sbmessage.toString());
+//        String map= JSONObject.toJSONString(json);
+//        return map;
+//    }
 
 }

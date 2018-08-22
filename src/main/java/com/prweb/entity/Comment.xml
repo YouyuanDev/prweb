@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.CommentDao">
+
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from comment
+        <where>
+            <if test="comment_from_person_user_no!=null and comment_from_person_user_no!=''">
+                AND comment_from_person_user_no=#{comment_from_person_user_no}
+            </if>
+            <if test="comment_to_comany_no!=null and comment_to_comany_no!=''">
+                AND comment_to_comany_no=#{comment_to_comany_no}
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="getAllByLike" resultType="map">
+        select * from comment
+        <where>
+            <if test="comment_from_person_user_no!=null and comment_from_person_user_no!=''">
+                AND comment_from_person_user_no=#{comment_from_person_user_no}
+            </if>
+            <if test="comment_to_comany_no!=null and comment_to_comany_no!=''">
+                AND comment_to_comany_no=#{comment_to_comany_no}
+            </if>
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+
+
+
+
+    <insert id="addComment" parameterType="com.prweb.entity.Comment">
+        INSERT INTO comment(
+        comment_no,
+        rating,
+        options,
+        remark,
+        comment_from_person_user_no,
+        anonymous,
+        comment_to_comany_no,
+        comment_time
+        ) VALUES (
+
+        #{comment_no},
+        #{rating},
+        #{options},
+        #{remark},
+        #{comment_from_person_user_no},
+        #{anonymous},
+        #{comment_to_comany_no},
+        #{comment_time}
+        )
+    </insert>
+
+    <update id="updateBusiness" parameterType="com.prweb.entity.Comment">
+        UPDATE comment set
+        comment_no=#{comment_no},
+        rating=#{rating},
+        options=#{options},
+        remark=#{remark},
+        comment_from_person_user_no=#{comment_from_person_user_no},
+        anonymous=#{anonymous},
+        comment_to_comany_no=#{comment_to_comany_no},
+        comment_time=#{comment_time}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delComment">
+        delete from comment WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

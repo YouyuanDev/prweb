@@ -1,0 +1,79 @@
+package com.prweb.service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.prweb.dao.CommentDao;
+import com.prweb.entity.Comment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class CommentServiceImpl implements CommentService {
+
+    @Autowired
+    private CommentDao commentDao;
+
+    public String getCommentByLike(String comment_from_person_user_no,String comment_to_comany_no,int start,int rows){
+        List<HashMap<String,Object>> list=commentDao.getAllByLike(comment_from_person_user_no,comment_to_comany_no,start,rows);
+        int count=commentDao.getCountAllByLike(comment_from_person_user_no,comment_to_comany_no);
+        Map<String,Object> maps=new HashMap<String,Object>();
+        maps.put("total",count);
+        maps.put("rows",list);
+        String mmp= JSONArray.toJSONString(maps);
+        //System.out.print("mmp:"+mmp);
+        return mmp;
+    }
+
+
+    public String saveComment(Comment comment){
+        int resTotal=0;
+        JSONObject json=new JSONObject();
+        if(comment.getComment_time()==null){
+            comment.setComment_time(new Date());
+        }
+        if(comment.getId()==0){
+            //添加
+            resTotal=commentDao.addComment(comment);
+        }else{
+            //修改！
+            resTotal=commentDao.updateComment(comment);
+        }
+        if(resTotal>0){
+            json.put("success",true);
+            json.put("message","保存成功");
+        }else{
+            json.put("success",false);
+            json.put("message","保存失败");
+        }
+        String map= JSONObject.toJSONString(json);
+        return map;
+    }
+
+
+    public String delComment(String hlparam){
+        String[]idArr=hlparam.split(",");
+        int resTotal=0;
+        resTotal=commentDao.delComment(idArr);
+        JSONObject json=new JSONObject();
+        StringBuilder sbmessage = new StringBuilder();
+        sbmessage.append("总共");
+        sbmessage.append(Integer.toString(resTotal));
+        sbmessage.append("项评论信息删除成功\n");
+        if(resTotal>0){
+            //System.out.print("删除成功");
+            json.put("success",true);
+        }else{
+            //System.out.print("删除失败");
+            json.put("success",false);
+        }
+        json.put("message",sbmessage.toString());
+        String map= JSONObject.toJSONString(json);
+        return map;
+    }
+
+}
