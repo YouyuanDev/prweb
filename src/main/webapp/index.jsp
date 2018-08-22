@@ -36,7 +36,6 @@
             var orderArr=uriArr.slice(5,6);
             var accountArr=uriArr.slice(6,9);
             var hsMapList="<%=session.getAttribute("userfunctionMap")%>";
-            alert(hsMapList);
             var funArr;
             if(hsMapList!=null&&hsMapList!=""&&hsMapList.length>0){
                 var reg=new RegExp('=1',"g")
