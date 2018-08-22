@@ -1,0 +1,38 @@
+{
+    "good_type": [
+        {
+            "name": "及时到达",
+            "name_en": "Arrive in time"
+        },
+        {
+            "name": "态度友善",
+            "name_en": "Amicable attitude"
+        },
+        {
+            "name": "价格公道",
+            "name_en": "Fair price"
+        }
+    ],
+    "bad_type": [
+        {
+            "name": "服务晚点",
+            "name_en": "Service late"
+        },
+        {
+            "name": "态度恶劣",
+            "name_en": "Behave badly"
+        },
+        {
+            "name": "价格偏高",
+            "name_en": "High price"
+        },
+        {
+            "name": "欺瞒用户",
+            "name_en": "Deceive the user"
+        },
+        {
+            "name": "索要好评",
+            "name_en": "Pending"
+        }
+    ]
+}
