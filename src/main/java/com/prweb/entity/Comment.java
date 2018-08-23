@@ -8,6 +8,7 @@ public class Comment {
 
     private  int id; //流水号
     private String comment_no;
+    private String order_no;
     private String rating;
     private String options;
     private String remark;
@@ -20,9 +21,10 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(int id, String comment_no, String rating, String options, String remark, String comment_from_person_user_no, String anonymous, String comment_to_comany_no, Date comment_time) {
+    public Comment(int id, String comment_no, String order_no, String rating, String options, String remark, String comment_from_person_user_no, String anonymous, String comment_to_comany_no, Date comment_time) {
         this.id = id;
         this.comment_no = comment_no;
+        this.order_no = order_no;
         this.rating = rating;
         this.options = options;
         this.remark = remark;
@@ -102,5 +104,13 @@ public class Comment {
 
     public void setComment_time(Date comment_time) {
         this.comment_time = comment_time;
+    }
+
+    public String getOrder_no() {
+        return order_no;
+    }
+
+    public void setOrder_no(String order_no) {
+        this.order_no = order_no;
     }
 }

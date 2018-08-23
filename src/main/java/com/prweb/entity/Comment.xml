@@ -41,6 +41,7 @@
     <insert id="addComment" parameterType="com.prweb.entity.Comment">
         INSERT INTO comment(
         comment_no,
+        order_no,
         rating,
         options,
         remark,
@@ -51,6 +52,7 @@
         ) VALUES (
 
         #{comment_no},
+        #{order_no},
         #{rating},
         #{options},
         #{remark},
@@ -64,6 +66,7 @@
     <update id="updateBusiness" parameterType="com.prweb.entity.Comment">
         UPDATE comment set
         comment_no=#{comment_no},
+        order_no=#{order_no},
         rating=#{rating},
         options=#{options},
         remark=#{remark},
