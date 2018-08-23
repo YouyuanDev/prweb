@@ -34,8 +34,25 @@
         limit #{skip},#{take}
     </select>
 
+    <select id="getCommentByOrderNo" resultType="map">
+        select * from comment
+        <where>
+            <if test="order_no!=null and order_no!=''">
+                AND order_no =#{order_no}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
 
-
+    <select id="getCommentByCompanyNo" resultType="map">
+        select * from comment
+        <where>
+            <if test="company_no!=null and company_no!=''">
+                AND comment_to_comany_no =#{company_no}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
 
 
     <insert id="addComment" parameterType="com.prweb.entity.Comment">

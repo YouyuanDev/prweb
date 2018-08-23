@@ -75,4 +75,24 @@ public class CommentController {
             return mmp;
         }
     }
+
+
+    //根据order_no获取comment
+    @RequestMapping(value = "getCommentByOrderNo",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getCommentByOrderNo(@RequestParam(value = "order_no",required = false)String order_no, HttpServletRequest request){
+
+        return commentService.getCommentByOrderNo(order_no);
+
+    }
+
+
+    //根据company_no获取comment
+    @RequestMapping(value = "getCommentByCompanyNo",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getCommentByCompanyNo(@RequestParam(value = "company_no",required = false)String company_no, HttpServletRequest request){
+
+        return commentService.getCommentByCompanyNo(company_no);
+
+    }
 }

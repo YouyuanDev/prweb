@@ -76,4 +76,40 @@ public class CommentServiceImpl implements CommentService {
         return map;
     }
 
+    //获取某个订单的评论
+    public String getCommentByOrderNo(String order_no){
+        JSONObject json=new JSONObject();
+        List<HashMap<String,Object>> lt=commentDao.getCommentByOrderNo(order_no);
+
+        if(lt.size()>0){
+            json.put("success",true);
+            json.put("message","存在评论记录"+lt.size()+"条");
+            json.put("data",lt);
+
+        }else{
+            json.put("success",false);
+            json.put("message","不存在评论记录");
+        }
+        String map= JSONObject.toJSONString(json);
+        return map;
+    }
+
+    //获取某个商户的评论
+    public String getCommentByCompanyNo(String company_no){
+        JSONObject json=new JSONObject();
+        List<HashMap<String,Object>> lt=commentDao.getCommentByCompanyNo(company_no);
+
+        if(lt.size()>0){
+            json.put("success",true);
+            json.put("message","存在评论记录"+lt.size()+"条");
+            json.put("data",lt);
+
+        }else{
+            json.put("success",false);
+            json.put("message","不存在评论记录");
+        }
+        String map= JSONObject.toJSONString(json);
+        return map;
+    }
+
 }
