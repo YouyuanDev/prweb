@@ -5,13 +5,6 @@
   Time: 4:33 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%--
-  Created by IntelliJ IDEA.
-  User: kurt
-  Date: 7/17/18
-  Time: 5:25 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
@@ -38,13 +31,7 @@
         var url;
         var basePath ="<%=basePath%>"+"/upload/pictures/";
         $(function () {
-
-            //删除上传的图片
-            $(document).on('click','.content-del',function () {
-                delUploadPicture($(this));
-            });
-
-            $('#yyOrderDialog').dialog({
+            $('#yyCommentDialog').dialog({
                 onClose:function () {
                     var type=$('#yyCancelBtn').attr('operationtype');
                     if(type!="add"){
@@ -54,17 +41,17 @@
             });
             $('.mini-buttonedit .mini-buttonedit-input').css('width','150px');
         });
-        function addOrder(){
-            $('#yyCancelBtn').attr('operationtype','add');
-            $('#yyOrderDialog').dialog('open').dialog('setTitle','新增');
-            $('#OrderForm').form('clear');
-            $("input[name='id']").val('0');
-            $('#order_time').text('');
-            $('#finish_time').text('');
-            url="/Order/saveOrder.action";
-        }
-        function delOrder() {
-            var row = $('#OrderDatagrids').datagrid('getSelections');
+        // function addComment(){
+        //     $('#yyCancelBtn').attr('operationtype','add');
+        //     $('#yyCommentDialog').dialog('open').dialog('setTitle','新增');
+        //     $('#CommentForm').form('clear');
+        //     $("input[name='id']").val('0');
+        //     $('#order_time').text('');
+        //     $('#finish_time').text('');
+        //     url="/Comment/saveComment.action";
+        // }
+        function delComment() {
+            var row = $('#CommentDatagrids').datagrid('getSelections');
             if(row.length>0){
                 var idArr=[];
                 for (var i=0;i<row.length;i++){
@@ -74,10 +61,10 @@
                 $.messager.confirm('系统提示',"您确定要删除这<font color=red>"+idArr.length+ "</font>条数据吗？",function (r) {
                     if(r){
                         $.post(
-                            "/Order/delOrder.action",
+                            "/Comment/delComment.action",
                             {hlparam:idArrs},function (data) {
                                 if(data.success){
-                                    $("#OrderDatagrids").datagrid("reload");
+                                    $("#CommentDatagrids").datagrid("reload");
                                 }
                                 yyAlertFour(data.message);
                             },"json");
@@ -87,28 +74,27 @@
                 yyAlertOne();
             }
         }
-        function editOrder() {
+        function editComment() {
             $('#yyCancelBtn').attr('operationtype','edit');
-            var row = $('#OrderDatagrids').datagrid('getSelected');
+            var row = $('#CommentDatagrids').datagrid('getSelected');
             if(row){
-                $('#yyOrderDialog').dialog('open').dialog('setTitle','修改');
-                $('#odbpid').textbox('setValue',row.id);
+                $('#yyCommentDialog').dialog('open').dialog('setTitle','修改');
                 if(row.comment_time!=undefined) {
                     row.comment_time = getDate1(row.comment_time);
                 }
-                $('#OrderForm').form('load',row);
-                url="/Order/saveOrder.action";
+                $('#CommentForm').form('load',row);
+                url="/Comment/saveComment.action";
             }else{
                 yyAlertTwo();
             }
         }
-        function searchOrder() {
-            $('#OrderDatagrids').datagrid('load',{
+        function searchComment() {
+            $('#CommentDatagrids').datagrid('load',{
                 'comment_from_person_user_no': $('#commentfrompersonuserno').val(),
                 'comment_to_comany_no': $('#commenttocomanyno').val()
             });
         }
-        function OrderFormSubmit() {
+        function CommentFormSubmit() {
             // $('#OrderForm').form('submit',{
             //     url:url,
             //     onSubmit:function () {
@@ -148,11 +134,11 @@
             //     }
             // });
         }
-        function OrderCancelSubmit() {
-            $('#yyOrderDialog').dialog('close');
+        function CommentCancelSubmit() {
+            $('#yyCommentDialog').dialog('close');
         }
         function  clearFormLabel() {
-            $('#OrderForm').form('clear');
+            $('#CommentForm').form('clear');
             $('#hl-gallery-con').empty();
         }
 
@@ -162,7 +148,7 @@
 <fieldset class="b3" style="padding:10px;margin:10px;">
     <legend> <h3><b style="color: orange" >|&nbsp;</b><span class="i18n1" name="datadisplay">数据展示</span></h3></legend>
     <div  style="margin-top:5px;">
-        <table class="easyui-datagrid" id="OrderDatagrids" url="/Comment/getCommentByLike.action" striped="true" loadMsg="正在加载中。。。" textField="text" pageSize="20" fitColumns="true" pagination="true" toolbar="#yyOrderTb">
+        <table class="easyui-datagrid" id="CommentDatagrids" url="/Comment/getCommentByLike.action" striped="true" loadMsg="正在加载中。。。" textField="text" pageSize="20" fitColumns="true" pagination="true" toolbar="#yyCommentTb">
             <thead>
             <tr>
                 <th data-options="field:'ck',checkbox:true"></th>
@@ -181,21 +167,21 @@
     </div>
 </fieldset>
 <!--工具栏-->
-<div id="yyOrderTb" style="padding:10px;">
-    <span class="i18n1" name="comentno"></span>:
+<div id="yyCommentTb" style="padding:10px;">
+    <span class="i18n1" name="commentfrompersonuserno"></span>:
     <input id="commentfrompersonuserno"  style="line-height:22px;border:1px solid #ccc">
-    <span class="i18n1" name="orderstatus"></span>:
+    <span class="i18n1" name="commenttocomanyno"></span>:
     <input id="commenttocomanyno"  style="line-height:22px;border:1px solid #ccc">
-    <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-search'" onclick="searchOrder()">Search</a>
+    <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-search'" onclick="searchComment()">Search</a>
     <div style="float:right">
         <%--<a href="#" id="addOrderLinkBtn" class="easyui-linkbutton i18n1" name="add" data-options="iconCls:'icon-add',plain:true" onclick="addOrder()">添加</a>--%>
-        <a href="#" id="editOrderLinkBtn" class="easyui-linkbutton i18n1" name="search" data-options="iconCls:'icon-edit',plain:true" onclick="editOrder()">查看</a>
-        <a href="#" id="deltOrderLinkBtn" class="easyui-linkbutton i18n1" name="delete" data-options="iconCls:'icon-remove',plain:true" onclick="delOrder()">删除</a>
+        <a href="#" id="editCommentLinkBtn" class="easyui-linkbutton i18n1" name="search" data-options="iconCls:'icon-edit',plain:true" onclick="editComment()">查看</a>
+        <a href="#" id="deltCommentLinkBtn" class="easyui-linkbutton i18n1" name="delete" data-options="iconCls:'icon-remove',plain:true" onclick="delComment()">删除</a>
     </div>
 </div>
 <!--添加、修改框-->
-<div id="yyOrderDialog" class="easyui-dialog" data-options="title:'添加',modal:true"  closed="true" buttons="#dlg-buttons" style="display: none;padding:5px;width:950px;height:auto;">
-    <form id="OrderForm" method="post">
+<div id="yyCommentDialog" class="easyui-dialog" data-options="title:'添加',modal:true"  closed="true" buttons="#dlg-buttons" style="display: none;padding:5px;width:950px;height:auto;">
+    <form id="CommentForm" method="post">
         <fieldset style="width:900px;border:solid 1px #aaa;margin-top:8px;position:relative;">
             <legend>评论信息</legend>
             <table class="ht-table">
@@ -247,8 +233,8 @@
     </form>
 </div>
 <div id="dlg-buttons" align="center" style="width:900px;">
-    <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="OrderFormSubmit()">Save</a>
-    <a href="#" class="easyui-linkbutton" id="yyCancelBtn" operationtype="add" iconCls="icon-cancel" onclick="OrderCancelSubmit()">Cancel</a>
+    <%--<a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="CommentFormSubmit()">Save</a>--%>
+    <a href="#" class="easyui-linkbutton" id="yyCancelBtn" operationtype="add" iconCls="icon-cancel" onclick="CommentCancelSubmit()">Cancel</a>
 </div>
 <script type="text/javascript" src="../easyui/jquery.easyui.min.js"></script>
 </body>

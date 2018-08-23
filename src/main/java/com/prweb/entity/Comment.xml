@@ -10,10 +10,10 @@
         select count(*) from comment
         <where>
             <if test="comment_from_person_user_no!=null and comment_from_person_user_no!=''">
-                AND comment_from_person_user_no=#{comment_from_person_user_no}
+                AND comment_from_person_user_no LIKE CONCAT('%',#{comment_from_person_user_no},'%')
             </if>
             <if test="comment_to_comany_no!=null and comment_to_comany_no!=''">
-                AND comment_to_comany_no=#{comment_to_comany_no}
+                AND comment_to_comany_no LIKE CONCAT('%',#{comment_to_comany_no},'%')
             </if>
         </where>
     </select>
@@ -24,10 +24,10 @@
         select * from comment
         <where>
             <if test="comment_from_person_user_no!=null and comment_from_person_user_no!=''">
-                AND comment_from_person_user_no=#{comment_from_person_user_no}
+                AND comment_from_person_user_no LIKE CONCAT('%',#{comment_from_person_user_no},'%')
             </if>
             <if test="comment_to_comany_no!=null and comment_to_comany_no!=''">
-                AND comment_to_comany_no=#{comment_to_comany_no}
+                AND comment_to_comany_no LIKE CONCAT('%',#{comment_to_comany_no},'%')
             </if>
         </where>
         ORDER BY id DESC
