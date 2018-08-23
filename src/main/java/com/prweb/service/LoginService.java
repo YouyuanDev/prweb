@@ -2,8 +2,10 @@ package com.prweb.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.exceptions.ClientException;
+import com.prweb.entity.Account;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public interface LoginService {
 
@@ -11,7 +13,10 @@ public interface LoginService {
     public JSONObject getFunctionJson(String username);
 
     //APP手机登录验证
-    public String LoginWithCellPhoneNo(String cellphoneno,String password);
+    //public String LoginWithCellPhoneNo(String cellphoneno,String password);
+
+    //APP手机登录验证
+    public Account LoginWithCellPhoneNo(String cellphoneno, String password);
 
     //后台登录验证
     public boolean commitLogin(String username,String password);

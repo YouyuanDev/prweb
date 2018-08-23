@@ -125,14 +125,24 @@ public class LoginServiceImpl implements LoginService{
 
 
 
-    public String LoginWithCellPhoneNo(String cellphoneno,String password){
+//    public String LoginWithCellPhoneNo(String cellphoneno,String password){
+//        List<Account> resultList= accountDao.VerifyCellphoneNoPassword(cellphoneno,password);
+//        if(resultList.size()>0) {
+//            return resultList.get(0).getUsername();
+//        }
+//        else
+//            return null;
+//    }
+
+    public Account LoginWithCellPhoneNo(String cellphoneno,String password){
         List<Account> resultList= accountDao.VerifyCellphoneNoPassword(cellphoneno,password);
         if(resultList.size()>0) {
-            return resultList.get(0).getUsername();
+            return resultList.get(0);
         }
         else
             return null;
     }
+
 
     public boolean commitLogin(String username,String password){
         List<Account> resultList= accountDao.VerifyUserNamePassword(username,password);

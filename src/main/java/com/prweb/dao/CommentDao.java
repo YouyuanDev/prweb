@@ -22,8 +22,8 @@ public interface CommentDao {
     public int delComment(String[]arrId);
 
 
-    public List<HashMap<String,Object>> getCommentByOrderNo(String order_no);
+    public List<HashMap<String,Object>> getCommentByOrderNo(@Param("order_no")String order_no);
 
 
-    public List<HashMap<String,Object>> getCommentByCompanyNo(String company_no);
+    public List<HashMap<String,Object>> getCommentByCompanyNo(@Param("company_no")String company_no);
 }

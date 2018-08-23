@@ -205,20 +205,30 @@ public class LoginController {
         try{
             int resTotal=0;
             System.out.println("cellphoneno="+cellphoneno);
-            //System.out.println("ppassword="+ppassword);
-            //if(personDao!=null)
-            String username=loginService.LoginWithCellPhoneNo(cellphoneno,password);
-            if(username!=null&&!username.equals("")){
+
+            //String username=loginService.LoginWithCellPhoneNo(cellphoneno,password);
+            Account account=loginService.LoginWithCellPhoneNo(cellphoneno,password);
+            if(account!=null){
+                String username=account.getUsername();
                 json=loginService.getFunctionJson(username);
+                json.put("account",account);
                 if(json.getBoolean("success")){
                     setSessionInfo(session,username,json.getObject("userfunctionMap",HashMap.class),json.getString("accountType"));
                 }
-
             }else{
                 json.put("success",false);
                 json.put("msg","手机号或密码错误");
-                //System.out.println("fail");
             }
+//            if(username!=null&&!username.equals("")){
+//                json=loginService.getFunctionJson(username);
+//                if(json.getBoolean("success")){
+//                    setSessionInfo(session,username,json.getObject("userfunctionMap",HashMap.class),json.getString("accountType"));
+//                }
+//
+//            }else{
+//                json.put("success",false);
+//                json.put("msg","手机号或密码错误");
+//            }
 
 
 
