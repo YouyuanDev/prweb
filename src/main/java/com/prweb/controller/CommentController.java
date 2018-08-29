@@ -92,7 +92,24 @@ public class CommentController {
     @ResponseBody
     public String getCommentByCompanyNo(@RequestParam(value = "company_no",required = false)String company_no, HttpServletRequest request){
 
-        return commentService.getCommentByCompanyNo(company_no);
+        String page= request.getParameter("page");
+        String rows= request.getParameter("rows");
+        if(page==null){
+            page="1";
+        }
+        if(rows==null){
+            rows="20";
+        }
+        System.out.println(page+":"+rows+":"+company_no);
+        int start=(Integer.parseInt(page)-1)*Integer.parseInt(rows);
+        return commentService.getCommentByCompanyNo(company_no,start,Integer.parseInt(rows));
 
+    }
+
+    //根据company_no获取平均评价rating
+    @RequestMapping(value = "getAvgRatingByCompanyNo",produces = "text/plain;charset=utf-8")
+    @ResponseBody
+    public String getAvgRatingByCompanyNo(@RequestParam(value = "company_no",required = false)String company_no){
+        return commentService.getAvgRatingByCompanyNo(company_no);
     }
 }

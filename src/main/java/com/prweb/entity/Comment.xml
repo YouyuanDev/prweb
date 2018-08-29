@@ -43,17 +43,32 @@
         </where>
         ORDER BY id DESC
     </select>
-
-    <select id="getCommentByCompanyNo" resultType="map">
-        select * from comment
+    <select id="getCountAllByCompanyNo" resultType="int">
+        select count(*) from comment
         <where>
             <if test="company_no!=null and company_no!=''">
-                AND comment_to_comany_no =#{company_no}
+                AND comment_to_comany_no=#{company_no}
+            </if>
+        </where>
+    </select>
+    <select id="getCommentByCompanyNo" resultType="map">
+        select c.*,a.nickname,a.icon_url from comment c
+        left join account a on c.comment_from_person_user_no=a.person_user_no
+        <where>
+            <if test="company_no!=null and company_no!=''">
+                AND c.comment_to_comany_no =#{company_no}
             </if>
         </where>
         ORDER BY id DESC
+        limit #{skip},#{take}
     </select>
 
+    <select id="getAvgRatingByCompanyNo" resultType="map">
+        select AVG(rating) rating from comment where
+        comment_to_comany_no=#{company_no}
+        and rating is not null
+        and <![CDATA[ rating <> '' ]]>
+    </select>
 
     <insert id="addComment" parameterType="com.prweb.entity.Comment">
         INSERT INTO comment(

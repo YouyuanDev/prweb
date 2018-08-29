@@ -15,6 +15,23 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private CommentDao commentDao;
 
+    @Override
+    public String getAvgRatingByCompanyNo(String company_no) {
+        JSONObject json=new JSONObject();
+        List<HashMap<String,Object>>lt=commentDao.getAvgRatingByCompanyNo(company_no);
+        if(lt!=null&&lt.size()>0){
+            String resTotal=String.valueOf(lt.get(0).get("rating"));
+            System.out.println("resTotal="+resTotal);
+            json.put("success",true);
+            json.put("message",resTotal);
+        }else{
+            json.put("success",false);
+            json.put("message","获取失败");
+        }
+        String map= JSONObject.toJSONString(json);
+        return map;
+    }
+
     public String getCommentByLike(String comment_from_person_user_no,String comment_to_comany_no,int start,int rows){
         List<HashMap<String,Object>> list=commentDao.getAllByLike(comment_from_person_user_no,comment_to_comany_no,start,rows);
         int count=commentDao.getCountAllByLike(comment_from_person_user_no,comment_to_comany_no);
@@ -80,7 +97,6 @@ public class CommentServiceImpl implements CommentService {
     public String getCommentByOrderNo(String order_no){
         JSONObject json=new JSONObject();
         List<HashMap<String,Object>> lt=commentDao.getCommentByOrderNo(order_no);
-
         if(lt.size()>0){
             json.put("success",true);
             json.put("message","存在评论记录"+lt.size()+"条");
@@ -95,20 +111,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     //获取某个商户的评论
-    public String getCommentByCompanyNo(String company_no){
+    public String getCommentByCompanyNo(String company_no,int start,int rows){
         JSONObject json=new JSONObject();
-        List<HashMap<String,Object>> lt=commentDao.getCommentByCompanyNo(company_no);
-
+        List<HashMap<String,Object>> lt=commentDao.getCommentByCompanyNo(company_no, start, rows);
+        int count=commentDao.getCountAllByCompanyNo(company_no);
         if(lt.size()>0){
             json.put("success",true);
             json.put("message","存在评论记录"+lt.size()+"条");
             json.put("data",lt);
-
+            json.put("count",count);
         }else{
             json.put("success",false);
             json.put("message","不存在评论记录");
         }
         String map= JSONObject.toJSONString(json);
+        System.out.println(map);
         return map;
     }
 

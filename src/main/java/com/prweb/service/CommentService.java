@@ -20,5 +20,8 @@ public interface CommentService {
     public String getCommentByOrderNo(String order_no);
 
     //获取某个商户的评论
-    public String getCommentByCompanyNo(String company_no);
+    public String getCommentByCompanyNo(String company_no,int start,int rows);
+
+    //获取平均评价
+    public String getAvgRatingByCompanyNo(String company_no);
 }

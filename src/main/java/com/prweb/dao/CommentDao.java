@@ -24,6 +24,10 @@ public interface CommentDao {
 
     public List<HashMap<String,Object>> getCommentByOrderNo(@Param("order_no")String order_no);
 
+    //根据company_no搜索总数
+    public int getCountAllByCompanyNo(@Param("company_no")String company_no);
 
-    public List<HashMap<String,Object>> getCommentByCompanyNo(@Param("company_no")String company_no);
+    public List<HashMap<String,Object>> getCommentByCompanyNo(@Param("company_no")String company_no,@Param("skip")int skip, @Param("take")int take);
+
+    public List<HashMap<String,Object>> getAvgRatingByCompanyNo(@Param("company_no")String company_no);
 }
