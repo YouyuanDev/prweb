@@ -247,6 +247,73 @@ public class LoginServiceImpl implements LoginService{
         return json;
     }
 
+
+
+    public String APPChangePassword(String cellphoneno,String old_password,String new_password){
+        JSONObject json=new JSONObject();
+        System.out.println("APPChangePassword cellphoneno="+cellphoneno);
+        Account account= accountDao.getPasswordByCellPhoneNo(cellphoneno);
+        if(account!=null){
+            if(account.getPassword().equals(old_password)){
+                account.setPassword(new_password);
+                int count=accountDao.updateAccount(account);
+                if(count>0){
+                    json.put("success",true);
+                    json.put("msg","密码修改成功");
+                }else{
+                    json.put("success",false);
+                    json.put("msg","密码修改保存失败");
+                }
+            }else{
+                json.put("success",false);
+                json.put("msg","原始密码错误，密码修改失败");
+            }
+        }else{
+            json.put("success",false);
+            json.put("msg","手机号不存在，密码修改失败");
+        }
+
+        String mmp = JSONArray.toJSONString(json);
+        System.out.println(mmp);
+        return mmp;
+    }
+
+    public String APPChangeCellphone(String old_cellphoneno,String new_cellphoneno,String verifycode){
+        JSONObject json=new JSONObject();
+        System.out.println("APPChangeCellphone cellphoneno="+old_cellphoneno);
+        Account account= accountDao.getPasswordByCellPhoneNo(old_cellphoneno);
+        if(account!=null) {
+            System.out.println("old_cellphoneno=" + old_cellphoneno);
+            System.out.println("verifycode=" + verifycode);
+            int count=verificationCodeDao.IsVerificationCodeValid(new_cellphoneno,verifycode,new Date());
+            if(count==1||verifycode.equals("1")) {//测试使用 验证码为1时
+                verificationCodeDao.delVerificationCodeByCellPhoneNo(new_cellphoneno);
+                account.setCell_phone(new_cellphoneno);
+                account.setUsername(new_cellphoneno);
+                int res=accountDao.updateAccount(account);
+                if(res==1){
+                    json.put("success",true);
+                    json.put("msg","修改登录手机号成功");
+                }
+                else{
+                    json.put("success",false);
+                    json.put("msg","系统错误，修改登录手机号失败");
+                }
+            }else{
+                json.put("success",false);
+                json.put("msg","验证码错误，修改登录手机号失败");
+            }
+        }
+        else{
+            json.put("success",false);
+            json.put("msg","账户不存在，修改登录手机号失败");
+        }
+        String mmp = JSONArray.toJSONString(json);
+        System.out.println(mmp);
+        return mmp;
+    }
+
+
     public String APPRegister(String cellphoneno,String password,String verifycode){
         JSONObject json=new JSONObject();
         System.out.println("APPRegister cellphoneno="+cellphoneno);

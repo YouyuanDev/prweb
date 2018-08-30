@@ -64,6 +64,7 @@
         <where>
             AND cell_phone=#{cell_phone}
             AND password=#{password}
+            AND account_status ='1'
         </where>
     </select>
 

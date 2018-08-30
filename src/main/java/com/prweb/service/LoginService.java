@@ -36,4 +36,10 @@ public interface LoginService {
     //发送验证码
     public String SendVerCodeSMS(String cellphoneno) throws ClientException;
 
+    //APP修改密码
+    public String APPChangePassword(String cellphoneno,String old_password,String new_password);
+
+    //APP修改登录手机号
+    public String APPChangeCellphone(String old_cellphoneno,String new_cellphoneno,String verifycode);
+
 }
