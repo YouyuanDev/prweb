@@ -122,14 +122,32 @@ public class LoginController {
         return mmp;
 
     }
+    //APP修改登录密码
+    @RequestMapping("/APPChangePassword")
+    @ResponseBody
+    public String APPChangePassword(HttpServletRequest request,HttpServletResponse response){
+        String cellphoneno= request.getParameter("cellphoneno");
+        String old_password= request.getParameter("old_password");
+        String new_password= request.getParameter("new_password");
+        return loginService.APPChangePassword(cellphoneno, old_password,new_password);
+    }
 
+    //APP修改登录手机号
+    @RequestMapping("/APPChangeCellphone")
+    @ResponseBody
+    public String APPChangeCellphone(HttpServletRequest request,HttpServletResponse response){
+        String old_cellphoneno= request.getParameter("old_cellphoneno");
+        String new_cellphoneno= request.getParameter("new_cellphoneno");
+        String verifycode= request.getParameter("verifycode");
+
+        return loginService.APPChangePassword(old_cellphoneno, new_cellphoneno,verifycode);
+    }
 
 
     //APP手机注册
     @RequestMapping("/APPRegister")
     @ResponseBody
     public String APPRegister(HttpServletRequest request,HttpServletResponse response){
-        JSONObject json=new JSONObject();
         String cellphoneno= request.getParameter("cellphoneno");
         String password= request.getParameter("password");
         String verifycode= request.getParameter("verifycode");

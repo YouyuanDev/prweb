@@ -282,7 +282,8 @@ public class LoginServiceImpl implements LoginService{
         JSONObject json=new JSONObject();
         System.out.println("APPChangeCellphone cellphoneno="+old_cellphoneno);
         Account account= accountDao.getPasswordByCellPhoneNo(old_cellphoneno);
-        if(account!=null) {
+        Account newaccount= accountDao.getPasswordByCellPhoneNo(new_cellphoneno);
+        if(account!=null&&newaccount==null) {
             System.out.println("old_cellphoneno=" + old_cellphoneno);
             System.out.println("verifycode=" + verifycode);
             int count=verificationCodeDao.IsVerificationCodeValid(new_cellphoneno,verifycode,new Date());
@@ -306,7 +307,7 @@ public class LoginServiceImpl implements LoginService{
         }
         else{
             json.put("success",false);
-            json.put("msg","账户不存在，修改登录手机号失败");
+            json.put("msg","旧账户不存在或新账户已存在，修改登录手机号失败");
         }
         String mmp = JSONArray.toJSONString(json);
         System.out.println(mmp);
