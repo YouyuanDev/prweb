@@ -140,7 +140,7 @@ public class LoginController {
         String new_cellphoneno= request.getParameter("new_cellphoneno");
         String verifycode= request.getParameter("verifycode");
 
-        return loginService.APPChangePassword(old_cellphoneno, new_cellphoneno,verifycode);
+        return loginService.APPChangeCellphone(old_cellphoneno, new_cellphoneno,verifycode);
     }
 
 
