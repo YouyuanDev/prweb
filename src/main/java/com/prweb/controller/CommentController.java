@@ -100,7 +100,6 @@ public class CommentController {
         if(rows==null){
             rows="20";
         }
-        System.out.println(page+":"+rows+":"+company_no);
         int start=(Integer.parseInt(page)-1)*Integer.parseInt(rows);
         return commentService.getCommentByCompanyNo(company_no,start,Integer.parseInt(rows));
 

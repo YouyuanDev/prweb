@@ -21,7 +21,6 @@ public class CommentServiceImpl implements CommentService {
         List<HashMap<String,Object>>lt=commentDao.getAvgRatingByCompanyNo(company_no);
         if(lt!=null&&lt.size()>0){
             String resTotal=String.valueOf(lt.get(0).get("rating"));
-            System.out.println("resTotal="+resTotal);
             json.put("success",true);
             json.put("message",resTotal);
         }else{
@@ -125,7 +124,6 @@ public class CommentServiceImpl implements CommentService {
             json.put("message","不存在评论记录");
         }
         String map= JSONObject.toJSONString(json);
-        System.out.println(map);
         return map;
     }
 

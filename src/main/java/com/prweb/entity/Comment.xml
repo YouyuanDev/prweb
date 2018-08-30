@@ -67,7 +67,7 @@
         select AVG(rating) rating from comment where
         comment_to_comany_no=#{company_no}
         and rating is not null
-        and <![CDATA[ rating <> '' ]]>
+        and rating <![CDATA[<>]]>''
     </select>
 
     <insert id="addComment" parameterType="com.prweb.entity.Comment">
