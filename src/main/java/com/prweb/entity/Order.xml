@@ -61,7 +61,13 @@
 
 
     <select id="getOrderMapByOrderNo" resultType="map">
-        select o.*,s.*,com.* from  order_info o inner join order_status s on o.order_status=s.status_code
+        select o.*,s.*,com.company_no,ac.id as user_id,ac.nickname as user_nickname,ac.cell_phone as user_cell_phone,ac.icon_url as user_icon_url
+        ,acc.id as company_id,acc.nickname as company_nickname,acc.cell_phone as company_cell_phone,acc.icon_url as company_icon_url
+        from  order_info o
+        inner join order_status s on o.order_status=s.status_code
+        left join account ac on ac.person_user_no=o.person_user_no
+
+        left join account acc on acc.company_user_no=o.company_user_no
 
         left join company_user_info cu on cu.company_user_no=o.company_user_no
 
@@ -158,7 +164,7 @@
 
 
     <select id="getNearByPendingOrders" resultType="map">
-         select  *,6370996.81 * ACOS(COS(31.238269 * PI() / 180) * COS(substring_index(person_user_location,',',-1)* PI() / 180) * COS(121.480242 * PI() / 180 - substring_index(person_user_location,',',1) * PI() / 180)
+         select  o.*,ac.id as user_id,ac.nickname as user_nickname,ac.cell_phone as user_cell_phone,ac.icon_url as user_icon_url,6370996.81 * ACOS(COS(31.238269 * PI() / 180) * COS(substring_index(person_user_location,',',-1)* PI() / 180) * COS(121.480242 * PI() / 180 - substring_index(person_user_location,',',1) * PI() / 180)
 
         + SIN(31.238269 * PI() / 180) * SIN(substring_index(person_user_location,',',-1) * PI() / 180)) distance from order_info o
 
