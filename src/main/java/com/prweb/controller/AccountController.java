@@ -30,8 +30,14 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-
-    //获取所有role列表
+    /**
+     * 获取所有role列表
+     * @param 用户名
+     * @param 账户状态
+     * @param 账户类型
+     * @param request
+     * @return
+     */
     @RequestMapping("getAccountByLike")
     @ResponseBody
     public String getAccountByLike(@RequestParam(value = "username",required = false)String username, @RequestParam(value = "account_status",required = false)String account_status, @RequestParam(value = "account_type",required = false)String account_type, HttpServletRequest request){
