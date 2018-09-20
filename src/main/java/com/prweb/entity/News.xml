@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.prweb.dao.NewsDao">
+
+    <select id="getAllByLike" resultType="map">
+        select * from  news r
+        <where>
+            <if test="username!=null and username!=''">
+                AND r.username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="title!=null and title!=''">
+                AND r.title LIKE CONCAT('%',#{title},'%')
+            </if>
+        </where>
+        ORDER BY id DESC
+        limit #{skip},#{take}
+    </select>
+
+    <select id="getCountAllByLike" resultType="int">
+        select count(*) from news r
+
+        <where>
+            <if test="username!=null and username!=''">
+                AND r.username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="title!=null and title!=''">
+                AND r.title LIKE CONCAT('%',#{title},'%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="addNews" parameterType="com.prweb.entity.News">
+        INSERT INTO news(username,title,content,publish_time) VALUES (#{username},#{title},#{content},#{publish_time})
+    </insert>
+
+    <delete id="delNews">
+        delete from news WHERE
+        <foreach collection="array" item="item" open="id in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateNews" parameterType="com.prweb.entity.News">
+        UPDATE news set username=#{username},title=#{title},content=#{content},publish_time=#{publish_time}  where id=#{id}
+    </update>
+
+
+</mapper>

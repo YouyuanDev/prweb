@@ -30,11 +30,13 @@
             var uriArr=[
                 "businessMgt","ServiceTypeMgt","FailureTypeMgt","commentMgr","FundTransferRecordMgr",
                 "orderMgt",
-                "accountMgt","role","function"
+                "accountMgt","role","function",
+                "newsMgt"
             ];
             var businessArr=uriArr.slice(0,5);
             var orderArr=uriArr.slice(5,6);
             var accountArr=uriArr.slice(6,9);
+            var newsArr=uriArr.slice(9,10);
             var hsMapList="<%=session.getAttribute("userfunctionMap")%>";
             var funArr;
             if(hsMapList!=null&&hsMapList!=""&&hsMapList.length>0){
@@ -61,6 +63,8 @@
                 var orderDivSon="";
                 var accountDiv='<div title=\"账户管理\" class=\"i18n\" name=\"accountmanagement\"  style=\"padding:10px;\"><ul id=\"yy-account\">';
                 var accountDivSon="";
+                var newsDiv='<div title=\"新闻管理\" class=\"i18n\" name=\"newsmanagement\"  style=\"padding:10px;\"><ul id=\"yy-news\">';
+                var newsDivSon="";
                 var endDiv="</ul></div>";
                 //外喷砂
                 $.each(finalNameArr,function (index,element) {
@@ -74,6 +78,10 @@
                     }
                     if($.inArray(element,accountArr)!=-1){
                         accountDivSon+=MakeMenus(element);
+                        return true;
+                    }
+                    if($.inArray(element,newsArr)!=-1){
+                        newsDivSon+=MakeMenus(element);
                         return true;
                     }
                 });
@@ -91,6 +99,11 @@
                     orderDiv+=orderDivSon;
                     orderDiv+=endDiv;
                     $('#aa').append(orderDiv);
+                }
+                if(newsDivSon!=""&&newsDivSon.length>0){
+                    newsDiv+=newsDivSon;
+                    newsDiv+=endDiv;
+                    $('#aa').append(newsDiv);
                 }
             }
             hlLanguage("i18n/");
@@ -190,6 +203,25 @@
                             $('#hlTab').tabs('add',{
                                 title:node.text,
                                 content:"<iframe scrolling='auto' frameborder='0'  src='account/function.jsp' style='width:100%;height:100%;'></iframe>",
+                                closable:true
+                            });
+                            hlLanguage();
+                        }
+                    }
+                }
+            });
+            //新闻管理
+            $("#yy-news").tree({
+                onClick:function (node) {
+                    var tab=$('#hlTab').tabs('getTab',node.text);
+                    var nodeTxt=node.text;
+                    if(tab){
+                        $('#hlTab').tabs('select',node.text);
+                    }else{
+                        if("新闻管理"==nodeTxt||"News Management"==nodeTxt){
+                            $('#hlTab').tabs('add',{
+                                title:node.text,
+                                content:"<iframe scrolling='auto' frameborder='0'  src='news/newsMgt.jsp' style='width:100%;height:100%;'></iframe>",
                                 closable:true
                             });
                             hlLanguage();

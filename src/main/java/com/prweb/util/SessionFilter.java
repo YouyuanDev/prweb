@@ -45,7 +45,8 @@ public class SessionFilter extends OncePerRequestFilter{
             "savePersonUserInfo",
             "AliPayNotify",
             "getCurrentOrderAliPayInfo",
-            "getAllOrderStatusForAPP"
+            "getAllOrderStatusForAPP",
+            "getNewsByLike"
     }; // 不过滤的uri
 
     @Override
