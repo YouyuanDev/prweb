@@ -40,7 +40,7 @@ public class UploadFileController {
 
 
 
-    public static boolean isServerTomcat=false;//是否服务器为tomcat 还是 本地debug服务器
+    public static boolean isServerTomcat=true;//是否服务器为tomcat 还是 本地debug服务器
 
 
     /**

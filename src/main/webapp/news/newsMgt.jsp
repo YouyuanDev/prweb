@@ -150,15 +150,32 @@
         }
         //加载富文本编辑器
         function  loadCkEditor() {
-            alert(ctx+'/UploadFile/uploadPicture.action');
             try{
                 ckEditor=CKEDITOR.replace('editor1', {
                     language: 'zh-cn',
                     height:350,
-                    filebrowserImageUploadUrl :ctx+'/UploadFile/uploadPicture.action',
-                    filebrowserUploadUrl:ctx+'/UploadFile/uploadFile.action',
+                    filebrowserBrowseUrl:'http://image.baidu.com/search/index?ct=201326592&tn=baiduimage&word=%E5%A3%81%E7%BA%B8&pn=0&ie=utf-8&oe=utf-8&cl=2&lm=-1&fr=ala&se=&sme=',
+                    filebrowserImageBrowseUrl:'http://image.baidu.com/search/index?ct=201326592&tn=baiduimage&word=%E5%A3%81%E7%BA%B8&pn=0&ie=utf-8&oe=utf-8&cl=2&lm=-1&fr=ala&se=&sme=',
+                    filebrowserUploadUrl: ctx+'/UploadFile/uploadFile.action',
+                    filebrowserImageUploadUrl: ctx+'/UploadFile/uploadPicture.action?type=Images',
                     removePlugins: 'about,maximize'
                 });
+                ckEditor.on( 'fileUploadResponse', function( evt ) {
+                    // Prevent the default response handler.
+                    evt.stop();
+                    // Get XHR and response.
+                    var data = evt.data,
+                        xhr = data.fileLoader.xhr,
+                        response = xhr.responseText.split( '|' );
+                    response=JSON.parse(response[0]);
+                    if (!response.imgUrl) {
+                        data.message ="上传失败!";
+                        evt.cancel();
+                    } else {
+                        data.url =ctx+"/upload/pictures/"+response.imgUrl;
+                    }
+
+                } );
             }catch(e){
                 yyAlertFour("加载富文本编辑器时出错!");
             }
