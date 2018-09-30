@@ -47,5 +47,7 @@
         UPDATE news set username=#{username},title=#{title},content=#{content},publish_time=#{publish_time}  where id=#{id}
     </update>
 
-
+    <select id="getNewsById" resultType="com.prweb.entity.News">
+        SELECT * FROM news where id=#{id}
+    </select>
 </mapper>

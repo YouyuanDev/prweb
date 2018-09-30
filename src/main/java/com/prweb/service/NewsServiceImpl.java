@@ -97,4 +97,24 @@ public class NewsServiceImpl implements NewsService{
         String mmp= JSONArray.toJSONString(json);
         return mmp;
     }
+
+    @Override
+    public String getNewsById(int id) {
+        String mmp="";
+        JSONObject json = new JSONObject();
+        try{
+            News news=newsDao.getNewsById(id);
+            json.put("success",true);
+            if(news!=null){
+                json.put("message",news);
+            }else{
+                json.put("message","");
+            }
+            mmp= JSONArray.toJSONString(json);
+        }catch (Exception ex){
+            json.put("success",false);
+            json.put("message","获取");
+        }
+        return mmp;
+    }
 }

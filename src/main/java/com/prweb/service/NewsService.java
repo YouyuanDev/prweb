@@ -11,4 +11,7 @@ public interface NewsService {
 
     //删除News
     public String delNews(String hlparam);
+
+    //根据id查询News
+    public String getNewsById(int id);
 }

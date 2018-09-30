@@ -33,7 +33,7 @@ public class NewsController {
         int start=(Integer.parseInt(page)-1)*Integer.parseInt(rows);
         return newsService.getAllByLike(username,title,start,Integer.parseInt(rows));
     }
-    //保存Role
+    //保存News
     @RequestMapping(value = "/saveNews")
     @ResponseBody
     public String saveNews(HttpServletRequest request,HttpServletResponse response){
@@ -56,7 +56,7 @@ public class NewsController {
             return mmp;
         }
     }
-    //删除Role信息
+    //删除News
     @RequestMapping("/delNews")
     @ResponseBody
     public String delNews(@RequestParam(value = "hlparam")String hlparam,HttpServletResponse response)throws Exception{
@@ -64,6 +64,31 @@ public class NewsController {
         String mmp="";
         try{
             mmp=newsService.delNews(hlparam);
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("success",false);
+            json.put("message",e.getMessage());
+            mmp= JSONObject.toJSONString(json);
+        }finally {
+            return mmp;
+        }
+    }
+    //根据id查询news
+    @RequestMapping("/getNewsById")
+    @ResponseBody
+    public String getNewsById(HttpServletRequest request,HttpServletResponse response)throws Exception{
+        JSONObject json=new JSONObject();
+        String mmp="";
+        try{
+            String idStr=request.getParameter("id");
+            int id=-1;
+            if(idStr!=null&&!"".equals(idStr)){
+                id=Integer.parseInt(idStr);
+                mmp=newsService.getNewsById(id);
+            }else{
+                json.put("success",false);
+                json.put("message",mmp);
+            }
         }catch (Exception e){
             e.printStackTrace();
             json.put("success",false);

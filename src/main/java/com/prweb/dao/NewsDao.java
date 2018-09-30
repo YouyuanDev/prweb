@@ -19,5 +19,7 @@ public interface NewsDao {
     public int addNews(News role);
     //删除News
     public int delNews(String[]arrId);
+    //根据id查询News
+    public News getNewsById(@Param("id")int id);
 
 }
