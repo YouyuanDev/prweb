@@ -5,6 +5,7 @@ import com.prweb.entity.News;
 import com.prweb.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,10 +19,14 @@ public class NewsController {
     @Autowired
     private NewsService newsService;
 
-    //模糊查询news列表
+    //模糊查询news列表  CrossOrigin用于跨域请求
+
+    @CrossOrigin
     @RequestMapping("getNewsByLike")
     @ResponseBody
-    public String getNewsByLike(@RequestParam(value = "username",required = false)String username, @RequestParam(value = "title",required = false)String title, HttpServletRequest request){
+    public String getNewsByLike(HttpServletRequest request){
+        String username=request.getParameter("username");
+        String title=request.getParameter("title");
         String page= request.getParameter("page");
         String rows= request.getParameter("rows");
         if(page==null){
@@ -73,7 +78,8 @@ public class NewsController {
             return mmp;
         }
     }
-    //根据id查询news
+    //根据id查询news  CrossOrigin用于跨域请求
+    @CrossOrigin
     @RequestMapping("/getNewsById")
     @ResponseBody
     public String getNewsById(HttpServletRequest request,HttpServletResponse response)throws Exception{
