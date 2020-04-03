@@ -37,8 +37,8 @@ public class AliyunSMS {
     static final String domain = "dysmsapi.aliyuncs.com";
 
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
-    static final String accessKeyId = "LTAIY00vpz8SQ7HZ";
-    static final String accessKeySecret = "5HOTwpiPdsu9ikEhkpZA1OZW6C87Kw";
+    static final String accessKeyId = "XXXXX";
+    static final String accessKeySecret = "XXXX";
     //前面，阿里云控制台申请
     static final String signature="友元科技";
     //忘记密码模版Code，阿里云控制台申请
