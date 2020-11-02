@@ -41,62 +41,24 @@ public class AliPayService {
     static final String seller_id = "2088231183736857";
 
     //用户支付回调服务器地址
-    static final String notify_url="http://116.62.17.42:9090/Order/AliPayNotify.action";
+    static final String notify_url="http://xxxxx:9090/Order/AliPayNotify.action";
 
     //平台支付商户回调服务器地址
-    static final String AlipayFundTransToaccount_notify_url="http://116.62.17.42:9090/Order/AlipayFundTransToaccountNotify.action";
+    static final String AlipayFundTransToaccount_notify_url="http://xxxxxxx:9090/Order/AlipayFundTransToaccountNotify.action";
 
     //RSA(SHA1)密钥
-    static final String rsa_sha1_private_key="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMY0B8ECj+CqpEGE" +
-            "feHBPzbJMozbDGbgsPenFDVv1vdBdIJSO2uJGJiSws2jbpAyhPOP3vlz+OUesMJj" +
-            "SPpUFhNgyLYbi3ZxZYkfSR2DpjJtxO19AK7bhASNvgLAQ+tAUpX68oYhvWJMoZkR" +
-            "PnwizBWt5OjSqg6q9zJEUZvF6mvFAgMBAAECgYEAvbLsvPF7zVblMQPjC6BOpVv5" +
-            "8tBwVUK2fcE+2Uo6n5nZLiYQUwL7NIQ6yGCkoISJtSe9DFnQHVK7cMFgBp9WI/LI" +
-            "0KQN15W5m37kgs6f3xSpLL+DIUZFgp0PAdjHIVQFTHzQtqlqtBuUt0zWOw8H0phK" +
-            "FUhGt9ph+aWCwS+dQ10CQQD3XacyTMkIqfFwl6rDWUvAcvvCn8Ydx+bo9bFlop0w" +
-            "ZHETDrTF8fXqSPslsObWE6Ke2LR9aCiPgZvBS934LUojAkEAzR8VPeOhBBU3lPbt" +
-            "/WHu6j6rr5ii3QsdMk2poz2gcVtOCF4+Kmrfs0mQxJUjXFtCJuqd9K9+YWOfNQPH" +
-            "kIzM9wJAOqx7MSIneSeePj+rYIS4xCBB+UsemgfFjLJibqIguM7KR2PwmxcmZnkD" +
-            "IVCRoGut4hGy1iAzpr5ubG4La4eKkwJBAIokeeDRcbpXM7SuTH+OOiImDOhYqq6l" +
-            "codTSID42xocvMPj/IgCrB+J1uad7k+f4kBlV/XXTwz1094XaoqOWOcCQFgGJPyo" +
-            "MlVJL6Kl+EZ7HN6w+wbi4Oe20LIdroIwtrB8+vcylsQVi4Li/D6hY49ZWRW6uDo5" +
-            "GM8Brhe+XIae5rc=";
+    static final String rsa_sha1_private_key="";
     //RSA(SHA1)支付宝公钥
-    static final String rsa_sha1_ali_public_key="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB";
+    static final String rsa_sha1_ali_public_key="";
 
     public static final String  SIGN_ALGORITHMS_RSA_SHA1 = "SHA1WithRSA";
 
 
     //RSA(SHA256)密钥
-    static final String rsa_sha256_private_key="MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDcEvQVujj48FUA\n" +
-            "+xNgGhPYHv7WOYnsK3v5idkKXUc3k9vCPrt7NPw7BgCWewNfNteLLULygRyWlpcu" +
-            "4GtBBSB7eTEqh64a8tdqJL5lxtGy9DAhdMcPFnc9s2ijGu5TQ8FOCep9kDZbVfP3" +
-            "IylxQJUHLRGlZ6FEnKE9KG5THD1yRgCTqNuCZegSxVJRxMX6ba5YizK4MpvxDwlJ" +
-            "x4GuPIi1iyQfImTwZ8mV1T/vq2j5FVm9PxmZPjZ/DT7owTrgS3dlTZEel5tfUQAp" +
-            "AxcR62wuTemhvWPhxugBB45n/EVLaHQg6Z+mMy2E7x0KtHDRjsAOX4P6EjQCIHuT" +
-            "Q2d5Vo3/AgMBAAECggEBAKpdidMgHGaqNkPSGke1KFOQexr/5AOODiU5T2m0mCMw" +
-            "NVmEEsLoW7KdjOrxQ8T7wZSeb0soJCd3YIYLeTwWafTr9uHDs0ZtY9FprHNBnKh6" +
-            "XKAptMe7TofXUVOiz4hp1UVCa+LUNyAxw/E3qSdhJX0uqJBxTui8kB22JOH15KOG" +
-            "mfdkoHVq6B1Vk9Qlfe4aAWEI/2RsF4mH0uB3vuv8cy5lvEWE8xqCFAh7sGs5h+kC" +
-            "0AdSic2AYMu5I2ZYWeVgszNV08bHjej/TbnQpVKLQzb/+X93sdcLaLuPbqQxkjsu" +
-            "6HZAuNTWFLJPXHWDkQG1BYVUjJTPxY2Ed8K3rDwAVcECgYEA8LBnPQRDqJYJQUhG" +
-            "cV1l+VT3nnT2BmV+2jZ+w6gOiSLUqT5P3wwkuYI739kTKwjKGmHNNYFPy6cTaRZ3" +
-            "20El2du8n4r9yoHy5t4LBB2iDyGpm4evLzkNTj6HVYoU9/j1FXp//YF+M97t1bM3" +
-            "Tc/CKFizKFUkck7fSVimXzomYW8CgYEA6hLWHxfLpvUxSaIyW9IvKKQizPEAMdmE" +
-            "ElUPSEirAA2gfx7cY8OEneJpr9HCKGPKobYys0JBcQeKBZ557y375yCBPDFR1loW" +
-            "LjzmLOohl7tv0JoyIEenv8+uFBgP0ZUCwazvozm2rEhIHAh/8I0q4np5X9h/DqoN" +
-            "ATofLAOVNHECgYBQ0nuoYqExoEg1UsbM1JcklaKc5BulZDmnnvsMSoevBzIwLst1" +
-            "U8eVP6VJcsRcBBSRrVvSZrzb3xvGgxP2XTcPpBj/3hWBBggB/Hfohubfe+dPYc2y" +
-            "5s6QArFBSR/ncQMjlkIaZ3xwgKCOzSJ6D5TcJYTru0OE2vVh1NHxUj6HIwKBgBFB" +
-            "KDWMjH+XLXXvFeU83isRxlrzHP+PuDOdv42lha1wU7drL/XOsNTunrnOLZDKomI/" +
-            "Swd5x9csJhl58CUYb6w+8ifcvtqdM2tfI9yFuco0j+6Bn1ZP0ebKyVtD1s6tPFHI" +
-            "jLWsiHG0tlQSsFOsJFAjlRTioaMUF/dSMIAPF42RAoGARkOoRlC+AbndDWlPlrUx" +
-            "5SsHTBinckZdMzFpGJwVpk/mYbfSTMyUNkZlZ0O+bgQE4F5babU8fsMLeqeP3PCi" +
-            "t9Ak0RU0POjkM184BgNqZf3o2p2AAa9TfvnrkiUpNaQe74EHAJ3DKVQTsOzrDoO2" +
-            "dvuiW16+MeReGGtyZG235ac=";
+    static final String rsa_sha256_private_key="";
 
     //RSA(SHA256)支付宝公钥
-    static final String rsa_sha256_ali_public_key="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuwKq1hkOoIkNwTKV2bkrtQ+zHx3QvD0x5Ftei26vD28fNtfBqTWAJSbRmfKZxhjqGiEGAXHSgMXyno0aAyAfEt6YiI7DkSizd0C4zjSTrmfe15E0JVlBimx4XjhWK2Hiu1sNg5r9s1JCwHkHuV3pgk3fLxOEfZBNn/gYQGEulei10Ip6sMSGVDmPo+ZyLnGbIHVWrI4FjuS0A3Q6b2Ia47+gLpXIjiuy3PJSeh3prYZ3SwAq9c03tpE+80ZLmA41Mu+0uaqj1IezjB+3MQsXQ35kpJezWh0dTm6az/BmmdVFYQdXPr2SizUKB0lovvKDHOfy3Ip1QrxxA4+m7GPJZQIDAQAB";
+    static final String rsa_sha256_ali_public_key="";
 
     public static final String  SIGN_ALGORITHMS_RSA_SHA256 = "SHA256withRsa";
 
@@ -350,6 +312,6 @@ public class AliPayService {
 
         //ali.getOrderPaymentInfo("OR118","2018080321001004570508443810");
         //ali.getOrderInfoByAliPay("OR118","2018080321001004570508443810");
-        AlipayFundTransToaccountTransferResponse response=ali.transferOrderPaymentToComanyAccount("OR118","13774216002","王科特","0.1","熊猫救援服务费清算");
+        AlipayFundTransToaccountTransferResponse response=ali.transferOrderPaymentToComanyAccount("OR118","13774216002","aaa","0.1","熊猫救援服务费清算");
     }
 }
